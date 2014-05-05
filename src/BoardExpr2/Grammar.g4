@@ -32,7 +32,7 @@ package BoardExpr2;
 
 boardInfo : board (object | COMMENT | fire)* EOF; 
 
-board : 'board' objectName gravity (friction1 friction2)*;
+board : 'board' objectName gravity* (friction1 friction2)*;
 gravity : 'gravity' equalSign NUM;
 friction1: 'friction1' equalSign NUM;
 friction2:  'friction2' equalSign NUM;

@@ -6,6 +6,8 @@ import java.io.File;
 
 import org.junit.Test;
 
+import pingball.datatypes.Board;
+
 /**
  * Testing reading in a file and outputting a board
  * 
