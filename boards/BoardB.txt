@@ -1,0 +1,2 @@
+board name=sampleBoard1 gravity=20.0 friction1=0.020 friction2=0.020
+  squareBumper  name=Square1      x=1 y=2

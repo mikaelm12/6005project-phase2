@@ -1,0 +1,22 @@
+board name=SAM gravity=20.0 friction1=0.020 friction2=0.020
+
+  #ball name=Ball x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball1 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball2 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball3 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball4 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball5 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball6 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball7 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  #ball name=Ball8 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+  ball name=Ball9 x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
+
+  # define a series of square bumpers
+  #squareBumper name=Square0 x=0 y=2
+  #squareBumper name=Square1 x=1 y=3
+  #squareBumper name=Square2 x=2 y=4
+  #squareBumper name=Square3 x=3 y=3
+  #squareBumper name=Square4 x=4 y=2
+  squareBumper name=Square5 x=5 y=1
+  squareBumper name=Square6 x=6 y=2
+  squareBumper name=Square7 x=7 y=3

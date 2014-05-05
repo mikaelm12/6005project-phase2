@@ -1,0 +1,1 @@
+board name=OurExampleA gravity = 20.0
