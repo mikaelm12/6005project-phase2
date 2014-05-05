@@ -1,0 +1,31 @@
+  board name=Peter gravity=10.0 
+             # Peter's board 
+
+               
+ball name=Ball x=19.5 y=19.5 xVelocity=2.5 yVelocity=2.5
+
+               
+ squareBumper name=Square1 x=2 y=2
+ squareBumper name=Square2 x=3 y=3
+ 
+ triangleBumper name=Tri09 x=10 y=10 orientation=90
+ triangleBumper name=Tri12 x=12 y=12 orientation=180
+               
+               #Order mixed up
+               
+  squareBumper name=Square3 x=3 y=2
+  squareBumper name=Square4 x=2 y=3
+               
+ leftFlipper name=FlipL2 x=2 y=13 orientation=0
+ rightFlipper name=FlipR2 x=15 y=8 orientation=0
+              
+ circleBumper name=Circle10 x=10 y=3 
+ 
+ triangleBumper name=Tri99 x=10 y=10 orientation=90
+              
+ squareBumper name=Square5 x=6 y=5
+ squareBumper name=Square6 x=6 y=7
+ squareBumper name=Square7 x=6 y=8
+ squareBumper name=Square7 x=6 y=9
+              
+              #ignore me
