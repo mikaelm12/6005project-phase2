@@ -51,7 +51,7 @@ public class Ball {
     }
     
     /**
-     * 
+     * This method 
      * @return the current position of the ball
      */
     public double[] getPosition() {

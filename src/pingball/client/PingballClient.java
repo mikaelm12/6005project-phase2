@@ -1,5 +1,7 @@
 package pingball.client;
 
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,7 +14,10 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+import javax.swing.JFrame;
+
 import BoardExpr.BoardFactory;
+import Graphics.SwingTimerExample;
 import physics.Geometry;
 import pingball.datatypes.Ball;
 import pingball.datatypes.Board;
@@ -53,7 +58,7 @@ public class PingballClient {
    //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase1/alex-peter-mikael-testBoard1");
+       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
             while ( ! arguments.isEmpty()) {
@@ -158,7 +163,17 @@ public class PingballClient {
            }
        }
         // Create the board
-        Board board  =  BoardFactory.parse(fileString);
+        final Board board  =  BoardFactory.parse(fileString);
+        
+        EventQueue.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() {                
+                JFrame ex = new SwingTimerExample(board);
+                ex.setMinimumSize(new Dimension(425, 425));
+                ex.setVisible(true);                
+            }
+        });
         System.out.println(board.toString());
         
         

@@ -3,9 +3,7 @@ board name= Mikael gravity=20.0 friction1=0.020 friction2=0.020
 
         # define a ball
      ball name=Ball x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
-      ball name=Ball2 x=0.5 y=1.5 xVelocity=2.5 yVelocity=5.5
-       ball name=Ball3 x=0.5 y=2.5 xVelocity=2.5 yVelocity=7.5
-        ball name=Ball4 x=0.5 y=3.5 xVelocity=2.5 yVelocity=10.5
+
 
         # square bumper 
      squareBumper name=Square0 x=0 y=2

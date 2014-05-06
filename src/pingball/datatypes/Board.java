@@ -1,6 +1,7 @@
 package pingball.datatypes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import physics.Vect;
@@ -29,7 +30,7 @@ public class Board {
     private String neighborTopString;
     private String neighborBottomString;
     private String neighborRightString;
-    private List<Ball> incomingBalls = new ArrayList<Ball>();
+    private List<Ball> incomingBalls = Collections.synchronizedList(new ArrayList<Ball>());
     
     
     //Rep invariant:
@@ -52,8 +53,8 @@ public class Board {
         this.gravity = gravity;
         this.mu = mu;
         this.mu2 = mu2;
-        balls = new ArrayList<Ball>();
-        gadgets = new ArrayList<Gadget>();
+        balls = Collections.synchronizedList(new ArrayList<Ball>());
+        gadgets = Collections.synchronizedList(new ArrayList<Gadget>());
                 
         this.neighborLeftString = wallLeft.toString();
         this.neighborTopString = wallTop.toString();
