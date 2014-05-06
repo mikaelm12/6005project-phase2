@@ -3,6 +3,9 @@ package pingball.datatypes;
 import java.util.Arrays;
 
 import physics.Geometry;
+import pingball.datatypes.Ball;
+import pingball.datatypes.Gadget;
+import pingball.datatypes.OuterWall;
 
 public class Main {
     
@@ -49,7 +52,7 @@ public class Main {
                     OuterWall wallToCollide = null;
                     double timeToBallCollide = Double.POSITIVE_INFINITY;
                     Ball ballToCollide = null;
-                    if(ball.ballOutOfBounds(0.05)){
+                    if(ball.ballOutOfBounds(0.05)){ //if the ball hits an outer wall, find which wall and the time until that collision
                         
                         
                         for(OuterWall wall: board.getOuterWalls()){
@@ -64,27 +67,28 @@ public class Main {
                     double timeToClosestGadgetCollision = Double.POSITIVE_INFINITY;
                     Gadget gadgetToReflect = null;
                     
-                    for (Gadget gadget : board.getGadgets()) {
+                    for (Gadget gadget : board.getGadgets()) { //find the time until the closest gadget collision--and the gadget
                         double timeUntilGadgetCollision = gadget.timeUntilCollision(ball);
                         if(timeUntilGadgetCollision < timeToClosestGadgetCollision){
                             timeToClosestGadgetCollision = timeUntilGadgetCollision;
                             gadgetToReflect = gadget;
                         }
                     }
-                    for (int i = counter; i < board.getBalls().size(); i++) {
-                        Ball that = board.getBalls().get(i);
-                        double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
-                                                                                ball.getVelocity(), that.getCircle(), 
-                                                                                that.getVelocity());
-                        if(timeToThatCollide < timeToBallCollide){
-                            timeToBallCollide = timeToThatCollide;
-                            ballToCollide = that;
+                    for (int i = counter; i < board.getBalls().size(); i++) {//find the time until the closest ball collision--and the corresponding ball
+                        if (!(board.getBalls().get(i).getName().equals(ball.getName()))){ //make sure that the ball we are looking at in this loop is not the same ball as the outer loop
+                        	Ball that = board.getBalls().get(i);
+                            double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
+                                                                                    ball.getVelocity(), that.getCircle(), 
+                                                                                    that.getVelocity());
+                            if(timeToThatCollide < timeToBallCollide){
+                                timeToBallCollide = timeToThatCollide;
+                                ballToCollide = that;
+                            }
                         }
-                        
                     }
                     
-                    if(timeToClosestWallCollision < timeToClosestGadgetCollision){
-                        if(timeToClosestWallCollision < timeToBallCollide){
+                    if(timeToClosestWallCollision < timeToClosestGadgetCollision){ //we are not colliding with a gadget
+                        if(timeToClosestWallCollision < timeToBallCollide){//we are colliding with a wall
                             if(wallToCollide != null && timeToClosestWallCollision < 0.11){
                                 System.out.println("reflecting off wall");
                                 wallToCollide.reflectOffGadget(ball);   
@@ -93,7 +97,7 @@ public class Main {
                     }
                     
                     else if(timeToClosestGadgetCollision < timeToBallCollide && 
-                            gadgetToReflect != null && timeToClosestGadgetCollision < 0.11){
+                            gadgetToReflect != null && timeToClosestGadgetCollision < 0.11){ //we are colliding with a gadget
                         gadgetToReflect.reflectOffGadget(ball);
                     }
                     else{
