@@ -59,7 +59,7 @@ public class PingballClient {
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board4.txt");
+       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -187,7 +187,7 @@ public class PingballClient {
         while(true){
             long current = System.currentTimeMillis();
             
-            if ((current-start) % 50 == 0){
+            if ((current-start) % 200 == 0){
                 int counter = 1;
                 
                 for (Ball ball : board.getBalls()) {
@@ -207,8 +207,21 @@ public class PingballClient {
                         }
                     }
                     
+                    for (int i = counter; i < board.getBalls().size(); i++) {//find the time until the closest ball collision--and the corresponding ball
+                        if (!(board.getBalls().get(i).getName().equals(ball.getName()))){ //make sure that the ball we are looking at in this loop is not the same ball as the outer loop
+                            Ball that = board.getBalls().get(i);
+                            double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
+                                                                                    ball.getVelocity(), that.getCircle(), 
+                                                                                    that.getVelocity());
+                            if(timeToThatCollide < timeToBallCollide){
+                                timeToBallCollide = timeToThatCollide;
+                                ballToCollide = that;
+                            }
+                        }
+                    }
                     
-                    if(ball.ballOutOfBounds(0.05)){
+                    
+                    if(ball.ballOutOfBounds(0.11)){
                         
                         
                         for(OuterWall wall: board.getOuterWalls()){//if the ball hits an outer wall, find which wall and the time until that collision
@@ -221,32 +234,23 @@ public class PingballClient {
 
                     }
                   
-                    for (int i = counter; i < board.getBalls().size(); i++) {//find the time until the closest ball collision--and the corresponding ball
-                        if (!(board.getBalls().get(i).getName().equals(ball.getName()))){ //make sure that the ball we are looking at in this loop is not the same ball as the outer loop
-                        	Ball that = board.getBalls().get(i);
-                            double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
-                                                                                    ball.getVelocity(), that.getCircle(), 
-                                                                                    that.getVelocity());
-                            if(timeToThatCollide < timeToBallCollide){
-                                timeToBallCollide = timeToThatCollide;
-                                ballToCollide = that;
-                            }
-                        }
-                    }
-                    if(timeToClosestWallCollision <= timeToClosestCollision){ //if we are colliding with an outer wall first
-                        if(timeToClosestWallCollision <= timeToBallCollide){
-                            if(wallToCollide != null && timeToClosestWallCollision < 0.05){
-                                wallToCollide.reflectOffGadget(ball);   
-                            }
-                        } 
-                    }
                     
-                    else if(timeToClosestCollision <= timeToBallCollide && 
-                            gadgetToReflect != null && timeToClosestCollision < 0.05){//if we are colliding with a gadget first
+                   
+                    
+                     if(timeToClosestCollision <= timeToBallCollide && 
+                            gadgetToReflect != null && timeToClosestCollision < 0.10){//if we are colliding with a gadget first
                         gadgetToReflect.reflectOffGadget(ball);
                     }
+                     
+                     else if(timeToClosestWallCollision <= timeToClosestCollision){ //if we are colliding with an outer wall first
+                         if(timeToClosestWallCollision <= timeToBallCollide){
+                             if(wallToCollide != null && timeToClosestWallCollision < 0.10){
+                                 wallToCollide.reflectOffGadget(ball);   
+                             }
+                         } 
+                     }
                     else{//two balls are colliding
-                        if(ballToCollide != null && timeToBallCollide < 0.05){
+                        if(ballToCollide != null && timeToBallCollide < 0.10){
                             Geometry.VectPair ballVelocities = Geometry.reflectBalls(ball.getCircle().getCenter(),
                                     1, ball.getVelocity(), ballToCollide.getCircle().getCenter(), 
                                     1, ballToCollide.getVelocity());
@@ -254,7 +258,7 @@ public class PingballClient {
                             ballToCollide.setVelocity(ballVelocities.v2);
                         }
                     }
-                    ball.updateBallPosition(0.05);
+                    ball.updateBallPosition(0.10);
                     ball.updateBallVelocityAfterTimestep(board.getGravity(), board.getMu(), board.getMu2(), 0.05);
                     counter++;
                     

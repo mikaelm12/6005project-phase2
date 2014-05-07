@@ -237,6 +237,7 @@ public class FileParsingTest {
                 + ".                    .\n"
                 + ".                    .\n"
                 + "......................";
+        System.out.println(myBoard.toString());
         assertEquals(ExpectedAnswer, myBoard.toString());
     }
     

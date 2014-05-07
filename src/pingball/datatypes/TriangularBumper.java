@@ -150,6 +150,7 @@ public class TriangularBumper implements Gadget{
      */
     @Override
     public void reflectOffGadget(Ball ball){
+        System.out.println("HELLO");
         LineSegment edgeShortestTimeToCollision = null;
         CircularBumper closestCorner = null; 
         double closestTimeToCollision = Double.POSITIVE_INFINITY; //default value since double has to be initialized
@@ -177,12 +178,16 @@ public class TriangularBumper implements Gadget{
         //reflect using appropriate corner or edge
         if(closestCorner == null){
             newVelocityVector = Geometry.reflectWall(edgeShortestTimeToCollision, ball.getVelocity(), coR);
+           
         }
         else{
             newVelocityVector = Geometry.reflectCircle(closestCorner.getCircle().getCenter(), ball.getCircle().getCenter(),
                                                             ball.getVelocity());
+            System.out.println("CORNER!");
         }
         //set the velocity of the ball and trigger connected gadgets
+        System.out.println("Old Velocity" + ball.getVelocity());
+        System.out.println("New Velocity" + newVelocityVector);
         ball.setVelocity(newVelocityVector);
         this.trigger();
         
