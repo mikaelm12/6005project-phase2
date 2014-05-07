@@ -25,7 +25,9 @@ import javax.swing.Timer;
 
 import pingball.datatypes.Ball;
 import pingball.datatypes.Board;
+import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
+import pingball.datatypes.SquareBumper;
 
 public class Canvas extends JPanel 
     implements ActionListener {
@@ -34,7 +36,7 @@ public class Canvas extends JPanel
     private final int B_HEIGHT = 500;
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
-    private final int DELAY = 10;
+    private final int DELAY = 5;
     Color backgroundColor = Color.white;
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
@@ -61,8 +63,7 @@ public class Canvas extends JPanel
 
         setDoubleBuffered(true);
 
-       // x = INITIAL_X;
-        //y = INITIAL_Y;
+       
         
         timer = new Timer(DELAY, this);
         timer.start();
@@ -90,6 +91,7 @@ public class Canvas extends JPanel
         List<Shape> shapes = new ArrayList<Shape>();
         
        balls = this.board.getBalls();
+       gadgets = this.board.getGadgets();
        for (Ball ball: balls ){
 
                Shape temp = makeBall(ball);
@@ -97,11 +99,21 @@ public class Canvas extends JPanel
                graph2.setColor(Color.GREEN);
                
                graph2.fill(temp);
+  
+       }
+       for(Gadget gadget: gadgets){
+           
+           if(gadget.getGadgetType().equals("Circular Bumper")||gadget.getGadgetType().equals("Square Bumper")){
+               
+               makeGadget(gadget, graph2);
                
                
-               
+           }
+           
            
        }
+       
+       
        
     
       
@@ -120,8 +132,30 @@ public class Canvas extends JPanel
 public Shape makeBall(Ball ball){
     
 
-    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 , (float) ball.getPosition()[1]*20, 20, 20);
+    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 , (float) ball.getPosition()[1]*20, 10, 10);
     return newCirc;
+}
+
+public void makeGadget(Gadget gadget, Graphics2D graph2){
+    if(gadget.getGadgetType().equals("Circular Bumper")){
+        
+        CircularBumper cb = (CircularBumper)gadget;
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20,(float)cb.getCircle().getCenter().y()*20, 20,20);
+
+        graph2.setColor(Color.ORANGE);
+        
+        graph2.fill(circleBumper);
+    }
+    else if(gadget.getGadgetType().equals("Square Bumper")){
+        SquareBumper sb = (SquareBumper)gadget;
+        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20, (float)gadget.getPosition().y()*20, 15, 10);
+
+        graph2.setColor(Color.BLUE);
+        
+        graph2.fill(squareBumper);        
+    }
+    
+    
 }
 
 //TODO Implement these methods

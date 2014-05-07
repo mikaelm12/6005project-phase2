@@ -293,5 +293,10 @@ public class RightFlipper implements Gadget{
         assertTrue(state.equals("initial") || state.equals("final"));
     }
 
+    @Override
+    public String getGadgetType() {
+        return "Flipper";
+    }
+
 
 }

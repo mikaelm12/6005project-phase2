@@ -220,5 +220,10 @@ public class SquareBumper implements Gadget{
         
     }
 
+    @Override
+    public String getGadgetType() {
+        return "Square Bumper";
+    }
+
 
 }

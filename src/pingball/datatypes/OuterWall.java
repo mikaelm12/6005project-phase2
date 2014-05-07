@@ -190,6 +190,15 @@ public class OuterWall implements Gadget{
     }
 
 
+    /**
+     * This method returns the type of this gadget, Wall
+     */
+    @Override
+    public String getGadgetType() {
+        return "Wall";
+    }
+
+
     
     
 
