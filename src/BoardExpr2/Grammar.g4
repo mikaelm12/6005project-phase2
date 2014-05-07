@@ -2,7 +2,7 @@ grammar Grammar;
 
 // This puts a Java package statement at the top of the output Java files.
 @header {
-package BoardExpr2;
+package pingball;
 }
 
 // This adds code to the generated lexer and parser.
@@ -32,7 +32,7 @@ package BoardExpr2;
 
 boardInfo : board (object | COMMENT | fire)* EOF; 
 
-board : 'board' objectName gravity (friction1 friction2)*;
+board : 'board' objectName gravity* ( friction1 | friction2)*;
 gravity : 'gravity' equalSign NUM;
 friction1: 'friction1' equalSign NUM;
 friction2:  'friction2' equalSign NUM;
@@ -48,12 +48,14 @@ orientation: 'orientation' equalSign NUM;
 width: 'width' equalSign NUM;
 height: 'height' equalSign NUM;
 
-fire: 'fire' 'trigger' equalSign trigger 'action' equalSign action;
+fire: FIRE TRIGGER equalSign trigger ACTION equalSign action;
 trigger: ID;
 action: ID;
 
 equalSign: '=';
-
+FIRE: 'fire';
+TRIGGER: 'trigger';
+ACTION: 'action';
 COMMENT: '#' ~('\r' | '\n')* -> skip;
 
 NUM: '-'?([0-9]+'.'[0-9]*|'.'?[0-9]+);

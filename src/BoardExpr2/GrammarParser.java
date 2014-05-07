@@ -180,11 +180,14 @@ public class GrammarParser extends Parser {
 		public Friction1Context friction1(int i) {
 			return getRuleContext(Friction1Context.class,i);
 		}
+		public GravityContext gravity(int i) {
+			return getRuleContext(GravityContext.class,i);
+		}
 		public List<Friction2Context> friction2() {
 			return getRuleContexts(Friction2Context.class);
 		}
-		public GravityContext gravity() {
-			return getRuleContext(GravityContext.class,0);
+		public List<GravityContext> gravity() {
+			return getRuleContexts(GravityContext.class);
 		}
 		public BoardContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -209,18 +212,30 @@ public class GrammarParser extends Parser {
 			{
 			setState(49); match(5);
 			setState(50); objectName();
-			setState(51); gravity();
-			setState(57);
+			setState(54);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==4) {
+				{
+				{
+				setState(51); gravity();
+				}
+				}
+				setState(56);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(62);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==3) {
 				{
 				{
-				setState(52); friction1();
-				setState(53); friction2();
+				setState(57); friction1();
+				setState(58); friction2();
 				}
 				}
-				setState(59);
+				setState(64);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -262,9 +277,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(60); match(4);
-			setState(61); equalSign();
-			setState(62); match(NUM);
+			setState(65); match(4);
+			setState(66); equalSign();
+			setState(67); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -303,9 +318,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(64); match(3);
-			setState(65); equalSign();
-			setState(66); match(NUM);
+			setState(69); match(3);
+			setState(70); equalSign();
+			setState(71); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -344,9 +359,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68); match(21);
-			setState(69); equalSign();
-			setState(70); match(NUM);
+			setState(73); match(21);
+			setState(74); equalSign();
+			setState(75); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -424,39 +439,39 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(72); objectType();
-			setState(73); objectName();
-			setState(74); xLoc();
-			setState(75); yLoc();
-			setState(85);
+			setState(77); objectType();
+			setState(78); objectName();
+			setState(79); xLoc();
+			setState(80); yLoc();
+			setState(90);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 7) | (1L << 8) | (1L << 22))) != 0)) {
 				{
-				setState(83);
+				setState(88);
 				switch (_input.LA(1)) {
 				case 7:
 					{
-					setState(76); xVelocity();
-					setState(77); yVelocity();
+					setState(81); xVelocity();
+					setState(82); yVelocity();
 					}
 					break;
 				case 8:
 					{
-					setState(79); orientation();
+					setState(84); orientation();
 					}
 					break;
 				case 22:
 					{
-					setState(80); width();
-					setState(81); height();
+					setState(85); width();
+					setState(86); height();
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(87);
+				setState(92);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -495,7 +510,7 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(88);
+			setState(93);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 6) | (1L << 13) | (1L << 16) | (1L << 17) | (1L << 19) | (1L << 20) | (1L << 23))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -543,18 +558,18 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(90); match(2);
-			setState(91); equalSign();
-			setState(93); 
+			setState(95); match(2);
+			setState(96); equalSign();
+			setState(98); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(92); match(ID);
+				setState(97); match(ID);
 				}
 				}
-				setState(95); 
+				setState(100); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==ID );
@@ -596,9 +611,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(97); match(11);
-			setState(98); equalSign();
-			setState(99); match(NUM);
+			setState(102); match(11);
+			setState(103); equalSign();
+			setState(104); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -637,9 +652,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(101); match(12);
-			setState(102); equalSign();
-			setState(103); match(NUM);
+			setState(106); match(12);
+			setState(107); equalSign();
+			setState(108); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -678,9 +693,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(105); match(7);
-			setState(106); equalSign();
-			setState(107); match(NUM);
+			setState(110); match(7);
+			setState(111); equalSign();
+			setState(112); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -719,9 +734,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(109); match(1);
-			setState(110); equalSign();
-			setState(111); match(NUM);
+			setState(114); match(1);
+			setState(115); equalSign();
+			setState(116); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -760,9 +775,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(113); match(8);
-			setState(114); equalSign();
-			setState(115); match(NUM);
+			setState(118); match(8);
+			setState(119); equalSign();
+			setState(120); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -801,9 +816,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(117); match(22);
-			setState(118); equalSign();
-			setState(119); match(NUM);
+			setState(122); match(22);
+			setState(123); equalSign();
+			setState(124); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -842,9 +857,9 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(121); match(10);
-			setState(122); equalSign();
-			setState(123); match(NUM);
+			setState(126); match(10);
+			setState(127); equalSign();
+			setState(128); match(NUM);
 			}
 		}
 		catch (RecognitionException re) {
@@ -891,13 +906,13 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(125); match(14);
-			setState(126); match(18);
-			setState(127); equalSign();
-			setState(128); trigger();
-			setState(129); match(15);
-			setState(130); equalSign();
-			setState(131); action();
+			setState(130); match(14);
+			setState(131); match(18);
+			setState(132); equalSign();
+			setState(133); trigger();
+			setState(134); match(15);
+			setState(135); equalSign();
+			setState(136); action();
 			}
 		}
 		catch (RecognitionException re) {
@@ -933,7 +948,7 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(133); match(ID);
+			setState(138); match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -969,7 +984,7 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(135); match(ID);
+			setState(140); match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1004,7 +1019,7 @@ public class GrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(137); match(9);
+			setState(142); match(9);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1019,39 +1034,41 @@ public class GrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\2\3\35\u008e\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b"+
+		"\2\3\35\u0093\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b"+
 		"\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t"+
 		"\20\4\21\t\21\4\22\t\22\4\23\t\23\4\24\t\24\3\2\3\2\3\2\3\2\7\2-\n\2\f"+
-		"\2\16\2\60\13\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\7\3:\n\3\f\3\16\3=\13"+
-		"\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7"+
-		"\3\7\3\7\3\7\3\7\3\7\3\7\7\7V\n\7\f\7\16\7Y\13\7\3\b\3\b\3\t\3\t\3\t\6"+
-		"\t`\n\t\r\t\16\ta\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3\f\3\f\3\f\3\f"+
-		"\3\r\3\r\3\r\3\r\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3\17\3\20\3\20\3\20"+
-		"\3\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\22\3\22\3\23\3\23\3\24"+
-		"\3\24\3\24\2\25\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&\2\3\7\b\b"+
-		"\17\17\22\23\25\26\31\31\u0082\2(\3\2\2\2\4\63\3\2\2\2\6>\3\2\2\2\bB\3"+
-		"\2\2\2\nF\3\2\2\2\fJ\3\2\2\2\16Z\3\2\2\2\20\\\3\2\2\2\22c\3\2\2\2\24g"+
-		"\3\2\2\2\26k\3\2\2\2\30o\3\2\2\2\32s\3\2\2\2\34w\3\2\2\2\36{\3\2\2\2 "+
-		"\177\3\2\2\2\"\u0087\3\2\2\2$\u0089\3\2\2\2&\u008b\3\2\2\2(.\5\4\3\2)"+
-		"-\5\f\7\2*-\7\32\2\2+-\5 \21\2,)\3\2\2\2,*\3\2\2\2,+\3\2\2\2-\60\3\2\2"+
-		"\2.,\3\2\2\2./\3\2\2\2/\61\3\2\2\2\60.\3\2\2\2\61\62\7\1\2\2\62\3\3\2"+
-		"\2\2\63\64\7\7\2\2\64\65\5\20\t\2\65;\5\6\4\2\66\67\5\b\5\2\678\5\n\6"+
-		"\28:\3\2\2\29\66\3\2\2\2:=\3\2\2\2;9\3\2\2\2;<\3\2\2\2<\5\3\2\2\2=;\3"+
-		"\2\2\2>?\7\6\2\2?@\5&\24\2@A\7\33\2\2A\7\3\2\2\2BC\7\5\2\2CD\5&\24\2D"+
-		"E\7\33\2\2E\t\3\2\2\2FG\7\27\2\2GH\5&\24\2HI\7\33\2\2I\13\3\2\2\2JK\5"+
-		"\16\b\2KL\5\20\t\2LM\5\22\n\2MW\5\24\13\2NO\5\26\f\2OP\5\30\r\2PV\3\2"+
-		"\2\2QV\5\32\16\2RS\5\34\17\2ST\5\36\20\2TV\3\2\2\2UN\3\2\2\2UQ\3\2\2\2"+
-		"UR\3\2\2\2VY\3\2\2\2WU\3\2\2\2WX\3\2\2\2X\r\3\2\2\2YW\3\2\2\2Z[\t\2\2"+
-		"\2[\17\3\2\2\2\\]\7\4\2\2]_\5&\24\2^`\7\34\2\2_^\3\2\2\2`a\3\2\2\2a_\3"+
-		"\2\2\2ab\3\2\2\2b\21\3\2\2\2cd\7\r\2\2de\5&\24\2ef\7\33\2\2f\23\3\2\2"+
-		"\2gh\7\16\2\2hi\5&\24\2ij\7\33\2\2j\25\3\2\2\2kl\7\t\2\2lm\5&\24\2mn\7"+
-		"\33\2\2n\27\3\2\2\2op\7\3\2\2pq\5&\24\2qr\7\33\2\2r\31\3\2\2\2st\7\n\2"+
-		"\2tu\5&\24\2uv\7\33\2\2v\33\3\2\2\2wx\7\30\2\2xy\5&\24\2yz\7\33\2\2z\35"+
-		"\3\2\2\2{|\7\f\2\2|}\5&\24\2}~\7\33\2\2~\37\3\2\2\2\177\u0080\7\20\2\2"+
-		"\u0080\u0081\7\24\2\2\u0081\u0082\5&\24\2\u0082\u0083\5\"\22\2\u0083\u0084"+
-		"\7\21\2\2\u0084\u0085\5&\24\2\u0085\u0086\5$\23\2\u0086!\3\2\2\2\u0087"+
-		"\u0088\7\34\2\2\u0088#\3\2\2\2\u0089\u008a\7\34\2\2\u008a%\3\2\2\2\u008b"+
-		"\u008c\7\13\2\2\u008c\'\3\2\2\2\b,.;UWa";
+		"\2\16\2\60\13\2\3\2\3\2\3\3\3\3\3\3\7\3\67\n\3\f\3\16\3:\13\3\3\3\3\3"+
+		"\3\3\7\3?\n\3\f\3\16\3B\13\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3"+
+		"\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\7\7[\n\7\f\7\16\7^"+
+		"\13\7\3\b\3\b\3\t\3\t\3\t\6\te\n\t\r\t\16\tf\3\n\3\n\3\n\3\n\3\13\3\13"+
+		"\3\13\3\13\3\f\3\f\3\f\3\f\3\r\3\r\3\r\3\r\3\16\3\16\3\16\3\16\3\17\3"+
+		"\17\3\17\3\17\3\20\3\20\3\20\3\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3"+
+		"\21\3\22\3\22\3\23\3\23\3\24\3\24\3\24\2\25\2\4\6\b\n\f\16\20\22\24\26"+
+		"\30\32\34\36 \"$&\2\3\7\b\b\17\17\22\23\25\26\31\31\u0088\2(\3\2\2\2\4"+
+		"\63\3\2\2\2\6C\3\2\2\2\bG\3\2\2\2\nK\3\2\2\2\fO\3\2\2\2\16_\3\2\2\2\20"+
+		"a\3\2\2\2\22h\3\2\2\2\24l\3\2\2\2\26p\3\2\2\2\30t\3\2\2\2\32x\3\2\2\2"+
+		"\34|\3\2\2\2\36\u0080\3\2\2\2 \u0084\3\2\2\2\"\u008c\3\2\2\2$\u008e\3"+
+		"\2\2\2&\u0090\3\2\2\2(.\5\4\3\2)-\5\f\7\2*-\7\32\2\2+-\5 \21\2,)\3\2\2"+
+		"\2,*\3\2\2\2,+\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\61\3\2\2\2\60"+
+		".\3\2\2\2\61\62\7\1\2\2\62\3\3\2\2\2\63\64\7\7\2\2\648\5\20\t\2\65\67"+
+		"\5\6\4\2\66\65\3\2\2\2\67:\3\2\2\28\66\3\2\2\289\3\2\2\29@\3\2\2\2:8\3"+
+		"\2\2\2;<\5\b\5\2<=\5\n\6\2=?\3\2\2\2>;\3\2\2\2?B\3\2\2\2@>\3\2\2\2@A\3"+
+		"\2\2\2A\5\3\2\2\2B@\3\2\2\2CD\7\6\2\2DE\5&\24\2EF\7\33\2\2F\7\3\2\2\2"+
+		"GH\7\5\2\2HI\5&\24\2IJ\7\33\2\2J\t\3\2\2\2KL\7\27\2\2LM\5&\24\2MN\7\33"+
+		"\2\2N\13\3\2\2\2OP\5\16\b\2PQ\5\20\t\2QR\5\22\n\2R\\\5\24\13\2ST\5\26"+
+		"\f\2TU\5\30\r\2U[\3\2\2\2V[\5\32\16\2WX\5\34\17\2XY\5\36\20\2Y[\3\2\2"+
+		"\2ZS\3\2\2\2ZV\3\2\2\2ZW\3\2\2\2[^\3\2\2\2\\Z\3\2\2\2\\]\3\2\2\2]\r\3"+
+		"\2\2\2^\\\3\2\2\2_`\t\2\2\2`\17\3\2\2\2ab\7\4\2\2bd\5&\24\2ce\7\34\2\2"+
+		"dc\3\2\2\2ef\3\2\2\2fd\3\2\2\2fg\3\2\2\2g\21\3\2\2\2hi\7\r\2\2ij\5&\24"+
+		"\2jk\7\33\2\2k\23\3\2\2\2lm\7\16\2\2mn\5&\24\2no\7\33\2\2o\25\3\2\2\2"+
+		"pq\7\t\2\2qr\5&\24\2rs\7\33\2\2s\27\3\2\2\2tu\7\3\2\2uv\5&\24\2vw\7\33"+
+		"\2\2w\31\3\2\2\2xy\7\n\2\2yz\5&\24\2z{\7\33\2\2{\33\3\2\2\2|}\7\30\2\2"+
+		"}~\5&\24\2~\177\7\33\2\2\177\35\3\2\2\2\u0080\u0081\7\f\2\2\u0081\u0082"+
+		"\5&\24\2\u0082\u0083\7\33\2\2\u0083\37\3\2\2\2\u0084\u0085\7\20\2\2\u0085"+
+		"\u0086\7\24\2\2\u0086\u0087\5&\24\2\u0087\u0088\5\"\22\2\u0088\u0089\7"+
+		"\21\2\2\u0089\u008a\5&\24\2\u008a\u008b\5$\23\2\u008b!\3\2\2\2\u008c\u008d"+
+		"\7\34\2\2\u008d#\3\2\2\2\u008e\u008f\7\34\2\2\u008f%\3\2\2\2\u0090\u0091"+
+		"\7\13\2\2\u0091\'\3\2\2\2\t,.8@Z\\f";
 	public static final ATN _ATN =
 		ATNSimulator.deserialize(_serializedATN.toCharArray());
 	static {

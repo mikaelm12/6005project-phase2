@@ -49,7 +49,7 @@ public class BoardFactory {
 //        System.err.println(tree.toStringTree(parser));
 
         // debugging option #2: show the tree in a window
-        ((RuleContext)tree).inspect(parser);
+//        ((RuleContext)tree).inspect(parser);
 
         
         // Finally, construct Board by walking over the parse tree.

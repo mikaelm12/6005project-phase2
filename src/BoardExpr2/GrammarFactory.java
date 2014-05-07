@@ -7,6 +7,7 @@ import java.io.FileReader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -22,7 +23,7 @@ public class GrammarFactory {
      * @return a new board.
      * @throws Exception 
      */
-    public static void parse(File file) throws Exception {
+    public static Board parse(File file) throws Exception {
         String input = FileToString(file);
         
         // Create a stream of tokens using the lexer.
@@ -39,14 +40,14 @@ public class GrammarFactory {
         ParseTree tree = parser.boardInfo(); // "expression" is the starter rule
         
         // show the tree in a window
-       // ((RuleContext)tree).inspect(parser);
+//        ((RuleContext)tree).inspect(parser);
 
         // Finally, construct an Expression value by walking over the parse tree.
         ParseTreeWalker walker = new ParseTreeWalker();
         BoardCreatorListener listener = new BoardCreatorListener();
-        walker.walk((ParseTreeListener) listener, tree);
+        walker.walk((BoardCreatorListener) listener, tree);
 
-//        return BoardCreatorListener.getBoard();
+        return listener.getBoard();
     }
     
     /**
@@ -57,7 +58,7 @@ public class GrammarFactory {
      * @return a new board.
      * @throws Exception 
      */
-    public static void parse(String fileStr) throws Exception {
+    public static Board parse(String fileStr) throws Exception {
         String input = fileStr;
         // Create a stream of tokens using the lexer.
         CharStream stream = new ANTLRInputStream(input);
@@ -73,14 +74,14 @@ public class GrammarFactory {
         ParseTree tree = parser.boardInfo(); // "expression" is the starter rule
 
         // show the tree in a window
-//        ((RuleContext)tree).inspect(parser);
+        ((RuleContext)tree).inspect(parser);
         
         // Finally, construct an Expression value by walking over the parse tree.
         ParseTreeWalker walker = new ParseTreeWalker();
         BoardCreatorListener listener = new BoardCreatorListener();
         walker.walk((ParseTreeListener) listener, tree);
 
-//        return BoardCreatorListener.getBoard();
+        return listener.getBoard();
     }
     
     /**
