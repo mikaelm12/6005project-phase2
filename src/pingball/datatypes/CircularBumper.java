@@ -151,6 +151,12 @@ public class CircularBumper implements Gadget{
         assertTrue(circle != null);
     }
 
+    @Override
+    public String getGadgetType() {
+        
+        return "Circular Bumper";
+    }
+
 
 
 }

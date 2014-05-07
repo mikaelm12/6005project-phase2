@@ -85,4 +85,10 @@ public class Portal implements Gadget {
 		return new Vect(this.x, this.y);
 	}
 
+    @Override
+    public String getGadgetType() {
+        
+        return "Portal";
+    }
+
 }

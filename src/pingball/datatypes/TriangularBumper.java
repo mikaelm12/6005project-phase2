@@ -244,6 +244,11 @@ public class TriangularBumper implements Gadget{
         }
     }
 
+    @Override
+    public String getGadgetType() {
+        return "Triangluar Bumper";
+    }
+
 
     
 }

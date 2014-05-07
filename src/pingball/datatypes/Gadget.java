@@ -57,6 +57,14 @@ public interface Gadget {
      */
     public Vect getPosition();
     
+    
+    /**
+     * This method returns the type of gadget that the object
+     * is, Absorber, Various Bumper, Portal etc
+     * @return
+     */
+    public String getGadgetType();
+    
     /**
      * 
      * @return string representation of the gadget

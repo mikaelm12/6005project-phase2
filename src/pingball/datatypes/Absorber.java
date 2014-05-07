@@ -216,5 +216,11 @@ public class Absorber implements Gadget{
         }
     }
 
+    @Override
+    public String getGadgetType() {
+        
+        return "Absorber";
+    }
+
 
 }
