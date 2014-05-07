@@ -70,7 +70,7 @@ public class Main {
              " squareBumper name=Square7 x=6 y=9";
         
         
-        Board board1 = GrammarFactory.parse(new File("src/../boards/boardA.txt"));
+        Board board1 = GrammarFactory.parse(new File("src/../boards/board1.txt"));
 //        GrammarFactory.parse(testBoard2);
 //        GrammarFactory.parse(testBoard3);
         

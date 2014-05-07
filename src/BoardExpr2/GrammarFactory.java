@@ -40,14 +40,14 @@ public class GrammarFactory {
         ParseTree tree = parser.boardInfo(); // "expression" is the starter rule
         
         // show the tree in a window
-       // ((RuleContext)tree).inspect(parser);
+        ((RuleContext)tree).inspect(parser);
 
         // Finally, construct an Expression value by walking over the parse tree.
         ParseTreeWalker walker = new ParseTreeWalker();
         BoardCreatorListener listener = new BoardCreatorListener();
-        walker.walk((ParseTreeListener) listener, tree);
+        walker.walk((BoardCreatorListener) listener, tree);
 
-        return BoardCreatorListener.getBoard();
+        return listener.getBoard();
     }
     
     /**
@@ -81,7 +81,7 @@ public class GrammarFactory {
         BoardCreatorListener listener = new BoardCreatorListener();
         walker.walk((ParseTreeListener) listener, tree);
 
-        return BoardCreatorListener.getBoard();
+        return listener.getBoard();
     }
     
     /**
