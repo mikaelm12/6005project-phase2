@@ -20,8 +20,12 @@
      squareBumper name=Square6 x=12 y=12
      squareBumper name=Square7 x=11 y=12
      squareBumper name=Square8 x=12 y=11
-              
-     triangleBumper name=Tri12 x=5 y=5 orientation=0
+     squareBumper name=Square8 x=10 y=11
+     squareBumper name=Square8 x=9 y=11
+     squareBumper name=Square8 x=8 y=11 
+     squareBumper name=Square8 x=7 y=11       
+     
+     triangleBumper name=Tri12 x=19 y=5 orientation=270
      
      absorber name=Abs x=0 y=19 width=20 height=1 
               

@@ -1,5 +1,7 @@
 package pingball.client;
 
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,7 +14,10 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+import javax.swing.JFrame;
+
 import BoardExpr.BoardFactory;
+import Graphics.SwingTimerExample;
 import physics.Geometry;
 import pingball.datatypes.Ball;
 import pingball.datatypes.Board;
@@ -53,7 +58,9 @@ public class PingballClient {
    //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase1/alex-peter-mikael-testBoard1");
+
+       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
+
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
             while ( ! arguments.isEmpty()) {
@@ -158,7 +165,17 @@ public class PingballClient {
            }
        }
         // Create the board
-        Board board  =  BoardFactory.parse(fileString);
+        final Board board  =  BoardFactory.parse(fileString);
+        
+        EventQueue.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() {                
+                JFrame ex = new SwingTimerExample(board);
+                ex.setMinimumSize(new Dimension(425, 425));
+                ex.setVisible(true);                
+            }
+        });
         System.out.println(board.toString());
         
         
@@ -181,7 +198,7 @@ public class PingballClient {
                     if(ball.ballOutOfBounds(0.05)){
                         
                         
-                        for(OuterWall wall: board.getOuterWalls()){
+                        for(OuterWall wall: board.getOuterWalls()){//if the ball hits an outer wall, find which wall and the time until that collision
                             double timeUntilWallCollision = wall.timeUntilCollision(ball);
                             if(timeUntilWallCollision < timeToClosestWallCollision){
                                 timeToClosestWallCollision = timeUntilWallCollision;
@@ -193,25 +210,26 @@ public class PingballClient {
                     double timeToClosestCollision = Double.POSITIVE_INFINITY;
                     Gadget gadgetToReflect = null;
                     
-                    for (Gadget gadget : board.getGadgets()) {
+                    for (Gadget gadget : board.getGadgets()) {//find the time until the closest gadget collision--and the gadget
                         double timeUntilGadgetCollision = gadget.timeUntilCollision(ball);
                         if(timeUntilGadgetCollision < timeToClosestCollision){
                             timeToClosestCollision = timeUntilGadgetCollision;
                             gadgetToReflect = gadget;
                         }
                     }
-                    for (int i = counter; i < board.getBalls().size()-1; i++) {
-                        Ball that = board.getBalls().get(i);
-                        double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
-                                                                                ball.getVelocity(), that.getCircle(), 
-                                                                                that.getVelocity());
-                        if(timeToThatCollide < timeToBallCollide){
-                            timeToBallCollide = timeToThatCollide;
-                            ballToCollide = that;
+                    for (int i = counter; i < board.getBalls().size(); i++) {//find the time until the closest ball collision--and the corresponding ball
+                        if (!(board.getBalls().get(i).getName().equals(ball.getName()))){ //make sure that the ball we are looking at in this loop is not the same ball as the outer loop
+                        	Ball that = board.getBalls().get(i);
+                            double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
+                                                                                    ball.getVelocity(), that.getCircle(), 
+                                                                                    that.getVelocity());
+                            if(timeToThatCollide < timeToBallCollide){
+                                timeToBallCollide = timeToThatCollide;
+                                ballToCollide = that;
+                            }
                         }
-                        
                     }
-                    if(timeToClosestWallCollision <= timeToClosestCollision){
+                    if(timeToClosestWallCollision <= timeToClosestCollision){ //if we are colliding with an outer wall first
                         if(timeToClosestWallCollision <= timeToBallCollide){
                             if(wallToCollide != null && timeToClosestWallCollision < 0.11){
                                 wallToCollide.reflectOffGadget(ball);   
@@ -220,10 +238,10 @@ public class PingballClient {
                     }
                     
                     else if(timeToClosestCollision <= timeToBallCollide && 
-                            gadgetToReflect != null && timeToClosestCollision < 0.11){
+                            gadgetToReflect != null && timeToClosestCollision < 0.11){//if we are colliding with a gadget first
                         gadgetToReflect.reflectOffGadget(ball);
                     }
-                    else{
+                    else{//two balls are colliding
                         if(ballToCollide != null && timeToBallCollide < 0.11){
                             Geometry.VectPair ballVelocities = Geometry.reflectBalls(ball.getCircle().getCenter(),
                                     1, ball.getVelocity(), ballToCollide.getCircle().getCenter(), 
