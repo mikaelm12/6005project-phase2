@@ -67,12 +67,14 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         String ObjectName = ctx.objectName().getChild(2).getText();
         
         for(int x = ctx.getChildCount()-1; x > 0; x--){
-            if(ctx.getChild(x).getChild(0).getText().equals("friction1")){
-                friction1 = Double.parseDouble(ctx.getChild(x).getChild(2).getText());
-            }else if(ctx.getChild(x).getChild(0).getText().equals("friction2")){
-                friction2 = Double.parseDouble(ctx.getChild(x).getChild(2).getText());
-            }if(ctx.getChild(x).getChild(0).getText().equals("gravity")){
-                gravity = Double.parseDouble(ctx.getChild(x).getChild(2).getText());
+            String childName = ctx.getChild(x).getChild(0).getText();
+            String doubleValue = ctx.getChild(x).getChild(2).getText();
+            if(childName.equals("friction1")){
+                friction1 = Double.parseDouble(doubleValue);
+            }else if(childName.equals("friction2")){
+                friction2 = Double.parseDouble(doubleValue);
+            }if(childName.equals("gravity")){
+                gravity = Double.parseDouble(doubleValue);
             }
         }
         
