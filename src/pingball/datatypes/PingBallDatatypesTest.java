@@ -183,5 +183,31 @@ public class PingBallDatatypesTest {
         
     }
     
+    @Test public void testNonExistentTargetPortal(){
+    	Portal portal1 = new Portal("portal1", 5, 5, "", "nonExistentPortal");
+    	Ball ball1 = new Ball("ball1", 5, 5, 0, -1.0); //heading straight down right over the portal
+       
+        portal1.reflectOffGadget(ball1); //since the portal does not have a valid target portal, nothing should happen to the ball
+
+        assertTrue(ball1.getCircle().getCenter().x() == 5.0);
+        assertTrue(ball1.getCircle().getCenter().y() == 5.0);
+
+        assertTrue(ball1.getVelocity().x() == 0.0);
+        assertTrue(ball1.getVelocity().x() == -1.0); 
+    }
+    
+    @Test public void testExistentTargetPortal(){
+    	Portal portal1 = new Portal("portal1", 5, 5, "", "portal2");
+    	Portal portal2 = new Portal("portal2", 5, 12, "", "nonExistentPortal");
+    	Ball ball1 = new Ball("ball1", 5, 5, 0, -1.0); //heading straight down right over portal1
+       
+        portal1.reflectOffGadget(ball1); //since the portal has a valid target portal, the ball should be transported to portal2
+
+        assertFalse(ball1.getCircle().getCenter().x() == 5.0);
+        assertFalse(ball1.getCircle().getCenter().y() == 5.0);
+
+        assertTrue(ball1.getVelocity().x() == 0.0);
+        assertTrue(ball1.getVelocity().x() == -1.0); 
+    }
 
 }
