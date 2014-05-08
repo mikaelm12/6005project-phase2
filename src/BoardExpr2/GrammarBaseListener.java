@@ -21,6 +21,9 @@ public class GrammarBaseListener implements GrammarListener {
 	@Override public void enterYLoc(GrammarParser.YLocContext ctx) { }
 	@Override public void exitYLoc(GrammarParser.YLocContext ctx) { }
 
+	@Override public void enterKeys(GrammarParser.KeysContext ctx) { }
+	@Override public void exitKeys(GrammarParser.KeysContext ctx) { }
+
 	@Override public void enterBoardInfo(GrammarParser.BoardInfoContext ctx) { }
 	@Override public void exitBoardInfo(GrammarParser.BoardInfoContext ctx) { }
 
@@ -45,6 +48,9 @@ public class GrammarBaseListener implements GrammarListener {
 	@Override public void enterFire(GrammarParser.FireContext ctx) { }
 	@Override public void exitFire(GrammarParser.FireContext ctx) { }
 
+	@Override public void enterKeyCmd(GrammarParser.KeyCmdContext ctx) { }
+	@Override public void exitKeyCmd(GrammarParser.KeyCmdContext ctx) { }
+
 	@Override public void enterFriction2(GrammarParser.Friction2Context ctx) { }
 	@Override public void exitFriction2(GrammarParser.Friction2Context ctx) { }
 
@@ -62,6 +68,9 @@ public class GrammarBaseListener implements GrammarListener {
 
 	@Override public void enterObjectType(GrammarParser.ObjectTypeContext ctx) { }
 	@Override public void exitObjectType(GrammarParser.ObjectTypeContext ctx) { }
+
+	@Override public void enterKey(GrammarParser.KeyContext ctx) { }
+	@Override public void exitKey(GrammarParser.KeyContext ctx) { }
 
 	@Override public void enterGravity(GrammarParser.GravityContext ctx) { }
 	@Override public void exitGravity(GrammarParser.GravityContext ctx) { }
