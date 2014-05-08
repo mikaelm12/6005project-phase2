@@ -132,7 +132,7 @@ public class FileParsingTest {
                 + ".                    .\n"
                 + ".                   \\.\n"
                 + ".                    .\n"
-                + ".########|   |#######.\n"
+                + ".########|   |#####  .\n"
                 + ".    O   |   |  O    .\n"
                 + ".     O        O     .\n"
                 + ".      O      O      .\n"
@@ -237,6 +237,7 @@ public class FileParsingTest {
                 + ".                    .\n"
                 + ".                    .\n"
                 + "......................";
+        System.out.println(myBoard.toString());
         assertEquals(ExpectedAnswer, myBoard.toString());
     }
     

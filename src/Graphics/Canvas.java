@@ -36,7 +36,7 @@ public class Canvas extends JPanel
     private final int B_HEIGHT = 500;
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
-    private final int DELAY = 5;
+    private final int DELAY = 5;  //Miliseconds to repaint
     Color backgroundColor = Color.white;
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
@@ -140,7 +140,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20,(float)cb.getCircle().getCenter().y()*20, 20,20);
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
 
         graph2.setColor(Color.ORANGE);
         

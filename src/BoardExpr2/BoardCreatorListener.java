@@ -65,14 +65,17 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         double gravity = 25.0;
         
         String ObjectName = ctx.objectName().getChild(2).getText();
+        //ctx.objectName().
         
         for(int x = ctx.getChildCount()-1; x > 0; x--){
-            if(ctx.getChild(x).getChild(0).getText().equals("friction1")){
-                friction1 = Double.parseDouble(ctx.getChild(x).getChild(2).getText());
-            }else if(ctx.getChild(x).getChild(0).getText().equals("friction2")){
-                friction2 = Double.parseDouble(ctx.getChild(x).getChild(2).getText());
-            }if(ctx.getChild(x).getChild(0).getText().equals("gravity")){
-                gravity = Double.parseDouble(ctx.getChild(x).getChild(2).getText());
+            String childName = ctx.getChild(x).getChild(0).getText();
+            String doubleValue = ctx.getChild(x).getChild(2).getText();
+            if(childName.equals("friction1")){
+                friction1 = Double.parseDouble(doubleValue);
+            }else if(childName.equals("friction2")){
+                friction2 = Double.parseDouble(doubleValue);
+            }if(childName.equals("gravity")){
+                gravity = Double.parseDouble(doubleValue);
             }
         }
         
@@ -134,8 +137,9 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
      */
     @Override
     public void exitFire(GrammarParser.FireContext ctx) { 
-        String trigger = ctx.getChild(3).getChild(0).toString();
-        String action = ctx.getChild(6).getChild(0).toString();
+        
+        String trigger = ctx.trigger().getChild(2).toString();
+        String action = ctx.action().getChild(2).toString();
         
         Gadget matchingGadget = null;
         for(Gadget gadget: gadgets){
