@@ -137,8 +137,9 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
      */
     @Override
     public void exitFire(GrammarParser.FireContext ctx) { 
-        String trigger = ctx.getChild(3).getChild(0).toString();
-        String action = ctx.getChild(6).getChild(0).toString();
+        
+        String trigger = ctx.trigger().getChild(2).toString();
+        String action = ctx.action().getChild(2).toString();
         
         Gadget matchingGadget = null;
         for(Gadget gadget: gadgets){

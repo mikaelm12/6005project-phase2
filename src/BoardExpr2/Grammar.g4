@@ -2,7 +2,7 @@ grammar Grammar;
 
 // This puts a Java package statement at the top of the output Java files.
 @header {
-package pingball;
+package BoardExpr2;
 }
 
 // This adds code to the generated lexer and parser.
@@ -30,7 +30,7 @@ package pingball;
  * *** ANTLR requires grammar nonterminals to be lowercase, like html, normal, and italic.
  */
 
-boardInfo : board (object | COMMENT | fire)* EOF; 
+boardInfo : board (object | COMMENT | fire | keys | portal)* EOF; 
 
 board : 'board' objectName gravity* ( friction1 | friction2)*;
 gravity : 'gravity' equalSign NUM;
@@ -48,14 +48,26 @@ orientation: 'orientation' equalSign NUM;
 width: 'width' equalSign NUM;
 height: 'height' equalSign NUM;
 
-fire: FIRE TRIGGER equalSign trigger ACTION equalSign action;
-trigger: ID;
-action: ID;
+fire: FIRE trigger action;
+trigger: TRIGGER equalSign ID;
+action: ACTION equalSign ID;
+
+keys: keyCmd key action;
+keyCmd: KEYUP | KEYDOWN;
+key: 'key' equalSign ID;
+
+portal: PORTAL objectName xLoc yLoc otherBoard* otherPortal;
+otherBoard: 'otherBoard' equalSign ID;
+otherPortal: 'otherPortal' equalSign ID;
+
+KEYUP: 'keyup';
+KEYDOWN: 'keydown';
 
 equalSign: '=';
 FIRE: 'fire';
 TRIGGER: 'trigger';
 ACTION: 'action';
+PORTAL: 'portal';
 COMMENT: '#' ~('\r' | '\n')* -> skip;
 
 NUM: '-'?([0-9]+'.'[0-9]*|'.'?[0-9]+);
