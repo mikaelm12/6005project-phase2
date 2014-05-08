@@ -65,6 +65,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         double gravity = 25.0;
         
         String ObjectName = ctx.objectName().getChild(2).getText();
+        //ctx.objectName().
         
         for(int x = ctx.getChildCount()-1; x > 0; x--){
             String childName = ctx.getChild(x).getChild(0).getText();

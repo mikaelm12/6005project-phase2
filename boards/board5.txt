@@ -10,7 +10,7 @@ squareBumper name=SquareC x=2 y=10
 squareBumper name=SquareD x=3 y=10
 
 circleBumper name=Circle x=4 y=3
-triangleBumper name=Tri x=19 y=3 orientation=90
+triangleBumper name=Tri x=19 y=3 orientation=270
 
 
 # define some flippers
