@@ -30,7 +30,7 @@ package BoardExpr2;
  * *** ANTLR requires grammar nonterminals to be lowercase, like html, normal, and italic.
  */
 
-boardInfo : board (object | COMMENT | fire)* EOF; 
+boardInfo : board (object | COMMENT | fire | keys)* EOF; 
 
 board : 'board' objectName gravity* ( friction1 | friction2)*;
 gravity : 'gravity' equalSign NUM;
