@@ -32,8 +32,8 @@ import pingball.datatypes.SquareBumper;
 public class Canvas extends JPanel 
     implements ActionListener {
 
-    private final int B_WIDTH = 400;
-    private final int B_HEIGHT = 500;
+    private final int BOARD_WIDTH = 400;
+    private final int BOARD_HEIGHT = 500;
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
     private final int DELAY = 5;  //Miliseconds to repaint
@@ -47,6 +47,13 @@ public class Canvas extends JPanel
     private int x, y;
     public boolean forward = true;
 
+    /**
+     * This method sets the board to be displayed with 
+     * A GUI. It also called the method to initialize
+     * all the different aspects of the GUI.
+     * 
+     * @param board -The pingball board to be displayed
+     */
     public Canvas(Board board) {
                 
      
@@ -56,21 +63,30 @@ public class Canvas extends JPanel
     
 
     
+    /**
+     * This method initializes the starting conditions of our
+     * canvas. It also defines the time interval in which the 
+     * GUI repaints
+     */
     private void initCanvas() {
         
         setBackground(Color.BLACK);
-        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 
         setDoubleBuffered(true);
 
        
-        
+        // This determines how often the actionPerformed
+        // method is called
         timer = new Timer(DELAY, this);
         timer.start();
         
 
     }
 
+    /**
+     * Calls drawBoard method which paints all the gadgets
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -78,6 +94,12 @@ public class Canvas extends JPanel
         drawBoard(g);
     }
     
+    /**
+     * This method takes the board object for the GUI and 
+     * draws all the gadgets and ball in their correct places
+     * on the board
+     * @param g - the main Graphics2D object
+     */
     private void drawBoard(Graphics g) {
         
         Graphics2D graph2 = (Graphics2D) g;
@@ -125,10 +147,12 @@ public class Canvas extends JPanel
         Toolkit.getDefaultToolkit().sync();
         g.dispose();        
     }
-    private void changeColor(final Color color) {
-        backgroundColor = color;
-        this.repaint(); // IMPORTANT!  this is what triggers Swing to call paintComponent() below
-    }
+
+/**
+ * This method takes in a ball object and creates its corresponding Graphics 2D object    
+ * @param ball
+ * @return
+ */
 public Shape makeBall(Ball ball){
     
 
@@ -136,6 +160,13 @@ public Shape makeBall(Ball ball){
     return newCirc;
 }
 
+
+/**
+ * This method takes a gadget and returns its
+ * corresponding Graphics2D object
+ * @param gadget
+ * @param graph2
+ */
 public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
@@ -166,6 +197,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
 
 // public Shape make
 
+   /**
+    * This method is called every time the timer is set off and 
+    * it repaints the GUI
+    */
     @Override
     public void actionPerformed(ActionEvent e) {
         
