@@ -17,6 +17,7 @@ import java.util.Queue;
 import javax.swing.JFrame;
 
 import BoardExpr.BoardFactory;
+import BoardExpr2.GrammarFactory;
 import Graphics.SwingTimerExample;
 import physics.Geometry;
 import pingball.datatypes.Ball;
@@ -48,9 +49,10 @@ public class PingballClient {
      * FILE is an argument specifying a file pathname where a board has been stored. The stored bored
      * is initialized as this client's board. If connected to a server, file will be sent to the server to create
      * the board and add it to the world. Otherwise, board created and run as single player mode.
+     * @throws Exception 
      * 
      */
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws Exception{
         int port = 10987; //default port
         String hostName = null;
 //        File file = null;
@@ -59,7 +61,7 @@ public class PingballClient {
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
+       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -147,9 +149,9 @@ public class PingballClient {
     /**
      * Runs the Pingball Client in single machine mode
      * @param file of the board to be created and run
-     * @throws IOException
+     * @throws Exception 
      */
-    public static void runSingleMachine (File file) throws IOException{
+    public static void runSingleMachine (File file) throws Exception{
         //Turn file into a string
         String fileString = "";
         BufferedReader inputFileStream = null;
@@ -165,7 +167,7 @@ public class PingballClient {
            }
        }
         // Create the board
-        final Board board  =  BoardFactory.parse(fileString);
+        final Board board  =  GrammarFactory.parse(fileString);
         
         EventQueue.invokeLater(new Runnable() {
             
@@ -187,7 +189,7 @@ public class PingballClient {
         while(true){
             long current = System.currentTimeMillis();
             
-            if ((current-start) % 200 == 0){
+            if ((current-start) % 150 == 0){
                 int counter = 1;
                 
                 for (Ball ball : board.getBalls()) {
@@ -221,7 +223,7 @@ public class PingballClient {
                     }
                     
                     
-                    if(ball.ballOutOfBounds(0.11)){
+                    if(ball.ballOutOfBounds(0.08)){
                         
                         
                         for(OuterWall wall: board.getOuterWalls()){//if the ball hits an outer wall, find which wall and the time until that collision
