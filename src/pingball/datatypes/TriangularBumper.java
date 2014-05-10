@@ -22,12 +22,22 @@ public class TriangularBumper implements Gadget{
     private final String name;
     private List<Gadget> gadgetsToFire;
     private final LineSegment[] edges = new LineSegment[3];
+//<<<<<<< HEAD
+//    private final Vect origin;
+//    private final CircularBumper cornerA;
+//
+//
+//    private final CircularBumper cornerB;
+//    private final CircularBumper cornerC;
+//    private List<CircularBumper> corners;
+//=======
     private final Circle cornerA;
     private final Circle cornerB;
     private final Circle cornerC;
     private List<Circle> corners;
     private final double x;
     private final double y;
+//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
     
     //Rep invariant:
     //orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270
@@ -248,6 +258,10 @@ public class TriangularBumper implements Gadget{
     public String getGadgetType() {
         return "Triangluar Bumper";
     }
+    
+//    public List<CircularBumper> getCorners(){
+//        return this.corners;
+//    }
 
 
     

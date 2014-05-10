@@ -67,7 +67,7 @@ public class PingballClient {
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board2.txt");
+       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -81,16 +81,15 @@ public class PingballClient {
                         }
                     } else if (flag.equals("--host")) {
                        hostName = arguments.remove();
-                   // } else if (flag.equals("--file")) {  //File is not an argument but a must
-                     //   file = new File(arguments.remove());
-                        
-                       // }
-                    } else {
+                    } else if (flag.equals("--file")) {  //File is not an argument but a must
                         file = new File(arguments.remove());
                         if ( ! file.isFile()) {
                             throw new IllegalArgumentException("file not found: \"" + file + "\"");
+                        }
+                    } else {
+                        throw new IllegalArgumentException("unknown option: \"" + flag + "\"");
                     }
-                    }} catch (NoSuchElementException nsee) {
+                } catch (NoSuchElementException nsee) {
                     throw new IllegalArgumentException("missing argument for " + flag);
                 } catch (NumberFormatException nfe) {
                     throw new IllegalArgumentException("unable to parse number for " + flag);
@@ -181,7 +180,7 @@ public class PingballClient {
             @Override
             public void run() {                
                 JFrame ex = new SwingTimerExample(board);
-                ex.setMinimumSize(new Dimension(425, 425));
+                ex.setMinimumSize(new Dimension(410, 410));
                 ex.setVisible(true);                
             }
         });
@@ -195,8 +194,56 @@ public class PingballClient {
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
+//<<<<<<< HEAD
+//            
+//            if ((current-start) % 100 == 0){
+//                int counter = 1;
+//                
+//                for (Ball ball : board.getBalls()) {
+//                    double timeToClosestWallCollision = Double.POSITIVE_INFINITY;
+//                    OuterWall wallToCollide = null;
+//                    double timeToBallCollide = Double.POSITIVE_INFINITY;
+//                    Ball ballToCollide = null;
+//                    
+//                    double timeToClosestCollision = Double.POSITIVE_INFINITY;
+//                    Gadget gadgetToReflect = null;
+//                    
+//                    for (Gadget gadget : board.getGadgets()) {//find the time until the closest gadget collision--and the gadget
+//                        double timeUntilGadgetCollision = gadget.timeUntilCollision(ball);
+//                        if(timeUntilGadgetCollision < timeToClosestCollision){
+//                            timeToClosestCollision = timeUntilGadgetCollision;
+//                            gadgetToReflect = gadget;
+//                        }
+//                    }
+//                    
+//                    for (int i = counter; i < board.getBalls().size(); i++) {//find the time until the closest ball collision--and the corresponding ball
+//                        if (!(board.getBalls().get(i).getName().equals(ball.getName()))){ //make sure that the ball we are looking at in this loop is not the same ball as the outer loop
+//                            Ball that = board.getBalls().get(i);
+//                            double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
+//                                                                                    ball.getVelocity(), that.getCircle(), 
+//                                                                                    that.getVelocity());
+//                            if(timeToThatCollide < timeToBallCollide){
+//                                timeToBallCollide = timeToThatCollide;
+//                                ballToCollide = that;
+//                            }
+//                        }
+//                    }
+//                    
+//                    
+//                    if(ball.ballOutOfBounds(0.08)){
+//                        
+//                        
+//                        for(OuterWall wall: board.getOuterWalls()){//if the ball hits an outer wall, find which wall and the time until that collision
+//                            double timeUntilWallCollision = wall.timeUntilCollision(ball);
+//                            if(timeUntilWallCollision < timeToClosestWallCollision){
+//                                timeToClosestWallCollision = timeUntilWallCollision;
+//                                wallToCollide = wall;
+//                            } 
+//                        }                        
+//=======
+//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
 
-            if ((current-start) % 150 == 0){
+            if ((current-start) % 50 == 0){
                 int counter = 1;
                 double timestep = 0.05;
                 update(board, timestep);
