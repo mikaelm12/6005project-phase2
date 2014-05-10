@@ -122,17 +122,6 @@ public class Board {
         return incomingBalls;
     }
     
-    /**
-     * updates positions and velocity of the balls on the board
-     * @param timeStep difference in time
-     */
-    public void updateBallPositionsAndVelocity(double timeStep){
-
-        for (Ball ball : balls) {
-            ball.updateBallPosition(timeStep);
-            ball.updateBallVelocityAfterTimestep(gravity, mu, mu2, timeStep);
-        }
-    }
     
     /**
      * removes ball from the list of balls contained in board
@@ -314,6 +303,34 @@ public class Board {
     }
     
     /**
+     * 
+     * @return list of Left Flippers in this board
+     */
+    public List<LeftFlipper> getLeftFlippers(){
+    	List<LeftFlipper> returnList = new ArrayList<LeftFlipper>();
+    	for (Gadget gadget: this.getGadgets()){
+    		if (gadget.getGadgetType().equals("Left Flipper")){
+    			returnList.add((LeftFlipper) gadget);
+    		}
+    	}
+        return returnList;
+    }
+    
+    /**
+     * 
+     * @return list of gadgets in this board
+     */
+    public List<RightFlipper> getRightFlippers(){
+    	List<RightFlipper> returnList = new ArrayList<RightFlipper>();
+    	for (Gadget gadget: this.getGadgets()){
+    		if (gadget.getGadgetType().equals("Right Flipper")){
+    			returnList.add((RightFlipper) gadget);
+    		}
+    	}
+        return returnList;
+    }
+    
+    /**
      * @return string representation of the board
      */
     @Override
@@ -361,8 +378,8 @@ public class Board {
                 }     
         }
         for (Ball ball : balls) {
-            int xPos = (int) Math.floor(ball.getPosition()[0]);
-            int yPos = (int) Math.floor(ball.getPosition()[1]);
+            int xPos = (int) Math.floor(ball.getNormalPosition()[0]);
+            int yPos = (int) Math.floor(ball.getNormalPosition()[1]);
             if (yPos >= 0 && yPos <= 19 && xPos>= 0 && xPos <= 19){
                 boardString[yPos][xPos] = ball.toString();
             }

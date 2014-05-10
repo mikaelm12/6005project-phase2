@@ -156,7 +156,7 @@ public class Canvas extends JPanel
 public Shape makeBall(Ball ball){
     
 
-    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 , (float) ball.getPosition()[1]*20, 10, 10);
+    Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*20 , (float) ball.getNormalPosition()[1]*20, 10, 10);
     return newCirc;
 }
 
@@ -171,7 +171,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*20 ,(float)cb.getNormalCircle().getCenter().y()*20, 20,20);
 
         graph2.setColor(Color.ORANGE);
         

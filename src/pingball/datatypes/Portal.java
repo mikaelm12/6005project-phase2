@@ -37,12 +37,12 @@ public class Portal implements Gadget {
 	}
 
 	@Override
-	public double timeUntilCollision(Ball ball) {
-        return Geometry.timeUntilCircleCollision(this.circle, ball.getCircle(), ball.getVelocity());
+	public double timeUntilPhysicsCollision(Ball ball) {
+        return Geometry.timeUntilCircleCollision(this.circle, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
 	}
 
 	@Override
-	public void reflectOffGadget(Ball ball) {
+	public void reflectOff(Ball ball) {
 		this.sendBall(ball);
 		this.trigger();
 	}

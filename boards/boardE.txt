@@ -10,3 +10,5 @@ board name=CAROLYN gravity=20.0 friction1=0.020 friction2=0.020
   squareBumper name=Square5 x=5 y=1
   squareBumper name=Square6 x=6 y=2
   squareBumper name=Square7 x=7 y=3
+  # define a ball
+  ball name=Ball x=0.52 y=0.5 xVelocity=-2.5 yVelocity=2.5

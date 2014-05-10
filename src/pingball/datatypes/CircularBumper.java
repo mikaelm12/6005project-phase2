@@ -14,10 +14,12 @@ public class CircularBumper implements Gadget{
     
     private final double radius;
     private final double coR;
-    private final Circle circle;
+    private final Circle physicsCircle;
     private final String name;
     private List<Gadget> gadgetsToFire;
-    private final Vect origin;
+    private final Vect position;
+    
+    
     
     //Rep invariant:
     //name!=null && name.length>0
@@ -27,10 +29,10 @@ public class CircularBumper implements Gadget{
     
     public CircularBumper(String name,int x, int y){
         this.name = name;
-        this.origin = new Vect(x,y);
+        this.position = new Vect(x,y);
         this.radius = 0.5;
         this.coR = 1.0;
-        this.circle = new Circle(x+radius,y+radius,radius);
+        this.physicsCircle = new Circle(x+radius,20-(y+radius),radius);
         this.gadgetsToFire = new ArrayList<Gadget>();
         
         checkRep();
@@ -39,10 +41,10 @@ public class CircularBumper implements Gadget{
     //create constructor that allows user to set radius
     public CircularBumper(String name,int x, int y, double radius){
         this.name = name;
-        this.origin = new Vect(x,y);
+        this.position = new Vect(x,y);
         this.radius = radius;
         this.coR = 1.0;
-        this.circle = new Circle(x,y,radius);
+        this.physicsCircle = new Circle(x+radius,20-(y+radius),radius);
         this.gadgetsToFire = new ArrayList<Gadget>();
         
         checkRep();
@@ -79,8 +81,8 @@ public class CircularBumper implements Gadget{
      * @return time until ball collides with circularBumper
      */
     @Override
-    public double timeUntilCollision(Ball ball) {
-        return Geometry.timeUntilCircleCollision(this.circle, ball.getCircle(), ball.getVelocity());
+    public double timeUntilPhysicsCollision(Ball ball) {
+        return Geometry.timeUntilCircleCollision(this.physicsCircle, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
     }
     
     /**
@@ -88,11 +90,10 @@ public class CircularBumper implements Gadget{
      * @param ball to be reflected
      */
     @Override
-    public void reflectOffGadget(Ball ball){
-        Vect newVelocityVector = Geometry.reflectCircle(circle.getCenter(), ball.getCircle().getCenter(), 
-                                                        ball.getVelocity(), coR);
+    public void reflectOff(Ball ball){
+        Vect newVelocityVector = Geometry.reflectCircle(this.physicsCircle.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), coR);
         //set ball velocity and trigger connected gadgets
-        ball.setVelocity(newVelocityVector);
+        ball.setPhysicsVelocity(newVelocityVector);
         this.trigger();
     }
     
@@ -124,15 +125,15 @@ public class CircularBumper implements Gadget{
      */
     @Override
     public Vect getPosition(){
-        return new Vect(origin.x(),origin.y());
+        return new Vect(position.x(),position.y());
     }
     
     /**
      * 
      * @return circle that represents circularbumper
      */
-    public Circle getCircle(){
-        return circle;
+    public Circle getPhysicsCircle(){
+        return physicsCircle;
     }
     
     /**
@@ -148,7 +149,7 @@ public class CircularBumper implements Gadget{
      */
     private void checkRep(){
         assertTrue(name.length() > 0);
-        assertTrue(circle != null);
+        assertTrue(physicsCircle != null);
     }
 
     @Override
@@ -156,6 +157,12 @@ public class CircularBumper implements Gadget{
         
         return "Circular Bumper";
     }
+
+	public Circle getNormalCircle() {
+		double cx = this.physicsCircle.getCenter().x();
+		double cy = 20-this.physicsCircle.getCenter().y();
+		return new Circle(cx, cy, radius);
+	}
 
 
 

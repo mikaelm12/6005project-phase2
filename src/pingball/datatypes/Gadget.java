@@ -23,14 +23,14 @@ public interface Gadget {
      * @param ball the ball 
      * @return time until ball collides with gadget
      */
-    public double timeUntilCollision(Ball ball);
+    public double timeUntilPhysicsCollision(Ball ball);
     
     /**
      * reflects the ball off gadget and updates its velocity. Calls on trigger to trigger 
      * gadgets connected to this gadget
      * @param ball to be reflected
      */
-    public void reflectOffGadget(Ball ball);
+    public void reflectOff(Ball ball);
     
     /**
      * 
