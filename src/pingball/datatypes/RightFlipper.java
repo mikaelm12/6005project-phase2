@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import physics.Angle;
+import physics.Circle;
 import physics.Geometry;
 import physics.LineSegment;
 import physics.Vect;
-
 
 public class RightFlipper implements Gadget{
     
@@ -22,10 +22,9 @@ public class RightFlipper implements Gadget{
     private String state = "initial";//not triggered yet
     private double angularVelocity;
     private final Vect origin;
-    private CircularBumper top;
-    private CircularBumper bottom;
-    private final Angle rotationAngle;
-    private final Angle reverseRotationAngle;
+    private Circle pivot;
+    private Circle endPoint;
+	private double currentAngle;
     
     //Rep invariant
     //if orientation == 0, then lineSegment is at right of bounding box initially
@@ -42,31 +41,28 @@ public class RightFlipper implements Gadget{
         this.coR = 0.95;
         this.orientation = orientation;
         this.angularVelocity = (1080.0/180)*Math.PI;
-        this.rotationAngle = Angle.DEG_90;
-        this.reverseRotationAngle = Angle.DEG_270;
-        
         this.origin = new Vect(x,y);
         this.gadgetsToFire = new ArrayList<Gadget>();
         
         if(orientation == 0){
-            this.flipper = new LineSegment(x+boxLength,y,x+boxLength,y+boxLength);
-            this.top = new CircularBumper("top",x+boxLength,y,0);
-            this.bottom = new CircularBumper("bottom",x+boxLength,y+boxLength,0);
+            this.flipper = new LineSegment(x+boxLength,20-y,x+boxLength,20-(y+boxLength));
+            this.pivot = new Circle(x+boxLength,20-y,0);
+            this.endPoint = new Circle(x+boxLength,20-(y+boxLength),0);
         }
         else if(orientation == 90){
-            this.flipper = new LineSegment(x+boxLength,y+boxLength,x,y+boxLength);
-            this.top = new CircularBumper("top",x+boxLength,y+boxLength,0);
-            this.bottom = new CircularBumper("bottom",x,y+boxLength,0);
+            this.flipper = new LineSegment(x+boxLength,20-(y+boxLength),x,20-(y+boxLength));
+            this.pivot = new Circle(x+boxLength,20-(y+boxLength),0);
+            this.endPoint = new Circle(x,20-(y+boxLength),0);
         }
         else if(orientation == 180){
-            this.flipper = new LineSegment(x,y+boxLength,x,y);
-            this.top = new CircularBumper("top",x,y+boxLength,0);
-            this.bottom = new CircularBumper("bottom",x,y,0);
+            this.flipper = new LineSegment(x,20-(y+boxLength),x,y);
+            this.pivot = new Circle(x,20-(y+boxLength),0);
+            this.endPoint = new Circle(x,20-y,0);
         }
         else{ //orientation == 270
-            this.flipper = new LineSegment(x,y,x+boxLength,y);
-            this.top = new CircularBumper("top",x,y,0);
-            this.bottom = new CircularBumper("bottom",x+boxLength,y,0);
+            this.flipper = new LineSegment(x,20-y,x+boxLength,20-y);
+            this.pivot = new Circle(x,20-y,0);
+            this.endPoint = new Circle(x+boxLength,20-y,0);
         }
         
         checkRep();
@@ -82,27 +78,54 @@ public class RightFlipper implements Gadget{
     }
     
     /**
-     * rotates 90degrees when triggered
+     * changes state, which affects update()
      */
     @Override
     public void action() {
         if(state.equals("initial")){
-            //change to final state
-            this.flipper = Geometry.rotateAround(flipper, flipper.p1(), rotationAngle);
-            this.bottom = new CircularBumper("bottom",(int) flipper.p2().x(),(int) flipper.p2().y(),0);
-            //this.flipper = new LineSegment(flipper.p1(),finalP2);
-            state = "final";
+        	state = "flipping";
         }
-        else{
-            //change to initial state
-            this.flipper = Geometry.rotateAround(flipper, flipper.p1(), reverseRotationAngle);
-            this.bottom = new CircularBumper("bottom",(int) flipper.p2().x(),(int) flipper.p2().y(),0);
-            //this.flipper = new LineSegment(flipper.p1(),initialP2);
-            state = "initial";
+        else if (state.equals("flipped")){
+        	state = "deflipping";
+        } else if (state.equals("flipping")){
+        	state = "deflipping";
+        } else {//state = deflipping
+        	state = "flipping";
         }
         
         checkRep();
     }
+
+	public void update(double timestep) {
+		if (this.state.equals("flipping")){
+			double deltaAngle = timestep*(-1)*this.angularVelocity;
+			double angleToRotate = 0.0;
+			if (this.currentAngle + deltaAngle <= -Math.PI/2){//this would be an over-rotation
+				angleToRotate = -Math.PI/2 - this.currentAngle;
+				this.state = "flipped";
+				this.currentAngle = -Math.PI/2;
+			} else {
+				angleToRotate = deltaAngle;
+				this.currentAngle += angleToRotate;
+			}
+			Geometry.rotateAround(this.endPoint, this.pivot.getCenter(), new Angle(angleToRotate));
+			Geometry.rotateAround(flipper, this.pivot.getCenter(), new Angle(angleToRotate));
+		} else if (this.state.equals("deflipping")){
+			double deltaAngle = timestep*this.angularVelocity;
+			double angleToRotate = 0.0;
+			if (this.currentAngle + deltaAngle <= 0.0){//this would be an over-rotation
+				angleToRotate = 0 - this.currentAngle;
+				this.state = "initial";
+				this.currentAngle = 0.0;
+			} else {
+				angleToRotate = deltaAngle;
+				this.currentAngle += angleToRotate;
+			}
+			Geometry.rotateAround(this.endPoint, this.pivot.getCenter(), new Angle(angleToRotate));
+			Geometry.rotateAround(flipper, this.pivot.getCenter(), new Angle(angleToRotate));
+		}
+		
+	}
     
     /**
      * @return the coefficient of Reflection
@@ -118,38 +141,49 @@ public class RightFlipper implements Gadget{
      * @return time until ball collides with flipper
      */
     @Override
-    public double timeUntilCollision(Ball ball) {
-        //define +angularVelocity as being clockwise rotation
-        double timeToLine;
-        if(state.equals("initial")){
-            //if flipper is constantly rotating use angular velocity, else set velocity to 0
-            if(gadgetsToFire.contains(this)){
-                timeToLine = Geometry.timeUntilRotatingWallCollision(flipper, flipper.p1(), angularVelocity, 
-                        ball.getCircle(), ball.getVelocity());
-            }else{
-                timeToLine = Geometry.timeUntilRotatingWallCollision(flipper, flipper.p1(), 0, 
-                        ball.getCircle(), ball.getVelocity());
-            }
-            
-        }else{
-            timeToLine = Geometry.timeUntilRotatingWallCollision(flipper, flipper.p1(), -angularVelocity, 
-                    ball.getCircle(), ball.getVelocity());
-        }
-        double time;
-        double timeToTop = Geometry.timeUntilCircleCollision(top.getCircle(), 
-                                                            ball.getCircle(), ball.getVelocity());
-        double timeToBottom = Geometry.timeUntilCircleCollision(bottom.getCircle(), 
-                                                                ball.getCircle(), ball.getVelocity());
+    public double timeUntilPhysicsCollision(Ball ball) {
+    	//define +angularVelocity as being clockwise rotation because it's a left flipper
+        double timeToLine = Double.POSITIVE_INFINITY;
+        double timeToEndPoint = Double.POSITIVE_INFINITY;
+        double timeToPivot = Geometry.timeUntilCircleCollision(pivot, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
         
-        time = timeToBottom;
-        if(timeToTop < timeToBottom && timeToTop < timeToLine){
-            time = timeToTop;
+        if (state.equals("initial") || state.equals("flipped")){ //we are dealing with a stationary flipper
+        	timeToLine = Geometry.timeUntilWallCollision(flipper, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        	timeToEndPoint = Geometry.timeUntilCircleCollision(endPoint, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        } else { //we are dealing with a moving flipper
+        	double potentialTimeToLine = Double.POSITIVE_INFINITY;
+        	double potentialTimeToEndPoint = Double.POSITIVE_INFINITY;
+        	double timeUntilStationary = Double.POSITIVE_INFINITY;
+        	if (state.equals("flipping")){
+        		timeUntilStationary = (Math.PI/2 + this.currentAngle)/this.angularVelocity;
+        		potentialTimeToLine = Geometry.timeUntilRotatingWallCollision(flipper, pivot.getCenter(), -this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        		potentialTimeToEndPoint = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), -this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        	} else { //state should equal "deflipping"
+        		timeUntilStationary = (-this.currentAngle)/this.angularVelocity;
+        		potentialTimeToLine = Geometry.timeUntilRotatingWallCollision(flipper, pivot.getCenter(), this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        		potentialTimeToEndPoint = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        	}
+        	
+        	if (timeUntilStationary<=potentialTimeToLine && timeUntilStationary<=potentialTimeToEndPoint){ //the flipper becomes stationary before we hit. This is the most complicated scenario
+    			LineSegment cloneFlipper = new LineSegment(flipper.p1().x(), flipper.p1().y(), flipper.p2().x(), flipper.p2().y());
+    			Circle cloneEndpoint = new Circle(endPoint.getCenter().x(), endPoint.getCenter().y(), 0.0);
+    			if (state.equals("flipping")){
+    				Geometry.rotateAround(cloneEndpoint, pivot.getCenter(), new Angle(-Math.PI/2 - this.currentAngle));
+        			Geometry.rotateAround(cloneFlipper, pivot.getCenter(), new Angle(-Math.PI/2 - this.currentAngle));
+    			} else { //state == "deflipping"
+    				Geometry.rotateAround(cloneEndpoint, pivot.getCenter(), new Angle(0.0 - this.currentAngle));
+        			Geometry.rotateAround(cloneFlipper, pivot.getCenter(), new Angle(0.0 - this.currentAngle));
+    			}
+    			//we have now rotated our clone flipper, and can now reflect the ball off of the stationary flipper
+    			timeToLine = Geometry.timeUntilWallCollision(cloneFlipper, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    			timeToEndPoint = Geometry.timeUntilCircleCollision(cloneEndpoint, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        	} else { //the flipper is moving while we hit it
+        		timeToLine = potentialTimeToLine;
+        		timeToEndPoint = potentialTimeToEndPoint;
+        	}
         }
-        if(timeToLine < timeToTop && timeToLine < timeToBottom){
-            time = timeToLine;
-        }
-        
-        return time;
+    	double minMovingTime = Math.min(timeToEndPoint, timeToLine);
+    	return Math.min(minMovingTime, timeToPivot);
     }
     
     /**
@@ -157,49 +191,86 @@ public class RightFlipper implements Gadget{
      * @param ball to be reflected
      */
     @Override
-    public void reflectOffGadget(Ball ball){
+    public void reflectOff(Ball ball){
         Vect newVelocityVector;
-        //collision will cause instantaneous rotation of flipper
-        //define +angularVelocity as being clockwise rotation
-        if(state.equals("initial")){
-          //if flipper is constantly rotating use angular velocity, else set velocity to 0
-            if(gadgetsToFire.contains(this)){
-                newVelocityVector = Geometry.reflectRotatingWall(flipper, flipper.p1(), angularVelocity, 
-                        ball.getCircle(), ball.getVelocity(), coR);
-            }else{
-                newVelocityVector = Geometry.reflectRotatingWall(flipper, flipper.p1(), 0, 
-                        ball.getCircle(), ball.getVelocity(), coR);
-            }
-            
-        }else{
-          //if flipper is constantly rotating use angular velocity, else set velocity to 0
-            if(gadgetsToFire.contains(this)){
-                newVelocityVector = Geometry.reflectRotatingWall(flipper, flipper.p1(), -angularVelocity, 
-                        ball.getCircle(), ball.getVelocity(), coR);
-            }else{
-                newVelocityVector = Geometry.reflectRotatingWall(flipper, flipper.p1(), 0, 
-                                                            ball.getCircle(), ball.getVelocity(), coR);
-            }
-        }
-        double timeTillTopCollision = top.timeUntilCollision(ball);
-        double timeTillBottomCollision = bottom.timeUntilCollision(ball);
-        CircularBumper bumper = null;
-        double time;
-        if(timeTillTopCollision < timeTillBottomCollision){
-            time = timeTillTopCollision;
-            bumper = top;
-        }else{
-            time = timeTillBottomCollision;
-            bumper = bottom;
-        }
-        double timeTillLineCollision = Geometry.timeUntilWallCollision(flipper, ball.getCircle(), ball.getVelocity());
-        if(time <= timeTillLineCollision){
-            newVelocityVector = Geometry.reflectCircle(bumper.getCircle().getCenter(), ball.getCircle().getCenter(), ball.getVelocity(), coR);
-        }
-        ball.setVelocity(newVelocityVector);
-        this.trigger();  
+        double timeToLine = Double.POSITIVE_INFINITY;
+        double timeToEndPoint = Double.POSITIVE_INFINITY;
+        double timeToPivot = Geometry.timeUntilCircleCollision(pivot, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
         
-        checkRep();
+        if (state.equals("initial") || state.equals("flipped")){ //flipper is stationary
+        	timeToLine = Geometry.timeUntilWallCollision(flipper, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        	timeToEndPoint = Geometry.timeUntilCircleCollision(endPoint, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        	if (timeToEndPoint<=timeToPivot && timeToEndPoint<=timeToLine){ //we hit the endPoint
+        		newVelocityVector = Geometry.reflectCircle(endPoint.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+        	} else if (timeToPivot <= timeToLine) { //we hit the pivot
+        		newVelocityVector = Geometry.reflectCircle(pivot.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+        	} else { //we hit the flipper
+        		newVelocityVector = Geometry.reflectWall(flipper, ball.getPhysicsVelocity(), this.coR);
+        	}
+        	
+        } else if (state.equals("flipping")){
+    		double timeUntilStationary = Math.abs((-Math.PI/2 - this.currentAngle)/this.angularVelocity);
+    		double potentialTimeToLine = Geometry.timeUntilRotatingWallCollision(flipper, pivot.getCenter(), -this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    		double potentialTimeToEndPoint = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), -this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    		if (timeUntilStationary<=potentialTimeToLine && timeUntilStationary<=potentialTimeToEndPoint){ //the flipper becomes stationary before we hit. This is the most complicated scenario
+    			LineSegment cloneFlipper = new LineSegment(flipper.p1().x(), flipper.p1().y(), flipper.p2().x(), flipper.p2().y());
+    			Circle cloneEndpoint = new Circle(endPoint.getCenter().x(), endPoint.getCenter().y(), 0.0);
+    			Geometry.rotateAround(cloneEndpoint, pivot.getCenter(), new Angle(-Math.PI/2 - this.currentAngle));
+    			Geometry.rotateAround(cloneFlipper, pivot.getCenter(), new Angle(-Math.PI/2 - this.currentAngle));
+    			//we have now rotated our clone flipper into the flipped position, and can now reflect the ball off of the stationary flipped flipper
+    			timeToLine = Geometry.timeUntilWallCollision(cloneFlipper, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    			timeToEndPoint = Geometry.timeUntilCircleCollision(cloneEndpoint, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    			if (timeToEndPoint<=timeToPivot && timeToEndPoint<=timeToLine){ //we hit the clone endPoint
+            		newVelocityVector = Geometry.reflectCircle(cloneEndpoint.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+            	} else if (timeToPivot <= timeToLine) { //we hit the pivot
+            		newVelocityVector = Geometry.reflectCircle(pivot.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+            	} else { //we hit the clone flipper
+            		newVelocityVector = Geometry.reflectWall(cloneFlipper, ball.getPhysicsVelocity(), this.coR);
+            	}
+    		} else { //we hit the flipper while it's moving
+    			timeToLine = potentialTimeToLine;
+    			timeToEndPoint = potentialTimeToEndPoint;
+    			if (timeToEndPoint<=timeToPivot && timeToEndPoint<=timeToLine){ //we hit the endPoint
+    				newVelocityVector = Geometry.reflectRotatingCircle(endPoint, pivot.getCenter(), -this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity(), this.coR);
+            	} else if (timeToPivot <= timeToLine) { //we hit the pivot
+            		newVelocityVector = Geometry.reflectCircle(pivot.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+            	} else { //we hit the flipper LineSegment
+            		newVelocityVector = Geometry.reflectRotatingWall(flipper, pivot.getCenter(), -this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity(), this.coR);
+            	}
+    		}
+        } else { //state should equal "deflipping"
+        	double timeUntilStationary = Math.abs((this.currentAngle)/this.angularVelocity);
+    		double potentialTimeToLine = Geometry.timeUntilRotatingWallCollision(flipper, pivot.getCenter(), this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    		double potentialTimeToEndPoint = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    		if (timeUntilStationary<=potentialTimeToLine && timeUntilStationary<=potentialTimeToEndPoint){ //the flipper becomes stationary before we hit. This is the most complicated scenario
+    			LineSegment cloneFlipper = new LineSegment(flipper.p1().x(), flipper.p1().y(), flipper.p2().x(), flipper.p2().y());
+    			Circle cloneEndpoint = new Circle(endPoint.getCenter().x(), endPoint.getCenter().y(), 0.0);
+    			Geometry.rotateAround(cloneEndpoint, pivot.getCenter(), new Angle(0.0 - this.currentAngle));
+    			Geometry.rotateAround(cloneFlipper, pivot.getCenter(), new Angle(0.0 - this.currentAngle));
+    			//we have now rotated our clone flipper into the flipped position, and can now reflect the ball off of the stationary flipped flipper
+    			timeToLine = Geometry.timeUntilWallCollision(cloneFlipper, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    			timeToEndPoint = Geometry.timeUntilCircleCollision(cloneEndpoint, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+    			if (timeToEndPoint<=timeToPivot && timeToEndPoint<=timeToLine){ //we hit the clone endPoint
+            		newVelocityVector = Geometry.reflectCircle(cloneEndpoint.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+            	} else if (timeToPivot <= timeToLine) { //we hit the pivot
+            		newVelocityVector = Geometry.reflectCircle(pivot.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+            	} else { //we hit the clone flipper
+            		newVelocityVector = Geometry.reflectWall(cloneFlipper, ball.getPhysicsVelocity(), this.coR);
+            	}
+    		} else { //we hit the flipper while it's moving
+    			timeToLine = potentialTimeToLine;
+    			timeToEndPoint = potentialTimeToEndPoint;
+    			if (timeToEndPoint<=timeToPivot && timeToEndPoint<=timeToLine){ //we hit the endPoint
+    				newVelocityVector = Geometry.reflectRotatingCircle(endPoint, pivot.getCenter(), this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity(), this.coR);
+            	} else if (timeToPivot <= timeToLine) { //we hit the pivot
+            		newVelocityVector = Geometry.reflectCircle(pivot.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity(), this.coR);
+            	} else { //we hit the flipper LineSegment
+            		newVelocityVector = Geometry.reflectRotatingWall(flipper, pivot.getCenter(), this.angularVelocity, ball.getPhysicsCircle(), ball.getPhysicsVelocity(), this.coR);
+            	}
+    		}
+        }
+        ball.setPhysicsVelocity(newVelocityVector);
+        this.trigger();
     }
     
     /**
@@ -295,8 +366,6 @@ public class RightFlipper implements Gadget{
 
     @Override
     public String getGadgetType() {
-        return "Flipper";
+        return "Right Flipper";
     }
-
-
 }

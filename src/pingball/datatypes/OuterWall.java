@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import physics.Circle;
 import physics.Geometry;
 import physics.LineSegment;
 import physics.Vect;
@@ -16,9 +17,9 @@ public class OuterWall implements Gadget{
     private boolean solid;
     private final String name;
     private List<Gadget> gadgetsToFire;
-    private CircularBumper top;
-    private CircularBumper bottom;
-    private List<CircularBumper> corners;
+    private Circle top;
+    private Circle bottom;
+    private List<Circle> corners;
     
     //Rep invariant:
     //name.length>0
@@ -28,16 +29,16 @@ public class OuterWall implements Gadget{
     //represents wall of board. CircularBumpers top and bottom represents corners of the board
     
     public OuterWall(String name, int x0 , int y0, int x1, int y1, boolean solid){
-        this.wall = new LineSegment(x0, y0, x1, y1);
+        this.wall = new LineSegment(x0, 20-y0, x1, 20-y1);
         this.coR = 1.0;
         this.solid = solid;
         this.name = name;
         this.gadgetsToFire = new ArrayList<Gadget>();
         
-        this.top = new CircularBumper("top",x0,y0,0);
-        this.bottom = new CircularBumper("bottom",x1,y1,0);
+        this.top = new Circle(x0,20-y0,0);
+        this.bottom = new Circle(x1,20-y1,0);
         
-        this.corners = new ArrayList<CircularBumper>(Arrays.asList(top,bottom));
+        this.corners = new ArrayList<Circle>(Arrays.asList(top,bottom));
         
         checkRep();
     }
@@ -65,11 +66,10 @@ public class OuterWall implements Gadget{
      * @return time until ball collides with wall
      */
     @Override
-    public double timeUntilCollision(Ball ball) {
-        double closestTimeToCollision = Geometry.timeUntilWallCollision(wall, ball.getCircle(), ball.getVelocity());
-        for (CircularBumper corner : corners) {
-            double timeToCorner = Geometry.timeUntilCircleCollision(corner.getCircle(), 
-                                                                    ball.getCircle(), ball.getVelocity());
+    public double timeUntilPhysicsCollision(Ball ball) {
+        double closestTimeToCollision = Geometry.timeUntilWallCollision(wall, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+        for (Circle corner : corners) {
+            double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             //if time nearest corner< time to wall, update closest time
             if(timeToCorner < closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
@@ -83,15 +83,14 @@ public class OuterWall implements Gadget{
      * @param ball to be reflected
      */
     @Override
-    public void reflectOffGadget(Ball ball){
+    public void reflectOff(Ball ball){
         //reflect only if solid
         if(solid){
-            double closestTimeToCollision = Geometry.timeUntilWallCollision(wall, ball.getCircle(), ball.getVelocity());
-            CircularBumper closestCorner = null;
-            for (CircularBumper corner : corners) {
+            double closestTimeToCollision = Geometry.timeUntilWallCollision(wall, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+            Circle closestCorner = null;
+            for (Circle corner : corners) {
                 
-                double timeToCorner = Geometry.timeUntilCircleCollision(corner.getCircle(), 
-                                                                        ball.getCircle(), ball.getVelocity());
+                double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
                 //if corner closer than nearest edge, update
                 if(timeToCorner < closestTimeToCollision){
                     closestTimeToCollision = timeToCorner;
@@ -100,13 +99,12 @@ public class OuterWall implements Gadget{
             }
             Vect newVelocityVector;
             //reflect against corner if corner!=null, else reflect against line
-            if(closestCorner != null){
-                newVelocityVector = Geometry.reflectCircle(closestCorner.getCircle().getCenter(), ball.getCircle().getCenter(),
-                        ball.getVelocity());
-            }else{
-                newVelocityVector = Geometry.reflectWall(wall, ball.getVelocity(), coR);
+            if(closestCorner != null){ //we are reflecting off a corner
+                newVelocityVector = Geometry.reflectCircle(closestCorner.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity());
+            }else{ //we are reflecting off the LineSegment
+                newVelocityVector = Geometry.reflectWall(wall, ball.getPhysicsVelocity(), coR);
             }
-            ball.setVelocity(newVelocityVector);
+            ball.setPhysicsVelocity(newVelocityVector);
             
             checkRep();
         }  
@@ -162,7 +160,7 @@ public class OuterWall implements Gadget{
      */
     @Override
     public Vect getPosition(){
-        return new Vect(wall.p1().x(),wall.p1().y());
+        return new Vect(wall.p1().x(), 20-wall.p1().y());
     }
     
     /**

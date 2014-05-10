@@ -2,6 +2,7 @@ package pingball.datatypes;
 
 import static org.junit.Assert.*;
 import physics.Circle;
+import physics.Geometry;
 import physics.Vect;
 
 public class Ball {
@@ -25,49 +26,102 @@ public class Ball {
         checkRep();
     }
     
+    
+    
     /**
      * 
      * @return the velocity vector of the ball
      */
-    public Vect getVelocity() {
+    public Vect getNormalVelocity() {
         return this.velocityVector;
     }
+    /**
+     * 
+     * @return the velocity vector of the ball, accounting for the physics package's y-discrepancy
+     */
+    public Vect getPhysicsVelocity() {
+    	double newX = this.velocityVector.x();
+    	double newY = (-1)*this.velocityVector.y();
+        return new Vect(newX, newY);
+    }
+    
+    
     
     /**
      * set the velocity of the ball
      * @param vect new velocity vector of the ball
      */
-    public void setVelocity(Vect vect){
+    public void setNormalVelocity(Vect vect){
         this.velocityVector = vect;
     }
+    /**
+     * set the velocity of the ball, accounting for the physics package's y-discrepancy
+     * @param vect new velocity vector of the ball, accounting for the physics package's y-discrepancy
+     */
+    public void setPhysicsVelocity(Vect vect){
+    	double newX = vect.x();
+    	double newY = (-1)*vect.y();
+        this.velocityVector = new Vect(newX, newY);
+    }
+    
+    
     
     /**
      * sets the position of the ball
      * @param xLoc the new x-position of the ball
      * @param yLoc the new y-position of the ball
      */
-    public void setPosition(double xLoc, double yLoc) {
+    public void setNormalPosition(double xLoc, double yLoc) {
         this.circle = new Circle(xLoc, yLoc, this.radius);
     }
+    /**
+     * sets the position of the ball, accounting for the physics package's y-discrepancy
+     * @param xLoc the new x-position of the ball
+     * @param yLoc the new y-position of the ball
+     */
+    public void setPhysicsPosition(double xLoc, double yLoc) {
+        this.circle = new Circle(xLoc, 20-yLoc, this.radius);
+    }
+    
+    
     
     /**
-     * This method 
      * @return the current position of the ball
      */
-    public double[] getPosition() {
+    public double[] getNormalPosition() {
         double[] posArray = new double[2];
         posArray[0] = this.circle.getCenter().x();
         posArray[1] = this.circle.getCenter().y();
        return posArray;
     }
+    /**
+     * @return the current position of the ball, accounting for the physics package's y-discrepancy
+     */
+    public double[] getPhysicsPosition() {
+        double[] posArray = new double[2];
+        posArray[0] = this.circle.getCenter().x();
+        posArray[1] = 20-this.circle.getCenter().y();
+       return posArray;
+    }
+    
+    
     
     /**
-     * 
      * @return Circle object that the ball represents
      */
-    public Circle getCircle(){
+    public Circle getNormalCircle(){
         return new Circle(circle.getCenter(),radius);
     }
+    /**
+     * @return Circle object that the ball represents
+     */
+    public Circle getPhysicsCircle(){
+    	double circleX = circle.getCenter().x();
+    	double circleY = 20-circle.getCenter().y();
+        return new Circle(circleX, circleY,radius);
+    }
+    
+    
     
     /**
      * 
@@ -83,14 +137,15 @@ public class Ball {
      * @param mu2 friction2 of board
      * @param delta_t timestep
      */
-    public void updateBallVelocityAfterTimestep(double gravity, double mu,double mu2,double delta_t){
+    public void updateBallVelocityBeforeTimestep(double gravity, double mu,double mu2,double delta_t){
         //v1 = v0 + gt
         double yVel = velocityVector.y() + gravity*delta_t; //gravity only affects y-direction
         //assumed formula given should be applied to both x and y
         double VoldMagnitude = Math.sqrt(Math.pow(velocityVector.x(),2) + Math.pow(yVel, 2));
         Vect newVelocityVector = new Vect(velocityVector.x()*(1-mu*delta_t-mu2*VoldMagnitude*delta_t),
                                             yVel*(1-mu*delta_t-mu2*VoldMagnitude*delta_t));
-        this.setVelocity(newVelocityVector);
+        this.setNormalVelocity(newVelocityVector);
+        
     }
     
     /**
@@ -99,29 +154,27 @@ public class Ball {
      */
     public void updateBallPosition(double timeStep){
         //calculate the position of the ball and update it
-        if(!ballOutOfBounds(timeStep)){
-            double xPos = circle.getCenter().x() + velocityVector.x()*timeStep;
-            double yPos = circle.getCenter().y()+ velocityVector.y()*timeStep;
+    	
+        double xPos = this.getNormalCircle().getCenter().x() + velocityVector.x()*timeStep;
+        double yPos = this.getNormalCircle().getCenter().y()+ velocityVector.y()*timeStep;
 
-            this.setPosition(xPos, yPos);
-        }
+        this.setNormalPosition(xPos, yPos);
+        checkRep();
+    }
+    /**
+     * updates the position of the ball after a timestep using an old velocity
+     * @param timeStep period of time 
+     */
+    public void updateBallPositionUsingOldPhysicsVelocity(double timeStep, Vect oldPhysicsVelocity){
+        //calculate the position of the ball and update it
+        double xPos = this.getPhysicsCircle().getCenter().x() + oldPhysicsVelocity.x()*timeStep;
+        double yPos = this.getPhysicsCircle().getCenter().y()+ oldPhysicsVelocity.y()*timeStep;
+
+        this.setPhysicsPosition(xPos, yPos);
         checkRep();
     }
     
-    /**
-     * 
-     * @param timeStep time difference
-     * @return true if ball will be out of bounds after timeStep, false otherwise
-     */
-    public boolean ballOutOfBounds(double timeStep){
-        //calculate position of the ball and return if the ball will be out of bounds
-        double xPos = circle.getCenter().x() + velocityVector.x()*timeStep;
-        double yPos = circle.getCenter().y()+ velocityVector.y()*timeStep;
-        
-        return (xPos < 0 || xPos > 20 || yPos < 0 || yPos > 20);
-            
-    }
-    
+   
     /**
      * @return string representation of the ball
      */
@@ -134,6 +187,12 @@ public class Ball {
         assertTrue(circle != null);
         assertTrue(velocityVector != null);
     }
+
+
+
+	public double timeUntilPhysicsCollision(Ball ball2) {
+		return Geometry.timeUntilBallBallCollision(this.getPhysicsCircle(), this.getPhysicsVelocity(), ball2.getPhysicsCircle(), ball2.getPhysicsVelocity());
+	}
     
 
 

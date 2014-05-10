@@ -36,8 +36,8 @@ import sun.java2d.loops.DrawPolygons;
 public class Canvas extends JPanel 
     implements ActionListener {
 
-    private final int BOARD_WIDTH = 500;
-    private final int BOARD_HEIGHT = 500;
+    private final int BOARD_WIDTH = 400;
+    private final int BOARD_HEIGHT = 400;
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
     private final int DELAY = 10;  //Miliseconds to repaint
@@ -111,7 +111,7 @@ public class Canvas extends JPanel
         graph2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         
-        Shape drawRect = new Rectangle2D.Float(300,300, 150,100);
+        
         
         
         List<Shape> shapes = new ArrayList<Shape>();
@@ -161,13 +161,17 @@ public class Canvas extends JPanel
 public Shape makeBall(Ball ball){
     
 
-    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 + 50 , (float) ball.getPosition()[1]*20, 10, 10);
+//<<<<<<< HEAD
+//    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 + 50 , (float) ball.getPosition()[1]*20, 10, 10);
+//=======
+    Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*20 , (float) ball.getNormalPosition()[1]*20 , 5, 5);
+//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
     return newCirc;
 }
 
 public void makeWalls(Graphics2D graph2){
-    Shape vertWall1 = new Rectangle2D.Float(50,0, 3, 500);
-    Shape vertWall2 = new Rectangle2D.Float(460,0, 3, 500);
+    Shape vertWall1 = new Rectangle2D.Float(8,0, 2, 400);
+    Shape vertWall2 = new Rectangle2D.Float(400,0, 2, 400);
     
     graph2.setColor(Color.BLACK);
     
@@ -187,8 +191,12 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-        //Add 50 beacause its the shifting constant
-        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 + 50 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
+//<<<<<<< HEAD
+//        //Add 50 beacause its the shifting constant
+//        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 + 50 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
+//=======
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*20 + 8 ,(float)cb.getNormalCircle().getCenter().y()*20, 20,20);
+//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
 
         graph2.setColor(Color.ORANGE);
         
@@ -196,7 +204,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     }
     else if(gadget.getGadgetType().equals("Square Bumper")){
         SquareBumper sb = (SquareBumper)gadget;
-        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20 + 50 , (float)gadget.getPosition().y()*20, 12, 5);
+        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20 + 8 , (float)gadget.getPosition().y()*20, 12, 5);
 
         graph2.setColor(Color.BLUE);
         
@@ -206,7 +214,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
-        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 50 , (float)abs.getPosition().y()*20, abs.getWidth()*20+10 , abs.getHeight()*10);
+        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10);
 
         graph2.setColor(Color.magenta);
         
