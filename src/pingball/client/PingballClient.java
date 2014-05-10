@@ -61,7 +61,7 @@ public class PingballClient {
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board2.txt");
+       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -75,16 +75,15 @@ public class PingballClient {
                         }
                     } else if (flag.equals("--host")) {
                        hostName = arguments.remove();
-                   // } else if (flag.equals("--file")) {  //File is not an argument but a must
-                     //   file = new File(arguments.remove());
-                        
-                       // }
-                    } else {
+                    } else if (flag.equals("--file")) {  //File is not an argument but a must
                         file = new File(arguments.remove());
                         if ( ! file.isFile()) {
                             throw new IllegalArgumentException("file not found: \"" + file + "\"");
+                        }
+                    } else {
+                        throw new IllegalArgumentException("unknown option: \"" + flag + "\"");
                     }
-                    }} catch (NoSuchElementException nsee) {
+                } catch (NoSuchElementException nsee) {
                     throw new IllegalArgumentException("missing argument for " + flag);
                 } catch (NumberFormatException nfe) {
                     throw new IllegalArgumentException("unable to parse number for " + flag);
@@ -190,7 +189,7 @@ public class PingballClient {
         while(true){
             long current = System.currentTimeMillis();
             
-            if ((current-start) % 75 == 0){
+            if ((current-start) % 100 == 0){
                 int counter = 1;
                 
                 for (Ball ball : board.getBalls()) {

@@ -23,6 +23,8 @@ public class TriangularBumper implements Gadget{
     private final LineSegment[] edges = new LineSegment[3];
     private final Vect origin;
     private final CircularBumper cornerA;
+
+
     private final CircularBumper cornerB;
     private final CircularBumper cornerC;
     private List<CircularBumper> corners;
@@ -252,6 +254,10 @@ public class TriangularBumper implements Gadget{
     @Override
     public String getGadgetType() {
         return "Triangluar Bumper";
+    }
+    
+    public List<CircularBumper> getCorners(){
+        return this.corners;
     }
 
 

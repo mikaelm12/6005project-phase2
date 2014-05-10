@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Toolkit;
@@ -23,20 +24,23 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.SquareBumper;
+import pingball.datatypes.TriangularBumper;
+import sun.java2d.loops.DrawPolygons;
 
 public class Canvas extends JPanel 
     implements ActionListener {
 
-    private final int BOARD_WIDTH = 400;
+    private final int BOARD_WIDTH = 500;
     private final int BOARD_HEIGHT = 500;
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
-    private final int DELAY = 5;  //Miliseconds to repaint
+    private final int DELAY = 10;  //Miliseconds to repaint
     Color backgroundColor = Color.white;
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
@@ -70,7 +74,7 @@ public class Canvas extends JPanel
      */
     private void initCanvas() {
         
-        setBackground(Color.BLACK);
+        setBackground(Color.WHITE);
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 
         setDoubleBuffered(true);
@@ -114,6 +118,7 @@ public class Canvas extends JPanel
         
        balls = this.board.getBalls();
        gadgets = this.board.getGadgets();
+       makeWalls(graph2);
        for (Ball ball: balls ){
 
                Shape temp = makeBall(ball);
@@ -125,12 +130,12 @@ public class Canvas extends JPanel
        }
        for(Gadget gadget: gadgets){
            
-           if(gadget.getGadgetType().equals("Circular Bumper")||gadget.getGadgetType().equals("Square Bumper")){
+          
                
                makeGadget(gadget, graph2);
                
                
-           }
+           
            
            
        }
@@ -156,8 +161,19 @@ public class Canvas extends JPanel
 public Shape makeBall(Ball ball){
     
 
-    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 , (float) ball.getPosition()[1]*20, 10, 10);
+    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 + 50 , (float) ball.getPosition()[1]*20, 10, 10);
     return newCirc;
+}
+
+public void makeWalls(Graphics2D graph2){
+    Shape vertWall1 = new Rectangle2D.Float(50,0, 3, 500);
+    Shape vertWall2 = new Rectangle2D.Float(460,0, 3, 500);
+    
+    graph2.setColor(Color.BLACK);
+    
+    graph2.fill(vertWall1);
+    graph2.fill(vertWall2);
+    
 }
 
 
@@ -171,7 +187,8 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
+        //Add 50 beacause its the shifting constant
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 + 50 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
 
         graph2.setColor(Color.ORANGE);
         
@@ -179,12 +196,36 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     }
     else if(gadget.getGadgetType().equals("Square Bumper")){
         SquareBumper sb = (SquareBumper)gadget;
-        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20, (float)gadget.getPosition().y()*20, 15, 10);
+        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20 + 50 , (float)gadget.getPosition().y()*20, 12, 5);
 
         graph2.setColor(Color.BLUE);
         
-        graph2.fill(squareBumper);        
+        graph2.fill(squareBumper);  
+        
     }
+    else if(gadget.getGadgetType().equals("Absorber")){
+        
+        Absorber abs = (Absorber)gadget;
+        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 50 , (float)abs.getPosition().y()*20, abs.getWidth()*20+10 , abs.getHeight()*10);
+
+        graph2.setColor(Color.magenta);
+        
+        graph2.fill(absorber);  
+    }
+//    else if(gadget.getGadgetType().equals("Triangle Bumper")){
+//        
+//        TriangularBumper tri = (TriangularBumper)gadget;
+//        double[] x = new double[3];
+//        double[] y = new double[3];
+//        int index = 0;
+//        for (CircularBumper cb : tri.getCorners()){
+//            x[index] = cb.getCircle().getCenter().x();
+//           y[index] = cb.getCircle().getCenter().y();
+//           index++;
+//        }
+//        
+//        
+//    }
     
     
 }
