@@ -38,13 +38,6 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
        for(Ball ball: balls) board.addBall(ball);
        
-//       for(String str: gadgetKeyUpListeners.keySet()){
-//           System.out.println(str + ", " + gadgetKeyUpListeners.get(str));
-//       }
-//       
-//       for(String str: gadgetKeyDownListeners.keySet()){
-//           System.out.println(str + ", " + gadgetKeyDownListeners.get(str));
-//       }
        board.addKeyUpListener(gadgetKeyUpListeners);
        board.addKeyDownListener(gadgetKeyDownListeners);
 
