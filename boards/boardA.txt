@@ -1,3 +1,2 @@
 board name=OurExampleA gravity = 20.0
 
-ball name=Ball x=0.5 y=0.5 xVelocity=2.5 yVelocity=2.5
