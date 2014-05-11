@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -27,7 +29,7 @@ public class SwingTimer extends JFrame {
 
 
 
-    public SwingTimer(Board board) {
+    public SwingTimer(final Board board) {
 
         add(new Canvas(board));
 
@@ -49,16 +51,24 @@ public class SwingTimer extends JFrame {
         JMenuItem file = new JMenuItem("File");
         options.add(file);
         
-        JMenuItem pause = new JMenuItem("Pause");
+        JMenuItem pause = new JMenuItem("Pause/Unpause");
         options.add(pause);
         
         JMenuItem quit = new JMenuItem("Quit");
         options.add(quit);
         
+        pause.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.pauseUnpauseGame();
+                
+            }
+        });
         
         file.addActionListener(new ActionListener() {
             
-            @SuppressWarnings("deprecation")
+           
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JFileChooser fc = new JFileChooser();
@@ -76,6 +86,16 @@ public class SwingTimer extends JFrame {
                     }
                 }
                 
+            }
+        });
+        
+        addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                board.checkKeyListener(e, true);
+            }
+
+            public void keyReleased(KeyEvent e) {
+                board.checkKeyListener(e, false);
             }
         });
         
