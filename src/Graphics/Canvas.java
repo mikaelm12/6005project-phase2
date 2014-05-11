@@ -252,10 +252,6 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-       
-        
-        
         repaint();  
     }
 }

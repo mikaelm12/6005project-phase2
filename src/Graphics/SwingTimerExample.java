@@ -2,8 +2,11 @@ package Graphics;
 
 
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 
@@ -22,6 +25,18 @@ public class SwingTimerExample extends JFrame {
         setResizable(true);
         setLocationRelativeTo(null);        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setFocusable(true);
+        requestFocusInWindow();
+        
+        addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                System.out.println("key pressed");
+            }
+
+            public void keyReleased(KeyEvent e) {
+                System.out.println("key released");
+            }
+        });
         
     }
 

@@ -181,10 +181,11 @@ public class PingballClient {
             public void run() {                
                 JFrame ex = new SwingTimerExample(board);
                 ex.setMinimumSize(new Dimension(410, 410));
-                ex.setVisible(true);                
+                ex.setVisible(true);    
+                
             }
         });
-        System.out.println(board.toString());
+     //   System.out.println(board.toString());
         
         
         //PLAY!
@@ -248,7 +249,7 @@ public class PingballClient {
                 double timestep = 0.05;
                 update(board, timestep);
                 counter++;
-                System.out.println(board.toString());
+              //  System.out.println(board.toString());
             }
             
         }
@@ -263,13 +264,13 @@ public class PingballClient {
 				ball.updateBallVelocityBeforeTimestep(board.getGravity(), board.getMu(), board.getMu2(), timestep);
 			}
 
-			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
-			System.out.println("Velocity: "+ball.getNormalVelocity());
+			//System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
+			//System.out.println("Velocity: "+ball.getNormalVelocity());
 		}
 		double timestepLeft = timestep+0;
 		while (timestepLeft > 0){
 			double timeUntilFirstCollision = getTimeUntilFirstCollision(board);
-			System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
+			//System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
 			if (timeUntilFirstCollision<=timestepLeft){ //we have a collision in the timestep
 				updateWithCollision(board, timeUntilFirstCollision);
 				timestepLeft -= timeUntilFirstCollision;
@@ -289,7 +290,7 @@ public class PingballClient {
 			for (Ball ball2: board.getBalls()){
 				if (!namesOfBallsCollided.contains(ball.getName()) && !namesOfBallsCollided.contains(ball2.getName()) && !ball.getName().equals(ball2.getName())){ //make sure to only collide balls that have not been collided yet
 					if (ball.timeUntilPhysicsCollision(ball2)<=timeUntilFirstCollision){
-						System.out.println("Two Balls are colliding");
+//						System.out.println("Two Balls are colliding");
 						VectPair newVels = Geometry.reflectBalls(ball.getPhysicsCircle().getCenter(), 1.0, ball.getPhysicsVelocity(), ball2.getPhysicsCircle().getCenter(), 1.0, ball2.getPhysicsVelocity());
 						ball.updateBallPosition(timeUntilFirstCollision); //update the positions to right before the collision
 						ball2.updateBallPosition(timeUntilFirstCollision);
@@ -304,7 +305,7 @@ public class PingballClient {
 			for (OuterWall wall: board.getOuterWalls()){ 
 				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
 					if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
-						System.out.println("we are colliding with the wall");
+//						System.out.println("we are colliding with the wall");
 						Vect oldV = ball.getPhysicsVelocity();
 						wall.reflectOff(ball);
 						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
