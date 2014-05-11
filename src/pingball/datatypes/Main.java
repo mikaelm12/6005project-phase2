@@ -29,7 +29,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException{
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
-    	File file = new File("/Users/ahochstadt/pingball-phase2/boards/boardE.txt");
+    	File file = new File("/Users/ahochstadt/pingball-phase2/boards/board1.txt");
         String fileString = "";
         BufferedReader inputFileStream = null;
         try {
@@ -122,11 +122,13 @@ public class Main {
 		while (timestepLeft > 0){
 			double timeUntilFirstCollision = getTimeUntilFirstCollision(board);
 			System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
+			System.out.println("timestepLeft: "+timestepLeft);
+			
 			if (timeUntilFirstCollision<=timestepLeft){ //we have a collision in the timestep
 				updateWithCollision(board, timeUntilFirstCollision);
 				timestepLeft -= timeUntilFirstCollision;
 			} else { //we have no collision in the timestep
-				updateWithoutCollision(board, timestep);
+				updateWithoutCollision(board, timestepLeft);
 				timestepLeft = 0;
 			}
 		}		
@@ -134,7 +136,7 @@ public class Main {
 
 	private static void updateWithCollision(Board board, double timeUntilFirstCollision) { //will not work correctly if a ball collides with two things at the EXACT same time--which is extremely improbable
 		//updateWithoutCollision(board, timeUntilFirstCollision); //we will update flippers and balls as usual, and then collide the balls
-		
+		System.out.println("in updateWithCollision()");
 		List<String> namesOfBallsCollided = new ArrayList<String>();
 		
 		for (Ball ball: board.getBalls()){
