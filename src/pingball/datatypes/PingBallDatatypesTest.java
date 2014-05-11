@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 
 public class PingBallDatatypesTest {
-    /**
+    
     @Test public void testLeftFlippersAction(){
         LeftFlipper leftFlipper = new LeftFlipper("leftFlipper",2,2,0);
 
@@ -37,12 +37,12 @@ public class PingBallDatatypesTest {
         Ball ball1 = new Ball("ball1",3.2,1.2,-1.0,0);
         square.reflectOff(ball1);
         
-        assertTrue(leftFlipper.getState().equals("final"));
+        assertTrue(leftFlipper.getState().equals("flipping"));
         
         
         square.reflectOff(ball1);
         
-        assertTrue(leftFlipper.getState().equals("initial"));
+        assertTrue(leftFlipper.getState().equals("deflipping"));
     }
     
     @Test public void testRightFlipperAction(){
@@ -52,10 +52,10 @@ public class PingBallDatatypesTest {
         Ball ball1 = new Ball("ball1",3.2,1.2,-1.0,0);
         
         square.reflectOff(ball1);
-        assertTrue(rightFlipper.getState().equals("flipped"));
+        assertTrue(rightFlipper.getState().equals("flipping"));
         
         square.reflectOff(ball1);
-        assertTrue(rightFlipper.getState().equals("initial"));
+        assertTrue(rightFlipper.getState().equals("deflipping"));
     }
     
     @Test public void testLeftFlippersActionDifferentOrientation(){
@@ -71,7 +71,7 @@ public class PingBallDatatypesTest {
         Ball ball1 = new Ball("ball1",3.2,1.2,-5.0,0);
         square.reflectOff(ball1);
         
-        assertTrue(leftFlipper.getState().equals("final"));
+        assertTrue(leftFlipper.getState().equals("flipping"));
         
         
         assertTrue(leftFlipper.toString().equals("  ||"));
@@ -79,10 +79,10 @@ public class PingBallDatatypesTest {
         
         square.reflectOff(ball1);
         
-        assertTrue(leftFlipper.getState().equals("initial"));
+        assertTrue(leftFlipper.getState().equals("deflipping"));
         
         
-        assertTrue(leftFlipper.toString().equals("- - "));
+        assertTrue(leftFlipper.toString().equals("  ||"));
         
     }
     
@@ -95,16 +95,15 @@ public class PingBallDatatypesTest {
         Ball ball1 = new Ball("ball1",3.2,1.2,-5.0,0);
         square.reflectOff(ball1);
         
-        assertTrue(rightFlipper.getState().equals("final"));
+        assertTrue(rightFlipper.getState().equals("flipping"));
         assertTrue(rightFlipper.toString().equals("  ||"));
         
         square.reflectOff(ball1);
         
-        assertTrue(rightFlipper.getState().equals("initial"));
-        assertTrue(rightFlipper.toString().equals(" - -"));
+        assertTrue(rightFlipper.getState().equals("deflipping"));
+        assertTrue(rightFlipper.toString().equals("  ||"));
         
     }
-    **/
     @Test public void testTimeUntilCollision(){
         Ball ball = new Ball("ball",2.2,1.2,1,0); //moving in x+ direction
         TriangularBumper triangle = new TriangularBumper("triangle",1,1,0);
@@ -209,6 +208,5 @@ public class PingBallDatatypesTest {
         assertTrue(ball1.getNormalVelocity().x() == 0.0);
         assertTrue(ball1.getNormalVelocity().x() == -1.0); 
     }
-    **/
-
+**/
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import pingball.datatypes.Ball;
 import pingball.datatypes.Board;
 import pingball.datatypes.OuterWall;
+import pingball.datatypes.Portal;
 
 
 /**
@@ -31,9 +32,11 @@ public class World implements WorldInterface {
      */
     
     private final Map<String, Board> boards;
+	private final HashMap<String, Portal> portals;
     
     public World(){
         boards = new HashMap<String, Board>();
+        portals = new HashMap<String, Portal>();
     }
 
     @Override
@@ -105,6 +108,16 @@ public class World implements WorldInterface {
     @Override
     public boolean containsBoard(String board) {
         return boards.containsKey(board);
+    }
+    
+    public synchronized void teleportBall(Ball ball, Portal originPortal){
+    	String targetPortalName = originPortal.getTargetPortalName();
+    	if(portals.containsKey(targetPortalName)){ //we have a valid targetPortal
+    		Portal targetPortal = portals.get(targetPortalName);
+    		targetPortal.receiveBall(ball);
+    		originPortal.sendBall(ball);
+    	} else { // we don't have a valid targetPortal, so do nothing
+    	}
     }
 
 }

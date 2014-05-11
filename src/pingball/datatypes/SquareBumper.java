@@ -135,7 +135,7 @@ public class SquareBumper implements Gadget{
         //find nearest edge
         for (LineSegment edge : edges) {
         	double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
-        	System.out.println("Edge: timeUntilWallCollision: " + timeToEdge);
+        	//System.out.println("Edge: timeUntilWallCollision: " + timeToEdge);
             if(timeToEdge <= closestTimeToCollision){
                 closestTimeToCollision = timeToEdge;
                 edgeShortestTimeToCollision = edge;
@@ -144,7 +144,7 @@ public class SquareBumper implements Gadget{
         //find nearest corner
         for (Circle corner : corners) {
             double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
-            System.out.println("Corner: timeUntilCornerCollision: " + timeToCorner);
+            //System.out.println("Corner: timeUntilCornerCollision: " + timeToCorner);
             //if corner closer than nearest edge, update
             if(timeToCorner <= closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
