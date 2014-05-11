@@ -251,7 +251,7 @@ public class PingballClient {
 //=======
 //>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
 
-            if ((current-start) % 50 == 0){
+            if ((current-start) % 30 == 0 && !board.isPaused()){
                 int counter = 1;
                 double timestep = 0.05;
                 update(board, timestep);

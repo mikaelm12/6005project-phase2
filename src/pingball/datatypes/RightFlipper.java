@@ -65,7 +65,7 @@ public class RightFlipper implements Gadget{
             this.endPoint = new Circle(x+boxLength,20-y,0);
         }
         
-        checkRep();
+        //checkRep();
     }
     
     /**
@@ -93,7 +93,7 @@ public class RightFlipper implements Gadget{
         	state = "flipping";
         }
         
-        checkRep();
+       // checkRep();
     }
 
 	public void update(double timestep) {
@@ -361,11 +361,14 @@ public class RightFlipper implements Gadget{
      */
     private void checkRep(){
         assertTrue(name.length() > 0);
-        assertTrue(state.equals("initial") || state.equals("final"));
+        assertTrue(state.equals("initial") || state.equals("final")|| state.equals("flipping"));
     }
 
     @Override
     public String getGadgetType() {
         return "Right Flipper";
+    }
+    public double getCurrentAngle() {
+        return currentAngle;
     }
 }

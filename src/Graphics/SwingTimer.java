@@ -27,7 +27,7 @@ public class SwingTimer extends JFrame {
 
 
 
-    public SwingTimer(Board board) {
+    public SwingTimer(final Board board) {
 
         add(new Canvas(board));
 
@@ -55,10 +55,18 @@ public class SwingTimer extends JFrame {
         JMenuItem quit = new JMenuItem("Quit");
         options.add(quit);
         
+        pause.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.pauseUnpauseGame();
+                
+            }
+        });
         
         file.addActionListener(new ActionListener() {
             
-            @SuppressWarnings("deprecation")
+           
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JFileChooser fc = new JFileChooser();
