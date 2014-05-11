@@ -11,6 +11,7 @@ public class Ball {
     private Vect velocityVector;
     private final double radius = 0.25;
     private final String name;
+    private boolean inAbsorber = false;
     
     //Rep invariant:
     // circle != null
@@ -25,7 +26,6 @@ public class Ball {
         
         checkRep();
     }
-    
     
     
     /**
@@ -186,6 +186,14 @@ public class Ball {
     private void checkRep(){
         assertTrue(circle != null);
         assertTrue(velocityVector != null);
+    }
+    
+    public boolean inAbsorber(){
+    	return this.inAbsorber;
+    }
+    
+    public void setInAbsorber(boolean bool){
+    	this.inAbsorber = bool;
     }
 
 

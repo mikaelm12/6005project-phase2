@@ -90,8 +90,8 @@ public class PingballClientThread extends Thread {
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
-            if ((current-start) % 50 == 0){
-                double timestep = 0.05;
+            if ((current-start) % 30 == 0){
+                double timestep = 0.01;
                 update(board, world, timestep);
                 out.println(board.toString());
                 }

@@ -1,7 +1,10 @@
 package pingball.client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,10 +20,13 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 import BoardExpr.BoardFactory;
 import BoardExpr2.GrammarFactory;
-import Graphics.SwingTimerExample;
+import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Vect;
 import physics.Geometry.VectPair;
@@ -179,13 +185,14 @@ public class PingballClient {
             
             @Override
             public void run() {                
-                JFrame ex = new SwingTimerExample(board);
-                ex.setMinimumSize(new Dimension(410, 410));
-                ex.setVisible(true);    
-                
+                SwingTimer gui = new SwingTimer(board);
+                gui.setMinimumSize(new Dimension(410, 410));
+                gui.setVisible(true);   
+               
+    
             }
         });
-     //   System.out.println(board.toString());
+        //System.out.println(board.toString());
         
         
         //PLAY!
@@ -359,4 +366,6 @@ public class PingballClient {
 		}
 		return timeUntilFirstCollision;
 	}
+
 }
+
