@@ -61,7 +61,7 @@ public class PingballClient {
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
+       File file = new File("src/../boards/boardA.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
