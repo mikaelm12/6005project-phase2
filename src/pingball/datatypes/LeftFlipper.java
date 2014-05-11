@@ -388,7 +388,7 @@ public class LeftFlipper implements Gadget{
      */
     private void checkRep(){
         assertTrue(name.length() > 0);
-        assertTrue(state.equals("initial") || state.equals("final"));
+        assertTrue(state.equals("initial") || state.equals("flipping") || state.equals("flipped") || state.equals("deflipping"));
     }
 
     @Override

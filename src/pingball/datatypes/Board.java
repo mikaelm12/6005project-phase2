@@ -1,7 +1,9 @@
 package pingball.datatypes;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import physics.Vect;
@@ -32,7 +34,10 @@ public class Board {
     private String neighborRightString;
     private List<Ball> incomingBalls = Collections.synchronizedList(new ArrayList<Ball>());
     private boolean paused = false;
-    
+    private HashMap<String, String> gadgetKeyUpListeners;
+    private HashMap<String, String> gadgetKeyDownListeners;
+
+
     
     //Rep invariant:
     
@@ -407,6 +412,55 @@ public class Board {
      * check representation
      */
     private void checkRep(){
+    }
+    
+    
+    public void addKeyUpListener(HashMap<String, String> listeners){
+        gadgetKeyUpListeners = listeners;
+    }
+    
+    public void addKeyDownListener(HashMap<String, String> listeners){
+        gadgetKeyDownListeners = listeners;
+    }
+    /**
+     * This method is called when a key is pressed when the GUI is active.
+     * If the key that was pressed is associated with a gadget, the gadget is then activated.
+     * If the key that was released is associated with a gadget, the gadget is then deactivated. 
+     */
+    public void checkKeyListener(KeyEvent e, boolean pressed){
+        String key = String.valueOf(e.getKeyChar());
+        if(key.equals(" ")) key = "space";
+
+        if(gadgetKeyUpListeners.containsKey(key)){ //Keyup
+            Gadget gadget = null;
+
+            if(pressed){//Key is pressed
+                //Find the associated gadget
+                String gadgetStr = gadgetKeyDownListeners.get(key);
+                for(Gadget curGadget: gadgets){
+                    if(curGadget.getName().equals(gadgetStr)){
+                        gadget = curGadget;
+                    }
+                }
+                
+                gadget.action();
+            }
+        }
+        
+        if(gadgetKeyDownListeners.containsKey(key)){ //Keydown
+            Gadget gadget = null;
+            if(!pressed){//Key is released
+                //Find associated gadget
+                String gadgetStr = gadgetKeyDownListeners.get(key);
+                for(Gadget curGadget: gadgets){
+                    if(curGadget.getName().equals(gadgetStr)){
+                        gadget = curGadget;
+                    }
+                }
+                gadget.action();
+            }
+        }
+        
     }
     
 }

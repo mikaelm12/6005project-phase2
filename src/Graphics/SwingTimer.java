@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -49,7 +51,7 @@ public class SwingTimer extends JFrame {
         JMenuItem file = new JMenuItem("File");
         options.add(file);
         
-        JMenuItem pause = new JMenuItem("Pause");
+        JMenuItem pause = new JMenuItem("Pause/Unpause");
         options.add(pause);
         
         JMenuItem quit = new JMenuItem("Quit");
@@ -84,6 +86,16 @@ public class SwingTimer extends JFrame {
                     }
                 }
                 
+            }
+        });
+        
+        addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                board.checkKeyListener(e, true);
+            }
+
+            public void keyReleased(KeyEvent e) {
+                board.checkKeyListener(e, false);
             }
         });
         
