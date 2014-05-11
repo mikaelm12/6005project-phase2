@@ -16,7 +16,7 @@ import pingball.datatypes.Board;
 
 public class SwingTimerExample extends JFrame {
 
-    public SwingTimerExample(Board board) {
+    public SwingTimerExample(final Board board) {
 
         add(new Canvas(board));
 
@@ -30,11 +30,11 @@ public class SwingTimerExample extends JFrame {
         
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                System.out.println("key pressed");
+                board.checkKeyListener(e, true);
             }
 
             public void keyReleased(KeyEvent e) {
-                System.out.println("key released");
+                board.checkKeyListener(e, false);
             }
         });
         

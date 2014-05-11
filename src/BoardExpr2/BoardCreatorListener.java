@@ -23,7 +23,8 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     */
    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
    private ArrayList<Ball> balls = new ArrayList<Ball>();
-   
+   private HashMap<String, String> gadgetKeyUpListeners = new HashMap<String, String>();
+   private HashMap<String, String> gadgetKeyDownListeners = new HashMap<String, String>();
    private Board board;
    
    /**
@@ -36,6 +37,16 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
    public Board getBoard() throws Exception{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
        for(Ball ball: balls) board.addBall(ball);
+       
+//       for(String str: gadgetKeyUpListeners.keySet()){
+//           System.out.println(str + ", " + gadgetKeyUpListeners.get(str));
+//       }
+//       
+//       for(String str: gadgetKeyDownListeners.keySet()){
+//           System.out.println(str + ", " + gadgetKeyDownListeners.get(str));
+//       }
+       board.addKeyUpListener(gadgetKeyUpListeners);
+       board.addKeyDownListener(gadgetKeyDownListeners);
 
        resetBoardObjects();
        return board;
@@ -153,6 +164,19 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
                     }
                 }
             }
+        }
+    }
+    
+    @Override
+    public void exitKeys(GrammarParser.KeysContext ctx){
+        System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
+        String keyBoardChar = ctx.key().ID().toString();
+        String gadget = ctx.action().ID().toString();
+        
+        if(ctx.keyCmd().getText().toLowerCase().equals("keyup")){
+            gadgetKeyUpListeners.put(keyBoardChar, gadget);
+        }else if(ctx.keyCmd().getText().toLowerCase().equals("keydown")){
+            gadgetKeyDownListeners.put(keyBoardChar, gadget);
         }
     }
     
