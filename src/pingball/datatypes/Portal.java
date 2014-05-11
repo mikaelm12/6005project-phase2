@@ -52,7 +52,10 @@ public class Portal implements Gadget {
 	}
 	
 	public void receiveBall(Ball ball){
-		// TODO Auto-generated method stub
+		double ballX = this.x+.25;
+		double ballY = this.y+.25;
+		ball.setNormalPosition(ballX, ballY);
+		
 	}
 	
 	/**
