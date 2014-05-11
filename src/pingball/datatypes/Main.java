@@ -13,7 +13,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import BoardExpr.BoardFactory;
-import Graphics.SwingTimerExample;
+import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Geometry.VectPair;
 import physics.Vect;
@@ -82,7 +82,7 @@ public class Main {
             
             @Override
             public void run() {                
-                JFrame ex = new SwingTimerExample(board);
+                JFrame ex = new SwingTimer(board);
                 ex.setMinimumSize(new Dimension(425, 425));
                 ex.setVisible(true);                
             }
