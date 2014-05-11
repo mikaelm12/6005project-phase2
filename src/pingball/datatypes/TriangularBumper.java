@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import physics.Circle;
 import physics.Geometry;
 import physics.LineSegment;
 import physics.Vect;
@@ -21,11 +22,22 @@ public class TriangularBumper implements Gadget{
     private final String name;
     private List<Gadget> gadgetsToFire;
     private final LineSegment[] edges = new LineSegment[3];
-    private final Vect origin;
-    private final CircularBumper cornerA;
-    private final CircularBumper cornerB;
-    private final CircularBumper cornerC;
-    private List<CircularBumper> corners;
+//<<<<<<< HEAD
+//    private final Vect origin;
+//    private final CircularBumper cornerA;
+//
+//
+//    private final CircularBumper cornerB;
+//    private final CircularBumper cornerC;
+//    private List<CircularBumper> corners;
+//=======
+    private final Circle cornerA;
+    private final Circle cornerB;
+    private final Circle cornerC;
+    private List<Circle> corners;
+    private final double x;
+    private final double y;
+//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
     
     //Rep invariant:
     //orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270
@@ -38,47 +50,50 @@ public class TriangularBumper implements Gadget{
     
     public TriangularBumper(String name, int x, int y, int orientation){
         this.name = name;
+        this.x = x;
+        this.y = y;
         this.sideLength = 1;
         this.coR = 1.0;
         this.orientation = orientation;
         this.gadgetsToFire = new ArrayList<Gadget>();
-        this.origin = new Vect(x,y);
         
         //create triangle edges and corners
         if(orientation == 0){
-            this.sideA = new LineSegment(x,y,x+sideLength,y);
-            this.sideB = new LineSegment(x,y,x,y+sideLength);
-            this.hypotenuse = new LineSegment(x,y+sideLength,x+sideLength,y);
-            this.cornerA = new CircularBumper("cornerA",x,y,0);
-            this.cornerB = new CircularBumper("cornerB",x+sideLength,y,0);
-            this.cornerC = new CircularBumper("cornerC",x,y+sideLength,0);
+            this.sideA = new LineSegment(x,20-y,x+sideLength,20-y);
+            this.sideB = new LineSegment(x,20-y,x,20-(y+sideLength));
+            this.hypotenuse = new LineSegment(x,20-(y+sideLength),x+sideLength,20-y);
+            
+            this.cornerA = new Circle(x,20-y,0);
+            this.cornerB = new Circle(x+sideLength,20-y,0);
+            this.cornerC = new Circle(x,20-(y+sideLength),0);
         }
         else if(orientation == 90){
-            this.sideA = new LineSegment(x,y,x,y+sideLength);
-            this.sideB = new LineSegment(x,y+sideLength,x+sideLength,y+sideLength);
-            this.hypotenuse = new LineSegment(x,y,x+sideLength,y+sideLength);
-            this.cornerA = new CircularBumper("cornerA",x,y,0);
-            this.cornerB = new CircularBumper("cornerB",x,y+sideLength,0);
-            this.cornerC = new CircularBumper("cornerC",x+sideLength,y+sideLength,0);
+            this.sideA = new LineSegment(x,20-y,x,20-(y+sideLength));
+            this.sideB = new LineSegment(x,20-(y+sideLength),x+sideLength,20-(y+sideLength));
+            this.hypotenuse = new LineSegment(x,20-y,x+sideLength,20-(y+sideLength));
+            
+            this.cornerA = new Circle(x,20-y,0);
+            this.cornerB = new Circle(x,20-(y+sideLength),0);
+            this.cornerC = new Circle(x+sideLength,20-(y+sideLength),0);
         }
         else if(orientation == 180){
-            this.sideA = new LineSegment(x+sideLength,y,x+sideLength,y+sideLength);
-            this.sideB = new LineSegment(x,y+sideLength,x+sideLength,y+sideLength);
-            this.hypotenuse = new LineSegment(x,y+sideLength,x+sideLength,y);
-            this.cornerA = new CircularBumper("cornerA",x+sideLength,y,0);
-            this.cornerB = new CircularBumper("cornerB",x+sideLength,y+sideLength,0);
-            this.cornerC = new CircularBumper("cornerC",x,y+sideLength,0);
+            this.sideA = new LineSegment(x+sideLength,20-y,x+sideLength,20-(y+sideLength));
+            this.sideB = new LineSegment(x,20-(y+sideLength),x+sideLength,20-(y+sideLength));
+            this.hypotenuse = new LineSegment(x,20-(y+sideLength),x+sideLength,20-y);
+            this.cornerA = new Circle(x+sideLength,20-y,0);
+            this.cornerB = new Circle(x+sideLength,20-(y+sideLength),0);
+            this.cornerC = new Circle(x,20-(y+sideLength),0);
         }
         else{ //orientation = 270
-            this.sideA = new LineSegment(x,y,x+sideLength,y);
-            this.sideB = new LineSegment(x+1,y,x+sideLength,y+sideLength);
-            this.hypotenuse = new LineSegment(x,y,x+sideLength,y+sideLength);
-            this.cornerA = new CircularBumper("cornerA",x,y,0);
-            this.cornerB = new CircularBumper("cornerB",x+sideLength,y,0);
-            this.cornerC = new CircularBumper("cornerC",x+sideLength,y+sideLength,0);
+            this.sideA = new LineSegment(x,20-y,x+sideLength,20-y);
+            this.sideB = new LineSegment(x+1,20-y,x+sideLength,20-(y+sideLength));
+            this.hypotenuse = new LineSegment(x,20-y,x+sideLength,20-(y+sideLength));
+            this.cornerA = new Circle(x,20-y,0);
+            this.cornerB = new Circle(x+sideLength,20-y,0);
+            this.cornerC = new Circle(x+sideLength,20-(y+sideLength),0);
         }
         
-        this.corners = new ArrayList<CircularBumper>(Arrays.asList(cornerA,cornerB,cornerC));
+        this.corners = new ArrayList<Circle>(Arrays.asList(cornerA,cornerB,cornerC));
         
         //add sides to list of edges
         edges[0] = sideA;
@@ -120,20 +135,19 @@ public class TriangularBumper implements Gadget{
      * @return time until ball collides with bumper
      */
     @Override
-    public double timeUntilCollision(Ball ball) {
+    public double timeUntilPhysicsCollision(Ball ball) {
         double closestTimeToCollision = Double.POSITIVE_INFINITY; //default value
         
         //check for closest time to collision among edges
         for (LineSegment edge : edges) {
-            double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getCircle(), ball.getVelocity());
+            double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             if(timeToEdge < closestTimeToCollision){
                 closestTimeToCollision = timeToEdge;
             }
         }
       //check for closest time to collision among corners
-        for (CircularBumper corner : corners) {
-            double timeToCorner = Geometry.timeUntilCircleCollision(corner.getCircle(), 
-                                                                    ball.getCircle(), ball.getVelocity());
+        for (Circle corner : corners) {
+            double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             //if time nearest corner< time to edge, update closest time
             if(timeToCorner < closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
@@ -149,25 +163,22 @@ public class TriangularBumper implements Gadget{
      * @param ball to be reflected
      */
     @Override
-    public void reflectOffGadget(Ball ball){
-        //System.out.println("HELLO");
+    public void reflectOff(Ball ball){
         LineSegment edgeShortestTimeToCollision = null;
-        CircularBumper closestCorner = null; 
+        Circle closestCorner = null; 
         double closestTimeToCollision = Double.POSITIVE_INFINITY; //default value since double has to be initialized
         
         //find nearest edge
         for (LineSegment edge : edges) {
-            double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getCircle(), ball.getVelocity());
+            double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             if(timeToEdge < closestTimeToCollision){
                 closestTimeToCollision = timeToEdge;
                 edgeShortestTimeToCollision = edge;
             }
         }
         //find nearest corner
-        for (CircularBumper corner : corners) {
-            
-            double timeToCorner = Geometry.timeUntilCircleCollision(corner.getCircle(), 
-                                                                    ball.getCircle(), ball.getVelocity());
+        for (Circle corner : corners) {
+            double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             //if corner closer than nearest edge, update
             if(timeToCorner < closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
@@ -176,21 +187,15 @@ public class TriangularBumper implements Gadget{
         }
         Vect newVelocityVector;
         //reflect using appropriate corner or edge
-        if(closestCorner == null){
-            newVelocityVector = Geometry.reflectWall(edgeShortestTimeToCollision, ball.getVelocity(), coR);
+        if(closestCorner == null){//we've hit an edge;
+            newVelocityVector = Geometry.reflectWall(edgeShortestTimeToCollision, ball.getPhysicsVelocity(), coR);
            
-        }
-        else{
-            newVelocityVector = Geometry.reflectCircle(closestCorner.getCircle().getCenter(), ball.getCircle().getCenter(),
-                                                            ball.getVelocity());
-          //  System.out.println("CORNER!");
+        }else{//we've hit a corner
+            newVelocityVector = Geometry.reflectCircle(closestCorner.getCenter(), ball.getPhysicsCircle().getCenter(), ball.getPhysicsVelocity());
         }
         //set the velocity of the ball and trigger connected gadgets
-        //System.out.println("Old Velocity" + ball.getVelocity());
-      //  System.out.println("New Velocity" + newVelocityVector);
-        ball.setVelocity(newVelocityVector);
+        ball.setPhysicsVelocity(newVelocityVector);
         this.trigger();
-        
         checkRep();
     }
     
@@ -222,7 +227,7 @@ public class TriangularBumper implements Gadget{
      */
     @Override
     public Vect getPosition(){
-        return new Vect(origin.x(),origin.y());
+        return new Vect(this.x,this.y);
     }
     
     /**
@@ -253,6 +258,10 @@ public class TriangularBumper implements Gadget{
     public String getGadgetType() {
         return "Triangluar Bumper";
     }
+    
+//    public List<CircularBumper> getCorners(){
+//        return this.corners;
+//    }
 
 
     

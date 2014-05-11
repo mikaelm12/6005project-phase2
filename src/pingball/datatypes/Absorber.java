@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import physics.Circle;
 import physics.Geometry;
 import physics.LineSegment;
 import physics.Vect;
 import static org.junit.Assert.*;
 
 /**
- * 
- * @author PeterGithaiga
  * The absorber will only shoot out stored balls one at a time when triggered.
  * 
  */
@@ -20,19 +19,21 @@ public class Absorber implements Gadget{
     private final int width;
     private final int height;
     private final int coR;
-    private final LineSegment top;
-    private final LineSegment right;
-    private final LineSegment bottom;
-    private final LineSegment left;
+    private final LineSegment physicsTop;
+    private final LineSegment physicsRight;
+    private final LineSegment physicsBottom;
+    private final LineSegment physicsLeft;
     private final String name;
     private List<Gadget> gadgetsToFire;
-    private final LineSegment[] edges = new LineSegment[4];
+    private final List<LineSegment> edges;
     private List<Ball> balls;
-    private final CircularBumper topLeft;
-    private final CircularBumper topRight;
-    private final CircularBumper bottomRight;
-    private final CircularBumper bottomLeft;
-    private List<CircularBumper> corners;
+    private final Circle physicsTopLeft;
+    private final Circle physicsTopRight;
+    private final Circle physicsBottomRight;
+    private final Circle physicsBottomLeft;
+    private final List<Circle> corners;
+    private final double x;
+    private final double y;
     
     //Rep invariant:
     //width>0, height>0, name!=null && name.length>0
@@ -44,26 +45,24 @@ public class Absorber implements Gadget{
         this.name = name;
         this.width = width;
         this.height = height;
+        this.y = (double) y;
+        this.x = (double) x;
         this.coR = 0;    
-        this.top = new LineSegment(x,y,x+width,y);
-        this.right = new LineSegment(x+width,y,x+width,y+height);
-        this.bottom = new LineSegment(x,y+height,x+width,y+height);
-        this.left = new LineSegment(x,y,x,y+height);
         this.gadgetsToFire = new ArrayList<Gadget>();
         this.balls = new ArrayList<Ball>();
-        edges[0] = left;
-        edges[1] = top;
-        edges[2] = right;
-        edges[3] = bottom;
+        //create edges
+        this.physicsTop = new LineSegment(x,20-y,x+width,20-y);
+        this.physicsRight = new LineSegment(x+width,20-y,x+width,20-(y+height));
+        this.physicsBottom = new LineSegment(x,20-(y+height),x+width,20-(y+height));
+        this.physicsLeft = new LineSegment(x,20-y,x,20-(y+height));
+        this.edges = new ArrayList<LineSegment>(Arrays.asList(physicsLeft,physicsTop,physicsRight,physicsBottom));
         
-        //create 4 corners using circularBumpers of radius 0
-        topLeft = new CircularBumper("topLeft",x,y,0);
-        topRight = new CircularBumper("topRight",x+width,y,0);
-        bottomRight = new CircularBumper("bottomRight",x+width,y+height,0);
-        bottomLeft = new CircularBumper("topLeft",x,y+height,0);
-        
-        //create list of 4 corners of the absorber
-        this.corners = new ArrayList<CircularBumper>(Arrays.asList(topLeft,topRight,bottomRight,bottomLeft));
+        //create corners (though for an absorber it probably doesn't matter)
+        this.physicsTopLeft = new Circle(x, 20-y, 0);
+        this.physicsTopRight = new Circle(x+width, 20-y, 0);
+        this.physicsBottomLeft = new Circle(x+width, 20-(y+height), 0);
+        this.physicsBottomRight = new Circle(x, 20-(y+height), 0);
+        this.corners = new ArrayList<Circle>(Arrays.asList(physicsTopLeft,physicsTopRight,physicsBottomLeft,physicsBottomRight));
 
         checkRep();
     }
@@ -99,10 +98,12 @@ public class Absorber implements Gadget{
     @Override
     public void action() {
         //remove the first ball
-        if(balls.size() > 1){
-            Ball that = balls.get(0);
-            that.setVelocity(new Vect(0,-50));//set to ball velocity to 50L/sec straight upwards
-            that.setPosition(that.getPosition()[0],top.p2().y()-0.25);//set position to top of absorber
+        if(balls.size() >= 1){ //changed from >1 
+            Ball ball = balls.get(0);
+            ball.setNormalVelocity(new Vect(0,-50));//set to ball velocity to 50L/sec straight upwards
+            double ballX = ball.getNormalPosition()[0];
+            double ballY = this.y-.25; //set position to top of absorber
+            ball.setNormalPosition(ballX, ballY);
             balls.remove(0);
         }
         
@@ -124,20 +125,19 @@ public class Absorber implements Gadget{
      * @return time until ball collides with absorber
      */
     @Override
-    public double timeUntilCollision(Ball ball) {
+    public double timeUntilPhysicsCollision(Ball ball) {
         double closestTimeToCollision = Double.POSITIVE_INFINITY; //default value
         
         //check for closest time to collision among edges
         for (LineSegment edge : edges) {
-            double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getCircle(), ball.getVelocity());
+            double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             if(timeToEdge < closestTimeToCollision){
                 closestTimeToCollision = timeToEdge;
             }
         }
         //check for closest time to collision among corners
-        for (CircularBumper corner : corners) {
-            double timeToCorner = Geometry.timeUntilCircleCollision(corner.getCircle(), 
-                                                                    ball.getCircle(), ball.getVelocity());
+        for (Circle corner : corners) {
+            double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
             //if time nearest corner< time to edge, update closest time
             if(timeToCorner < closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
@@ -153,10 +153,10 @@ public class Absorber implements Gadget{
      * @param ball to be reflected
      */
     @Override
-    public void  reflectOffGadget(Ball ball){
-        ball.setVelocity(new Vect(0,0)); //stop ball
+    public void  reflectOff(Ball ball){ //here, we absorb the ball
+        ball.setNormalVelocity(new Vect(0,0)); //stop ball
         //set ball center position .25L away from bottom and right wall
-        ball.setPosition(bottom.p2().x()-0.25, bottom.p2().y()-0.25);
+        ball.setNormalPosition(this.x+this.width-.25, this.y+this.height-.25);
         balls.add(ball);
         this.trigger();
     }
@@ -189,7 +189,7 @@ public class Absorber implements Gadget{
      */
     @Override
     public Vect getPosition(){
-        return new Vect(top.p1().x(),top.p1().y());
+        return new Vect(this.x,this.y);
     }
     
     /**
@@ -221,6 +221,4 @@ public class Absorber implements Gadget{
         
         return "Absorber";
     }
-
-
 }
