@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
@@ -39,6 +40,8 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
    public Board getBoard() throws Exception{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
        for(Ball ball: balls) board.addBall(ball);
+       for(Gadget spawner: spawners) board.addSpawner(spawner);
+       for(Gadget portal:portals) board.addPortal(portal);
        
        board.addKeyUpListener(gadgetKeyUpListeners);
        board.addKeyDownListener(gadgetKeyDownListeners);
@@ -181,7 +184,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         String xLoc = ctx.xLoc().getChild(2).getText();
         String yLoc = ctx.xLoc().getChild(2).getText();
         
-//        spawners.add(new Spawner(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc)));
+        spawners.add(new BallSpawner(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc)));
     }
     
     @Override
