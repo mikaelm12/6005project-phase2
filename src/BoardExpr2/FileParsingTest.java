@@ -32,6 +32,9 @@ import pingball.datatypes.Board;
  *      (C3) sampleBoard2-2.pb 
  *      (C4) sampleBoard3.pb  
  *      (C5) sampleBoard4.pb 
+ * (D) Additional tests added for phase 2 //**indicates not implemented yet
+ *      **(D1) Board contains spawner and portal
+ *      **(D2) File does not require gravity
  */
 
 public class FileParsingTest {
