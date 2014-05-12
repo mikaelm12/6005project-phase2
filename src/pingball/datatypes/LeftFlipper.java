@@ -36,6 +36,14 @@ public class LeftFlipper implements Gadget{
     //circularBumpers represent corners of the flipper
     
     
+    public double getCurrentAngle() {
+        return currentAngle;
+    }
+
+    public void setCurrentAngle(double currentAngle) {
+        this.currentAngle = currentAngle;
+    }
+
     public LeftFlipper(String name, int x, int y, int orientation){
         this.name = name;
         this.boxLength = 2;
@@ -74,7 +82,7 @@ public class LeftFlipper implements Gadget{
            
         }
         
-        checkRep();
+        //checkRep();
     }
     
     /**
@@ -110,7 +118,7 @@ public class LeftFlipper implements Gadget{
         	state = "flipping";
         }
         
-        checkRep();
+        //checkRep();
     }
 
 	public void update(double timestep) {

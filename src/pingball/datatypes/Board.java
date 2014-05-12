@@ -33,8 +33,10 @@ public class Board {
     private String neighborBottomString;
     private String neighborRightString;
     private List<Ball> incomingBalls = Collections.synchronizedList(new ArrayList<Ball>());
+    private boolean paused = false;
     private HashMap<String, String> gadgetKeyUpListeners;
     private HashMap<String, String> gadgetKeyDownListeners;
+
 
     
     //Rep invariant:
@@ -332,6 +334,13 @@ public class Board {
     		}
     	}
         return returnList;
+    }
+    public void pauseUnpauseGame(){
+        this.paused = !this.paused;
+    }
+    
+    public boolean isPaused(){
+        return this.paused;
     }
     
     /**

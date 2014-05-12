@@ -47,7 +47,7 @@ public class Portal implements Gadget {
 		this.trigger();
 	}
 
-	private void sendBall(Ball ball) {
+	public void sendBall(Ball ball) {
 		// TODO Auto-generated method stub
 	}
 	
@@ -93,5 +93,10 @@ public class Portal implements Gadget {
         
         return "Portal";
     }
+
+	public String getTargetPortalName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

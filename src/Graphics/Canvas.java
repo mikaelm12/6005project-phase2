@@ -29,6 +29,8 @@ import pingball.datatypes.Ball;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
+import pingball.datatypes.LeftFlipper;
+import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
 import sun.java2d.loops.DrawPolygons;
@@ -133,20 +135,10 @@ public class Canvas extends JPanel
           
                
                makeGadget(gadget, graph2);
-               
-               
-           
-           
-           
+
        }
        
-       
-       
-    
-      
-      
-     
-        
+
         Graphics2D g2d = (Graphics2D) g;
        
         Toolkit.getDefaultToolkit().sync();
@@ -214,12 +206,34 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
-        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10);
+        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 + 3);
 
         graph2.setColor(Color.magenta);
         
         graph2.fill(absorber);  
     }
+//    else if(gadget.getGadgetType().equals("Left Flipper")){
+//        
+//        LeftFlipper leftFlipper = (LeftFlipper)gadget;
+//        Shape flipper = new Rectangle2D.Float((float)leftFlipper.getPosition().x()*20 + 8 , (float)leftFlipper.getPosition().y()*20 , 5 , 30);
+//
+//        graph2.setColor(Color.CYAN);
+//        graph2.rotate(leftFlipper.getCurrentAngle());
+//        graph2.fill(flipper); 
+//        
+//        
+//    }
+//    else if(gadget.getGadgetType().equals("Right Flipper")){
+//        
+//        RightFlipper rightFlipper = (RightFlipper)gadget;
+//        Shape flipper = new Rectangle2D.Float((float)rightFlipper.getPosition().x()*20 + 8 , (float)rightFlipper.getPosition().y()*20 , 5 , 30);
+//
+//        graph2.setColor(Color.CYAN);
+//        graph2.rotate(rightFlipper.getCurrentAngle());
+//        graph2.fill(flipper); 
+//        
+//        
+//    }
 //    else if(gadget.getGadgetType().equals("Triangle Bumper")){
 //        
 //        TriangularBumper tri = (TriangularBumper)gadget;

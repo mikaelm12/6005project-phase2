@@ -52,16 +52,24 @@ public class SwingTimer extends JFrame {
         JMenuItem file = new JMenuItem("File");
         options.add(file);
         
-        JMenuItem pause = new JMenuItem("Pause");
+        JMenuItem pause = new JMenuItem("Pause/Unpause");
         options.add(pause);
         
         JMenuItem quit = new JMenuItem("Quit");
         options.add(quit);
         
+        pause.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.pauseUnpauseGame();
+                
+            }
+        });
         
         file.addActionListener(new ActionListener() {
             
-            @SuppressWarnings("deprecation")
+           
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JFileChooser fc = new JFileChooser();
