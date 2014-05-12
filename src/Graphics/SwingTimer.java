@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -81,15 +82,19 @@ public class SwingTimer extends JFrame {
             }
         });
         
-        addKeyListener(new KeyAdapter() {
+        KeyListener listener = new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                board.checkKeyListener(e, true);
-            }
+                    board.checkKeyListener(e, true);
+                }
 
-            public void keyReleased(KeyEvent e) {
-                board.checkKeyListener(e, false);
-            }
-        });
+                public void keyReleased(KeyEvent e) {
+                    board.checkKeyListener(e, false);
+                }
+        };
+
+        KeyListener magical = new MagicKeyListener(listener);
+
+        addKeyListener(magical);
         
     }
     public Board getNewBoard() {
