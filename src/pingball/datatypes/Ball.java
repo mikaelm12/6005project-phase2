@@ -54,8 +54,15 @@ public class Ball {
     public void setNormalVelocity(Vect vect){
         this.velocityVector = adjustSpeed(vect);
     }
+    
+    /**
+     * Scales the velocity if the ball is going too fast. 
+     * This is done to make the animation less erratic and more realistic.
+     * @param vect the vector to be scaled
+     * @return a vector adjusted if the input vector was too fast
+     */
     private Vect adjustSpeed(Vect vect) {
-    	double maxSpeed = 40.0;
+    	double maxSpeed = 80.0;
     	double vectSpeed = Math.sqrt(Math.pow(vect.x(),2)+Math.pow(vect.y(),2));
     	double scalingFactor = vectSpeed/maxSpeed;
     	if (scalingFactor>1){

@@ -30,7 +30,7 @@ public class Main {
     public static void main(String[] args) throws IOException{
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
-    	File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
+    	File file = new File("/Users/ahochstadt/pingball-phase2/boards/board1.txt");
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
 
@@ -100,15 +100,18 @@ public class Main {
             long current = System.currentTimeMillis();
 
             if ((current-start) % 30 == 0){
-                int counter = 1;
                 double timestep = 0.01;
                 update(board, timestep);
-                counter++;
                 System.out.println(board.toString());
             }
         }
     }
 
+    /**
+     * Updates the board after one timestep     
+     * @param board the board to update
+     * @param timestep timestep in seconds
+     */
 	private static void update(Board board, double timestep) {
 		for (Ball ball: board.getBalls()){
 			synchronized(ball){
@@ -134,6 +137,11 @@ public class Main {
 		}		
 	}
 
+	/**
+	 * updates the board one subtimestep (timeUntilFirstCollision), and then executes changes in ball velocity due to the pending collision(s)
+	 * @param board to update
+	 * @param timeUntilFirstCollision time until the first collision in seconds
+	 */
 	private static void updateWithCollision(Board board, double timeUntilFirstCollision) { //will not work correctly if a ball collides with two things at the EXACT same time--which is extremely improbable
 		//updateWithoutCollision(board, timeUntilFirstCollision); //we will update flippers and balls as usual, and then collide the balls
 		System.out.println("in updateWithCollision()");
@@ -190,6 +198,11 @@ public class Main {
 		}
 	}
 
+	/**
+	 * updates the board by one timestep. The board must not have a collision at the end of the timestep.
+	 * @param board the board to be updated
+	 * @param timestep the timestep to execute
+	 */
 	private static void updateWithoutCollision(Board board, double timestep) {
 		for (Ball ball: board.getBalls()){
 			if (!ball.inAbsorber()){
@@ -204,6 +217,11 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Calculates the time until the first collision happens on the board
+	 * @param board the board on which the collision is happening
+	 * @return the time until the board's first collision, in seconds
+	 */
 	private static double getTimeUntilFirstCollision(Board board) {
 		double timeUntilFirstCollision = Double.POSITIVE_INFINITY;
 		for (Ball ball: board.getBalls()){
