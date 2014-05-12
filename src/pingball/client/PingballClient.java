@@ -73,7 +73,7 @@ public class PingballClient {
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("src/../boards/boardG.txt");
+       File file = new File("src/../boards/board1.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -186,7 +186,7 @@ public class PingballClient {
             @Override
             public void run() {                
                 SwingTimer gui = new SwingTimer(board);
-                gui.setMinimumSize(new Dimension(410, 410));
+                gui.setMinimumSize(new Dimension(430, 475));
                 gui.setVisible(true);   
                
     

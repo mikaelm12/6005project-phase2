@@ -1,7 +1,5 @@
 package Graphics;
 
-
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -39,11 +37,25 @@ import sun.java2d.loops.DrawPolygons;
 public class Canvas extends JPanel 
     implements ActionListener {
 
+    /**
+     * Note: 
+     *      The total GUI width >= CANVAS_WIDTH = (currently 430)
+     *      The total GUI height >= CANVAS_HEIGHT + MenuBarHeight = (currently 475)
+     *                                             MenuBarHeight = 45
+     */
+    private final int BOARD_OFFSET_X = 10;
+    private final int BOARD_OFFSET_Y = 10;
+    private final int WALL_WIDTH = 5;
+    private final int WALL_LENGTH = 410; //BOARD_HEIGHT + 2*WALL_WIDTH
     private final int BOARD_WIDTH = 400;
     private final int BOARD_HEIGHT = 400;
+    
+    private final int CANVAS_WIDTH = BOARD_OFFSET_X*2 + WALL_WIDTH*2 + BOARD_WIDTH;
+    private final int CANVAS_HEIGHT = BOARD_OFFSET_Y*2 + WALL_WIDTH*2 + BOARD_HEIGHT;
+    
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
-    private final int DELAY = 10;  //Miliseconds to repaint
+    private final int DELAY = 10;  //Milliseconds to repaint
     Color backgroundColor = Color.white;
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
@@ -78,7 +90,7 @@ public class Canvas extends JPanel
     private void initCanvas() {
         
         setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
+        setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         setDoubleBuffered(true);
 
@@ -154,19 +166,18 @@ public class Canvas extends JPanel
 public Shape makeBall(Ball ball){
     
 
-//<<<<<<< HEAD
-//    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 + 50 , (float) ball.getPosition()[1]*20, 10, 10);
-//=======
     Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*20 , (float) ball.getNormalPosition()[1]*20 , 5, 5);
-//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
     return newCirc;
 }
 
 public void makeWalls(Graphics2D graph2){
-    Shape vertWall1 = new Rectangle2D.Float(8,0, 5, 400);
-    Shape vertWall2 = new Rectangle2D.Float(400,0, 5, 400);
-    Shape horWall1 = new Rectangle2D.Float(8, 0, 400, 5);
-    Shape horWall2 = new Rectangle2D.Float(8, 400, 400, 5);
+    Shape vertWall1 = new Rectangle2D.Float(BOARD_OFFSET_X,BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
+    Shape vertWall2 = new Rectangle2D.Float(BOARD_OFFSET_X + WALL_WIDTH + BOARD_WIDTH,
+                                            BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
+    Shape horWall1 = new Rectangle2D.Float(BOARD_OFFSET_X, BOARD_OFFSET_Y, WALL_LENGTH, WALL_WIDTH);
+    Shape horWall2 = new Rectangle2D.Float(BOARD_OFFSET_X, 
+                                            BOARD_OFFSET_Y + WALL_WIDTH + BOARD_HEIGHT, 
+                                            WALL_LENGTH, WALL_WIDTH);
     
     
     graph2.setColor(Color.BLACK);
