@@ -30,7 +30,7 @@ package BoardExpr2;
  * *** ANTLR requires grammar nonterminals to be lowercase, like html, normal, and italic.
  */
 
-boardInfo : board (object | COMMENT | fire | keys | portal)* EOF; 
+boardInfo : board (object | COMMENT | fire | keys | portal | spawner)* EOF; 
 
 board : 'board' objectName gravity* ( friction1 | friction2)*;
 gravity : 'gravity' equalSign NUM;
@@ -60,6 +60,8 @@ portal: PORTAL objectName xLoc yLoc otherBoard* otherPortal;
 otherBoard: 'otherBoard' equalSign ID;
 otherPortal: 'otherPortal' equalSign ID;
 
+spawner: SPAWNER objectName xLoc yLoc;
+
 KEYUP: 'keyup';
 KEYDOWN: 'keydown';
 
@@ -68,6 +70,7 @@ FIRE: 'fire';
 TRIGGER: 'trigger';
 ACTION: 'action';
 PORTAL: 'portal';
+SPAWNER: 'spawner';
 COMMENT: '#' ~('\r' | '\n')* -> skip;
 
 NUM: '-'?([0-9]+'.'[0-9]*|'.'?[0-9]+);

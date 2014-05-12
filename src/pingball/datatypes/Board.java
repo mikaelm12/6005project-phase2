@@ -27,6 +27,8 @@ public class Board {
     private final double mu2;
     private List<Ball> balls;
     private List<Gadget> gadgets;
+    private ArrayList<Gadget> portals;
+    private ArrayList<Gadget> spawners;
     private String[][] boardString;
     private String neighborLeftString;
     private String neighborTopString;
@@ -153,6 +155,22 @@ public class Board {
         for(Gadget gadget: gadgets){
             this.gadgets.add(gadget);
         }
+    }
+    
+    /**
+     * adds a portal to the board
+     * @param portal to be added to the board
+     */
+    public void addPortal(Gadget portal){
+        portals.add(portal);
+    }
+    
+    /**
+     * adds a spawner to the board
+     * @param spawner to be added to the board
+     */
+    public void addSpawner(Gadget spawner){
+        spawners.add(spawner);
     }
     
     /**

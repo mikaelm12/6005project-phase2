@@ -9,6 +9,9 @@ public interface GrammarListener extends ParseTreeListener {
 	void enterFriction1(GrammarParser.Friction1Context ctx);
 	void exitFriction1(GrammarParser.Friction1Context ctx);
 
+	void enterSpawner(GrammarParser.SpawnerContext ctx);
+	void exitSpawner(GrammarParser.SpawnerContext ctx);
+
 	void enterXVelocity(GrammarParser.XVelocityContext ctx);
 	void exitXVelocity(GrammarParser.XVelocityContext ctx);
 

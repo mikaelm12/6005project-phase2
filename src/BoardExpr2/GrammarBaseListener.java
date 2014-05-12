@@ -12,6 +12,9 @@ public class GrammarBaseListener implements GrammarListener {
 	@Override public void enterFriction1(GrammarParser.Friction1Context ctx) { }
 	@Override public void exitFriction1(GrammarParser.Friction1Context ctx) { }
 
+	@Override public void enterSpawner(GrammarParser.SpawnerContext ctx) { }
+	@Override public void exitSpawner(GrammarParser.SpawnerContext ctx) { }
+
 	@Override public void enterXVelocity(GrammarParser.XVelocityContext ctx) { }
 	@Override public void exitXVelocity(GrammarParser.XVelocityContext ctx) { }
 
