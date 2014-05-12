@@ -48,4 +48,7 @@ board name=sampleBoard2_2 gravity=20.0 friction1=0.020 friction2=0.020
   # make the absorber self-triggering
   fire trigger=Abs action=Abs 
 
+  portal name=Alpha x=5 y=7 otherPortal=Beta
+  portal name=Beta x=15 y=7 otherBoard=Mercury otherPortal=Gamma
+  spawner name=Maker x=0 y =0
   keydown key=space action=FlipR1

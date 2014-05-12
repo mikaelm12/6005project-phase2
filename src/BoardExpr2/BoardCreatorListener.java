@@ -2,7 +2,6 @@ package BoardExpr2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
@@ -10,6 +9,7 @@ import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
@@ -23,6 +23,8 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     */
    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
    private ArrayList<Ball> balls = new ArrayList<Ball>();
+   private ArrayList<Gadget> portals = new ArrayList<Gadget>();
+   private ArrayList<Gadget> spawners = new ArrayList<Gadget>();
    private HashMap<String, String> gadgetKeyUpListeners = new HashMap<String, String>();
    private HashMap<String, String> gadgetKeyDownListeners = new HashMap<String, String>();
    private Board board;
@@ -171,6 +173,29 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         }else if(ctx.keyCmd().getText().toLowerCase().equals("keydown")){
             gadgetKeyDownListeners.put(keyBoardChar, gadget);
         }
+    }
+    
+    @Override
+    public void exitSpawner(GrammarParser.SpawnerContext ctx){
+        String name = ctx.objectName().getText();
+        String xLoc = ctx.xLoc().getChild(2).getText();
+        String yLoc = ctx.xLoc().getChild(2).getText();
+        
+//        spawners.add(new Spawner(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc)));
+    }
+    
+    @Override
+    public void exitPortal(GrammarParser.PortalContext ctx){
+        String name = ctx.objectName().getText();
+        String xLoc = ctx.xLoc().getChild(2).getText();
+        String yLoc = ctx.xLoc().getChild(2).getText();
+        String otherPortal = ctx.otherPortal().getChild(2).getText();
+        String otherBoard = "";
+        if(ctx.getChildCount() == 5){
+            otherBoard = ctx.getChild(3).getText();
+        }
+        
+        portals.add(new Portal(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc), otherBoard, otherPortal));
     }
     
 }
