@@ -16,6 +16,9 @@ public class Portal implements Gadget {
 	private final String otherBoard; 
 	private final String otherPortal;
 	private List<Gadget> gadgetsToFire;
+	private List<Ball> sentBallQueue;
+	private List<Ball> receivedBallQueue;
+	
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
 		this.circle = new Circle(x+.5, y+.5, .5);
@@ -38,19 +41,47 @@ public class Portal implements Gadget {
 
 	@Override
 	public double timeUntilPhysicsCollision(Ball ball) {
-        return Geometry.timeUntilCircleCollision(this.circle, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+		if (ballComingFromPortal(ball)){ 
+			return Double.POSITIVE_INFINITY;
+		}
+		return Geometry.timeUntilCircleCollision(this.circle, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
+	}
+
+	private boolean ballComingFromPortal(Ball ball) {
+		double ballX = ball.getNormalCircle().getCenter().x();
+		double ballY = ball.getNormalCircle().getCenter().y();
+		double ballVelX = ball.getNormalVelocity().x();
+		double ballVelY = ball.getNormalVelocity().y();
+		double ballDeltaX = ballX*ballVelX*.01; //*.01 because we do not want this to be too large. If this is too large, we run the risk of traveling past the center of the portal--causing a false negative
+		double ballDeltaY = ballY*ballVelY*.01;
+		double portalX = this.x+.5;
+		double portalY = this.y+.5;
+		double distanceBeforeDelta = Math.sqrt(Math.pow(ballX-portalX, 2)+Math.pow(ballY-portalY, 2));
+		double distanceAfterDelta = Math.sqrt(Math.pow(ballX+ballDeltaX-portalX, 2)+Math.pow(ballY+ballDeltaY-portalY, 2));		
+		return (distanceAfterDelta>distanceBeforeDelta); //we are traveling away from (or out of) the portal
 	}
 
 	@Override
 	public void reflectOff(Ball ball) {
-		this.sendBall(ball);
 		this.trigger();
-	}
-
-	public void sendBall(Ball ball) {
-		// TODO Auto-generated method stub
+		this.sendBall(ball);
 	}
 	
+	/**
+	 * Adds a ball to the portal's sentBallQueue, from which the ball will be retrieved and taken away from the portal to its destination (assuming the destination is valid).
+	 * @param ball ball to be sent "into" the portal
+	 */
+	public void sendBall(Ball ball) {
+		synchronized(sentBallQueue){
+			sentBallQueue.add(ball);
+		}
+	}
+	
+	/**
+	 * Receives a ball from some other portal (of which this is the target portal).
+	 * Places the ball on the board, in the center of the portal.
+	 * @param ball ball to "come out of" the portal
+	 */
 	public void receiveBall(Ball ball){
 		double ballX = this.x+.25;
 		double ballY = this.y+.25;
@@ -90,13 +121,15 @@ public class Portal implements Gadget {
 
     @Override
     public String getGadgetType() {
-        
         return "Portal";
     }
 
 	public String getTargetPortalName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.otherPortal;
+	}
+	
+	public String getTargetPortalBoardName(){
+		return this.otherPortal;
 	}
 
 }
