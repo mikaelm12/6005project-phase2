@@ -93,7 +93,6 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     }
     
     
-    
     /**
      * This method extends ANTLR's GrammarBaseListener.
      * 
@@ -140,7 +139,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     /**
      * This method extends ANTLR's GrammarBaseListener.
      * 
-     * When exiting out of the a Fire Object in the tree, this method extracts the necessary information
+     * When exiting out of the Fire Object in the tree, this method extracts the necessary information
      * in the file to store the fire information.  This method stores the fire commands as a list of
      * Strings -> [String trigger, String action] and adds it to the global object fireCmds.
      */
@@ -165,6 +164,13 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         }
     }
     
+    /**
+     * This method extends ANTLR's GrammarBaseListener.
+     * 
+     * When exiting out of the Keys Object in the tree, this method extracts the necessary information
+     * in the file to store the key listener information.  This method stores the key commands in a global
+     * hashmap that stores the key board character with the associated action.
+     */
     @Override
     public void exitKeys(GrammarParser.KeysContext ctx){
         System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
@@ -178,6 +184,14 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         }
     }
     
+    
+    /**
+     * This method extends ANTLR's GrammarBaseListener.
+     * 
+     * When exiting out of the Spawner Object in the tree, this method extracts the necessary information
+     * in the file to store the spawner information.  This method adds the spawner to a global list containing
+     * all of the board's spawners.
+     */
     @Override
     public void exitSpawner(GrammarParser.SpawnerContext ctx){
         String name = ctx.objectName().getText();
@@ -187,6 +201,13 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         spawners.add(new BallSpawner(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc)));
     }
     
+    /**
+     * This method extends ANTLR's GrammarBaseListener.
+     * 
+     * When exiting out of the Portal Object in the tree, this method extracts the necessary information
+     * in the file to store the Portal information.  This method adds the portal to a global list containing
+     * all of the board's portals.
+     */
     @Override
     public void exitPortal(GrammarParser.PortalContext ctx){
         String name = ctx.objectName().getText();

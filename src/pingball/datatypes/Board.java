@@ -27,8 +27,8 @@ public class Board {
     private final double mu2;
     private List<Ball> balls;
     private List<Gadget> gadgets;
-    private ArrayList<Gadget> portals;
-    private ArrayList<Gadget> spawners;
+    private List<Gadget> portals;
+    private List<Gadget> spawners;
     private String[][] boardString;
     private String neighborLeftString;
     private String neighborTopString;
@@ -63,7 +63,8 @@ public class Board {
         this.mu2 = mu2;
         balls = Collections.synchronizedList(new ArrayList<Ball>());
         gadgets = Collections.synchronizedList(new ArrayList<Gadget>());
-                
+        spawners = Collections.synchronizedList(new ArrayList<Gadget>());    
+        portals = Collections.synchronizedList(new ArrayList<Gadget>());
         this.neighborLeftString = wallLeft.toString();
         this.neighborTopString = wallTop.toString();
         this.neighborRightString = wallRight.toString();
