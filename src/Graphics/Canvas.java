@@ -163,13 +163,18 @@ public Shape makeBall(Ball ball){
 }
 
 public void makeWalls(Graphics2D graph2){
-    Shape vertWall1 = new Rectangle2D.Float(8,0, 2, 400);
-    Shape vertWall2 = new Rectangle2D.Float(400,0, 2, 400);
+    Shape vertWall1 = new Rectangle2D.Float(8,0, 5, 400);
+    Shape vertWall2 = new Rectangle2D.Float(400,0, 5, 400);
+    Shape horWall1 = new Rectangle2D.Float(8, 0, 400, 5);
+    Shape horWall2 = new Rectangle2D.Float(8, 400, 400, 5);
+    
     
     graph2.setColor(Color.BLACK);
     
     graph2.fill(vertWall1);
     graph2.fill(vertWall2);
+    graph2.fill(horWall1);
+    graph2.fill(horWall2);
     
 }
 

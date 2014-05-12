@@ -120,6 +120,7 @@ public class Main {
 
 			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
 			System.out.println("Velocity: "+ball.getNormalVelocity());
+			
 		}
 		double timestepLeft = timestep+0;
 		while (timestepLeft > 0){
