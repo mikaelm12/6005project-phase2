@@ -1,7 +1,5 @@
 package Graphics;
 
-
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -11,8 +9,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 import pingball.datatypes.Board;
-
-
 
 public class SwingTimerExample extends JFrame {
 

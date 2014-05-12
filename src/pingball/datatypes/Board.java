@@ -421,7 +421,6 @@ public class Board {
     public void checkKeyListener(KeyEvent e, boolean pressed){
         String key = String.valueOf(e.getKeyChar());
         if(key.equals(" ")) key = "space";
-
         if(gadgetKeyUpListeners.containsKey(key)){ //Keyup
             Gadget gadget = null;
 

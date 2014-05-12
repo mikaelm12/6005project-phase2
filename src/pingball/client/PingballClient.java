@@ -192,7 +192,7 @@ public class PingballClient {
     
             }
         });
-        //System.out.println(board.toString());
+        System.out.println(board.toString());
         
         
         //PLAY!
@@ -256,7 +256,7 @@ public class PingballClient {
                 double timestep = 0.05;
                 update(board, timestep);
                 counter++;
-              //  System.out.println(board.toString());
+                System.out.println(board.toString());
             }
             
         }
