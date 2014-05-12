@@ -127,7 +127,7 @@ public class SquareBumper implements Gadget{
      */
     @Override
     public void reflectOff(Ball ball){
-    	System.out.println("Reflecting Off of "+this.getName());
+//    	System.out.println("Reflecting Off of "+this.getName());
         LineSegment edgeShortestTimeToCollision = null;
         Circle closestCorner = null; 
         double closestTimeToCollision = Double.POSITIVE_INFINITY; //default value since double has to be initialized
@@ -151,11 +151,11 @@ public class SquareBumper implements Gadget{
                 closestCorner = corner;
             }
         }
-        System.out.println("Position: "+ ball.getNormalCircle().getCenter().x() + ", " + ball.getNormalCircle().getCenter().y());
+//        System.out.println("Position: "+ ball.getNormalCircle().getCenter().x() + ", " + ball.getNormalCircle().getCenter().y());
         Vect newVelocityVector;
         //reflect using appropriate corner or edge
         if(closestCorner == null){ //we've hit an edge
-        	System.out.println(edgeShortestTimeToCollision);
+//        	System.out.println(edgeShortestTimeToCollision);
             newVelocityVector = Geometry.reflectWall(edgeShortestTimeToCollision, ball.getPhysicsVelocity(), coR);
         }
         else{//we've hit a corner

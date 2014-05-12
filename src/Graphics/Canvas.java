@@ -189,12 +189,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-//<<<<<<< HEAD
-//        //Add 50 beacause its the shifting constant
-//        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 + 50 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
-//=======
         Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*20 + 8 ,(float)cb.getNormalCircle().getCenter().y()*20, 20,20);
-//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
 
         graph2.setColor(Color.ORANGE);
         
@@ -246,43 +241,6 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         //Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 + 3);
 
     }
-    
-//    else if(gadget.getGadgetType().equals("Left Flipper")){
-//        
-//        LeftFlipper leftFlipper = (LeftFlipper)gadget;
-//        Shape flipper = new Rectangle2D.Float((float)leftFlipper.getPosition().x()*20 + 8 , (float)leftFlipper.getPosition().y()*20 , 5 , 30);
-//
-//        graph2.setColor(Color.CYAN);
-//        graph2.rotate(leftFlipper.getCurrentAngle());
-//        graph2.fill(flipper); 
-//        
-//        
-//    }
-//    else if(gadget.getGadgetType().equals("Right Flipper")){
-//        
-//        RightFlipper rightFlipper = (RightFlipper)gadget;
-//        Shape flipper = new Rectangle2D.Float((float)rightFlipper.getPosition().x()*20 + 8 , (float)rightFlipper.getPosition().y()*20 , 5 , 30);
-//
-//        graph2.setColor(Color.CYAN);
-//        graph2.rotate(rightFlipper.getCurrentAngle());
-//        graph2.fill(flipper); 
-//        
-//        
-//    }
-//    else if(gadget.getGadgetType().equals("Triangle Bumper")){
-//        
-//        TriangularBumper tri = (TriangularBumper)gadget;
-//        double[] x = new double[3];
-//        double[] y = new double[3];
-//        int index = 0;
-//        for (CircularBumper cb : tri.getCorners()){
-//            x[index] = cb.getCircle().getCenter().x();
-//           y[index] = cb.getCircle().getCenter().y();
-//           index++;
-//        }
-//        
-//        
-//    }
     
     
 }
