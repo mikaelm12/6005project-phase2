@@ -232,6 +232,10 @@ public class TriangularBumper implements Gadget{
         return new Vect(this.x,this.y);
     }
     
+    public int getOrientation(){
+    	return this.orientation;
+    }
+    
     /**
      * @return a String representation of TriangularBumper in the orientation specified
      */

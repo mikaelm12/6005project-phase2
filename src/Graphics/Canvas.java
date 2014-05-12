@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,6 +213,35 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         
         graph2.fill(absorber);  
     }
+    else if(gadget.getGadgetType().equals("Triangluar Bumper")){
+    	TriangularBumper tb = (TriangularBumper) gadget;
+    	GeneralPath tbLineDrawer = new GeneralPath();
+    	if (tb.getOrientation()==0){
+    		tbLineDrawer.moveTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+0);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+0);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+20);
+    	} else if(tb.getOrientation()==90){
+    		tbLineDrawer.moveTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+0);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+20);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+0);
+    	} else if(tb.getOrientation()==180){
+    		tbLineDrawer.moveTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+20);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+20);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+0);
+    	} else {
+    		tbLineDrawer.moveTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+20);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+0);
+    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+20);
+    	}
+    	
+    	tbLineDrawer.closePath();
+    	graph2.setColor(Color.RED);
+    	graph2.fill(tbLineDrawer);
+    	
+        //Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 + 3);
+
+    }
+    
 //    else if(gadget.getGadgetType().equals("Left Flipper")){
 //        
 //        LeftFlipper leftFlipper = (LeftFlipper)gadget;
