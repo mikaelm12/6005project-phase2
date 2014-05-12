@@ -433,14 +433,26 @@ public class Board {
     private void checkRep(){
     }
     
-    
+    /**
+     * This method is called when during the process when the board file is being parsed.
+     * This adds a hashmap of the listeners -> {String keyBoardChar: String gadget}
+     * These listeners are specifically for when the associated key is being released
+     * @param listeners the hashmap of listeners
+     */
     public void addKeyUpListener(HashMap<String, String> listeners){
         gadgetKeyUpListeners = listeners;
     }
     
+    /**
+     * This method is called when during the process when the board file is being parsed.
+     * This adds a hashmap of the listeners -> {String keyBoardChar: String gadget}
+     * These listeners are specifically for when the associated key is being pressed
+     * @param listeners the hashmap of listeners
+     */
     public void addKeyDownListener(HashMap<String, String> listeners){
         gadgetKeyDownListeners = listeners;
     }
+    
     /**
      * This method is called when a key is pressed when the GUI is active.
      * If the key that was pressed is associated with a gadget, the gadget is then activated.
@@ -460,7 +472,6 @@ public class Board {
                         gadget = curGadget;
                     }
                 }
-                
                 gadget.action();
             }
         }
