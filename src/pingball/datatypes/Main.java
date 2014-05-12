@@ -30,8 +30,8 @@ public class Main {
     public static void main(String[] args) throws IOException{
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
-    	//File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
-        File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
+    	File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
+        //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
 
         String fileString = "";

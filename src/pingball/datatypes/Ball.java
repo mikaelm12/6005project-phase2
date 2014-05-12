@@ -52,16 +52,30 @@ public class Ball {
      * @param vect new velocity vector of the ball
      */
     public void setNormalVelocity(Vect vect){
-        this.velocityVector = vect;
+        this.velocityVector = adjustSpeed(vect);
     }
-    /**
+    private Vect adjustSpeed(Vect vect) {
+    	double maxSpeed = 40.0;
+    	double vectSpeed = Math.sqrt(Math.pow(vect.x(),2)+Math.pow(vect.y(),2));
+    	double scalingFactor = vectSpeed/maxSpeed;
+    	if (scalingFactor>1){
+    		double newXVel = vect.x()/scalingFactor;
+    		double newYVel = vect.y()/scalingFactor;
+    		vect = new Vect(newXVel, newYVel);
+    	}
+    	return vect;
+	}
+
+
+	/**
      * set the velocity of the ball, accounting for the physics package's y-discrepancy
      * @param vect new velocity vector of the ball, accounting for the physics package's y-discrepancy
      */
     public void setPhysicsVelocity(Vect vect){
     	double newX = vect.x();
     	double newY = (-1)*vect.y();
-        this.velocityVector = new Vect(newX, newY);
+    	Vect newVect = new Vect(newX, newY);
+        this.velocityVector = adjustSpeed(newVect);
     }
     
     
