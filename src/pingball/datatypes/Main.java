@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import BoardExpr.BoardFactory;
+import BoardExpr2.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Geometry.VectPair;
@@ -25,12 +26,12 @@ public class Main {
     
     /**
      * TODO: describe your main function's command line arguments here
-     * @throws IOException 
+     * @throws Exception 
      */
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws Exception{
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
-    	File file = new File("/Users/ahochstadt/pingball-phase2/boards/board1P.txt");
+    	File file = new File("src/../boards/board1P.txt");
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
 
@@ -48,46 +49,15 @@ public class Main {
            }
        }
         // Create the board
-        final Board board  =  BoardFactory.parse(fileString);
-        
-      // final Board board = new Board("board",25,0.025,0.025);
-        SquareBumper square1 = new SquareBumper("square1",4,2);
-        SquareBumper square2 = new SquareBumper("square2",7,2);
-        SquareBumper square3 = new SquareBumper("square3",5,2);
-        SquareBumper square4 = new SquareBumper("square4",6,2);
-        CircularBumper circleBumper = new CircularBumper("circleBumper",8,3);
-        TriangularBumper triangleBumper = new TriangularBumper("triangleBumper",19,1,270);
-        //LeftFlipper flipperL = new LeftFlipper("flipperL",6,7,0);
-        //RightFlipper flipperR = new RightFlipper("flipperR",10,7,0);
-        SquareBumper square34 = new SquareBumper("square2",10,14);
-        SquareBumper square35= new SquareBumper("square3",11,14);
-        SquareBumper square36 = new SquareBumper("square2",12,14);
-        SquareBumper square37= new SquareBumper("square3",13,14);
-        SquareBumper square38 = new SquareBumper("square2",14,14);
-        SquareBumper square39= new SquareBumper("square3",15,14);
-        SquareBumper square40 = new SquareBumper("square4",6,2);
-        Absorber absorber = new Absorber("abs",0,15,20,5);
-        //square.addGadgetToFire(flipperL);
-        //flipperL.addGadgetToFire(flipperR);
-        //flipperL.addGadgetToFire(flipperL);
-        //flipperR.addGadgetToFire(flipperR);
-        absorber.addGadgetToFire(absorber);
-        //square2.addGadgetToFire(flipperL);
-//        board.addGadgetList(Arrays.asList(square1,square2,square3,square4,circleBumper,triangleBumper,flipperL,flipperR,absorber));
-//        Ball ball1 = new Ball("ball",10,10,-3.4,-2.3);
-//        Ball ball2 = new Ball("ball",5,5,4,2);
-//        board.addBall(ball1);
-//        board.addBall(ball2);
-//        Board neighbor = new Board("neir",25,0.025,0.025);
-//        board.setNeighborBottom(neighbor);
-//        board.setNeighborTop(neighbor);
+        final Board board  =  GrammarFactory.parse(fileString);
+        System.out.println(board);
         
        EventQueue.invokeLater(new Runnable() {
             
             @Override
             public void run() {                
                 JFrame ex = new SwingTimer(board);
-                ex.setMinimumSize(new Dimension(425, 425));
+                ex.setMinimumSize(new Dimension(430, 475));
                 ex.setVisible(true);                
             }
         });
