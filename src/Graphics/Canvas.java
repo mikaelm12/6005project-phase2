@@ -43,15 +43,30 @@ public class Canvas extends JPanel
      *      The total GUI height >= CANVAS_HEIGHT + MenuBarHeight = (currently 475)
      *                                             MenuBarHeight = 45
      */
+    
+    //Fixed variables for the Board/Wall
     private final int BOARD_OFFSET_X = 10;
     private final int BOARD_OFFSET_Y = 10;
     private final int WALL_WIDTH = 5;
     private final int WALL_LENGTH = 410; //BOARD_HEIGHT + 2*WALL_WIDTH
     private final int BOARD_WIDTH = 400;
     private final int BOARD_HEIGHT = 400;
+
+    //Scaling factor - used for all gadgets
+    private final int SCALE_FACTOR = 20;
+    
+    //Fixed variables for all generic gadgets
+    private final int GADGET_OFFSET_X_EDGE = BOARD_OFFSET_X + WALL_WIDTH;
+    private final int GADGET_OFFSET_Y_EDGE = BOARD_OFFSET_Y + WALL_WIDTH;
+    private final int GADGET_OFFSET_TOCENTER = SCALE_FACTOR/2;
+    
+    //Fixed variable for the square bumper specifically
+    private final int SQR_BUMPER_LENGTH = 18;
+    private final int SQR_BUMPER_OFFSET = (SCALE_FACTOR - SQR_BUMPER_LENGTH)/2;
     
     private final int CANVAS_WIDTH = BOARD_OFFSET_X*2 + WALL_WIDTH*2 + BOARD_WIDTH;
     private final int CANVAS_HEIGHT = BOARD_OFFSET_Y*2 + WALL_WIDTH*2 + BOARD_HEIGHT;
+    
     
     private final int INITIAL_X = 0;
     private final int INITIAL_Y = 0;
@@ -179,14 +194,12 @@ public void makeWalls(Graphics2D graph2){
                                             BOARD_OFFSET_Y + WALL_WIDTH + BOARD_HEIGHT, 
                                             WALL_LENGTH, WALL_WIDTH);
     
-    
     graph2.setColor(Color.BLACK);
     
     graph2.fill(vertWall1);
     graph2.fill(vertWall2);
     graph2.fill(horWall1);
     graph2.fill(horWall2);
-    
 }
 
 
@@ -200,25 +213,31 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-        Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*20 + 8 ,(float)cb.getNormalCircle().getCenter().y()*20, 20,20);
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE - GADGET_OFFSET_TOCENTER,
+                                                (float)cb.getNormalCircle().getCenter().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE - GADGET_OFFSET_TOCENTER, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
 
         graph2.setColor(Color.ORANGE);
         
         graph2.fill(circleBumper);
     }
     else if(gadget.getGadgetType().equals("Square Bumper")){
+        
         SquareBumper sb = (SquareBumper)gadget;
-        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20 + 8 , (float)gadget.getPosition().y()*20, 12, 5);
+        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE + SQR_BUMPER_OFFSET, 
+                                                (float)gadget.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE + SQR_BUMPER_OFFSET, 
+                                                SQR_BUMPER_LENGTH, 
+                                                SQR_BUMPER_LENGTH);
 
         graph2.setColor(Color.BLUE);
         
         graph2.fill(squareBumper);  
-        
     }
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
-        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 + 3);
+        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE , (float)abs.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE , abs.getWidth()*SCALE_FACTOR, abs.getHeight()*SCALE_FACTOR);
 
         graph2.setColor(Color.magenta);
         
@@ -227,22 +246,27 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     else if(gadget.getGadgetType().equals("Triangluar Bumper")){
     	TriangularBumper tb = (TriangularBumper) gadget;
     	GeneralPath tbLineDrawer = new GeneralPath();
-    	if (tb.getOrientation()==0){
-    		tbLineDrawer.moveTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+0);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+0);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+20);
-    	} else if(tb.getOrientation()==90){
-    		tbLineDrawer.moveTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+0);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+20);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+0);
-    	} else if(tb.getOrientation()==180){
-    		tbLineDrawer.moveTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+20);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+20);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+0);
-    	} else {
-    		tbLineDrawer.moveTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+20);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+0, 20*tb.getPosition().y()+0);
-    		tbLineDrawer.lineTo(20*tb.getPosition().x()+20, 20*tb.getPosition().y()+20);
+    	
+    	//positions are relvative to the top left hand corner
+    	double xPosition = tb.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
+    	double yPosition = tb.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
+    	
+    	if (tb.getOrientation()==0){ //top-right corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition); //starts top-left hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition); //moves to right
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves downward
+    	} else if(tb.getOrientation()==90){ //bottom-right corner triangle
+    		tbLineDrawer.moveTo(xPosition+SCALE_FACTOR, yPosition); //starts top-right hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves downward
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR); //moves left
+    	} else if(tb.getOrientation()==180){//bottom-left corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition); //starts top-left hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves diagonally to bottom-right corner
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR); // moves left
+    	} else {//top-left corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition+SCALE_FACTOR); //starts top-right corner
+    		tbLineDrawer.lineTo(xPosition, yPosition); //moves left
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves downward
     	}
     	
     	tbLineDrawer.closePath();
