@@ -89,8 +89,6 @@ public class Canvas extends JPanel
      * @param board -The pingball board to be displayed
      */
     public Canvas(Board board) {
-                
-     
         initCanvas(); 
         this.board = board;
     }
@@ -159,11 +157,7 @@ public class Canvas extends JPanel
   
        }
        for(Gadget gadget: gadgets){
-           
-          
-               
-               makeGadget(gadget, graph2);
-
+           makeGadget(gadget, graph2);
        }
        
 
@@ -180,8 +174,10 @@ public class Canvas extends JPanel
  */
 public Shape makeBall(Ball ball){
     
-
-    Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*20 , (float) ball.getNormalPosition()[1]*20 , 5, 5);
+    Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*SCALE_FACTOR + GADGET_OFFSET_X_EDGE, 
+                                        (float) ball.getNormalPosition()[1]*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE,
+                                        5,
+                                        5);
     return newCirc;
 }
 
