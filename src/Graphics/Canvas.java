@@ -25,10 +25,12 @@ import javax.swing.Timer;
 
 import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
@@ -44,13 +46,17 @@ public class Canvas extends JPanel
      *                                             MenuBarHeight = 45
      */
     
-    //Fixed variables for the Board/Wall
-    private final int BOARD_OFFSET_X = 10;
-    private final int BOARD_OFFSET_Y = 10;
-    private final int WALL_WIDTH = 5;
-    private final int WALL_LENGTH = 410; //BOARD_HEIGHT + 2*WALL_WIDTH
+    //Fixed variables for the Board/Wall/Canvas
     private final int BOARD_WIDTH = 400;
     private final int BOARD_HEIGHT = 400;
+    private final int BOARD_OFFSET_X = 10;
+    private final int BOARD_OFFSET_Y = 10;
+
+    private final int WALL_LENGTH = 410; //BOARD_HEIGHT + 2*WALL_WIDTH
+    private final int WALL_WIDTH = 5;
+
+    private final int CANVAS_WIDTH = BOARD_OFFSET_X*2 + WALL_WIDTH*2 + BOARD_WIDTH;
+    private final int CANVAS_HEIGHT = BOARD_OFFSET_Y*2 + WALL_WIDTH*2 + BOARD_HEIGHT;
 
     //Scaling factor - used for all gadgets
     private final int SCALE_FACTOR = 20;
@@ -64,21 +70,15 @@ public class Canvas extends JPanel
     private final int SQR_BUMPER_LENGTH = 18;
     private final int SQR_BUMPER_OFFSET = (SCALE_FACTOR - SQR_BUMPER_LENGTH)/2;
     
-    private final int CANVAS_WIDTH = BOARD_OFFSET_X*2 + WALL_WIDTH*2 + BOARD_WIDTH;
-    private final int CANVAS_HEIGHT = BOARD_OFFSET_Y*2 + WALL_WIDTH*2 + BOARD_HEIGHT;
-    
-    
-    private final int INITIAL_X = 0;
-    private final int INITIAL_Y = 0;
     private final int DELAY = 10;  //Milliseconds to repaint
     Color backgroundColor = Color.white;
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
     List<Gadget> gadgets = new ArrayList<Gadget>();
+    List<BallSpawner> spawners = new ArrayList<BallSpawner>();
+    List<Portal> portals = new ArrayList<Portal>();
     private Board board; 
-    private Image star;
     private Timer timer;
-    private int x, y;
     public boolean forward = true;
 
     /**
@@ -146,6 +146,9 @@ public class Canvas extends JPanel
         
        balls = this.board.getBalls();
        gadgets = this.board.getGadgets();
+       spawners = this.board.getSpawners();
+       portals = this.board.getPortals();
+       
        makeWalls(graph2);
        for (Ball ball: balls ){
 
@@ -156,10 +159,9 @@ public class Canvas extends JPanel
                graph2.fill(temp);
   
        }
-       for(Gadget gadget: gadgets){
-           makeGadget(gadget, graph2);
-       }
-       
+       for(Gadget gadget: gadgets) makeGadget(gadget, graph2);
+       for(Gadget gadget: spawners) makeGadget(gadget, graph2);
+       for(Gadget gadget: portals) makeGadget(gadget, graph2);
 
         Graphics2D g2d = (Graphics2D) g;
        
@@ -247,22 +249,22 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	double xPosition = tb.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double yPosition = tb.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
     	
-    	if (tb.getOrientation()==0){ //top-right corner triangle
-    		tbLineDrawer.moveTo(xPosition, yPosition); //starts top-left hand corner
-    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition); //moves to right
-    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves downward
-    	} else if(tb.getOrientation()==90){ //bottom-right corner triangle
-    		tbLineDrawer.moveTo(xPosition+SCALE_FACTOR, yPosition); //starts top-right hand corner
-    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves downward
-    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR); //moves left
-    	} else if(tb.getOrientation()==180){//bottom-left corner triangle
-    		tbLineDrawer.moveTo(xPosition, yPosition); //starts top-left hand corner
-    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves diagonally to bottom-right corner
-    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR); // moves left
-    	} else {//top-left corner triangle
-    		tbLineDrawer.moveTo(xPosition, yPosition+SCALE_FACTOR); //starts top-right corner
-    		tbLineDrawer.lineTo(xPosition, yPosition); //moves left
-    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR); //moves downward
+    	if (tb.getOrientation()==90){ //top-right corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition);                            //starts top-left hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition);               //moves to right
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR);  //moves downward
+    	} else if(tb.getOrientation()==180){ //bottom-right corner triangle
+    		tbLineDrawer.moveTo(xPosition+SCALE_FACTOR, yPosition);               //starts top-right hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR);  //moves downward
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR);               //moves left
+    	} else if(tb.getOrientation()==270){//bottom-left corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition);                            //starts top-left hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR);  //moves diagonally to bottom-right corner
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR);               // moves left
+    	} else if(tb.getOrientation()==0){//top-left corner triangle
+    		tbLineDrawer.moveTo(xPosition+SCALE_FACTOR, yPosition);               //starts top-right corner
+    		tbLineDrawer.lineTo(xPosition, yPosition);                            //moves left
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR);               //moves downward
     	}
     	
     	tbLineDrawer.closePath();
@@ -286,7 +288,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         graph2.setColor(Color.RED);
  
         graph2.fill(flipperLineDrawer);  
-    
+
     }
     else if(gadget.getGadgetType().equals("Right Flipper")){
     	GeneralPath flipperLineDrawer = new GeneralPath();
@@ -307,8 +309,24 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         graph2.fill(flipperLineDrawer);  
     
     }
-    
+    else if(gadget.getGadgetType().equals("Portal")){
+        Portal p = (Portal)gadget;
+        Shape portal = new Ellipse2D.Float((float)p.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
+                                                (float)p.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
+        Shape portalInner = new Ellipse2D.Float((float)p.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE+2,
+                (float)p.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE+2, 
+                SCALE_FACTOR-4/*width*/,
+                SCALE_FACTOR-4/*height*/);
+        
+        graph2.setColor(Color.BLACK);
+        graph2.fill(portal);
+        graph2.setColor(Color.CYAN);
+        graph2.fill(portalInner);
+    }
 }
+
 
 //TODO Implement these methods
 
@@ -316,7 +334,6 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
 //    
 //}
 
-// public Shape make
 
    /**
     * This method is called every time the timer is set off and 
