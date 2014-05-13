@@ -13,7 +13,7 @@ public class Portal implements Gadget {
 	private String name;
 	private final int x;
 	private final int y;
-	private final String otherBoard; 
+	private String otherBoard; 
 	private final String otherPortal;
 	private List<Gadget> gadgetsToFire;
 	private List<Ball> sentBallQueue;
@@ -82,7 +82,7 @@ public class Portal implements Gadget {
 	 * Places the ball on the board, in the center of the portal.
 	 * @param ball ball to "come out of" the portal
 	 */
-	public void receiveBall(Ball ball){
+	public synchronized void receiveBall(Ball ball){
 		double ballX = this.x+.25;
 		double ballY = this.y+.25;
 		ball.setNormalPosition(ballX, ballY);
@@ -96,7 +96,7 @@ public class Portal implements Gadget {
         for (Gadget gadget : gadgetsToFire) {
             gadget.action();
         }
-    }
+    } 
 
 	@Override
 	public List<Gadget> getGadgetsToFire() {
@@ -123,6 +123,11 @@ public class Portal implements Gadget {
     public String getGadgetType() {
         return "Portal";
     }
+    
+    @Override
+    public String toString(){
+    	return "P";
+    }
 
 	public String getTargetPortalName() {
 		return this.otherPortal;
@@ -130,6 +135,18 @@ public class Portal implements Gadget {
 	
 	public String getTargetPortalBoardName(){
 		return this.otherPortal;
+	}
+	
+	public List<Ball> getSentBallQueue(){
+		return this.sentBallQueue;
+	}
+	
+	public List<Ball> getReceivedBallQueue(){
+		return this.receivedBallQueue;
+	}
+
+	public void setTargetPortalBoardName(String name) {
+		this.otherBoard = name;
 	}
 
 }

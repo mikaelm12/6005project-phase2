@@ -27,8 +27,8 @@ public class Board {
     private final double mu2;
     private List<Ball> balls;
     private List<Gadget> gadgets;
-    private List<Gadget> portals;
-    private List<Gadget> spawners;
+    private List<Portal> portals;
+    private List<BallSpawner> spawners;
     private String[][] boardString;
     private String neighborLeftString;
     private String neighborTopString;
@@ -63,8 +63,8 @@ public class Board {
         this.mu2 = mu2;
         balls = Collections.synchronizedList(new ArrayList<Ball>());
         gadgets = Collections.synchronizedList(new ArrayList<Gadget>());
-        spawners = Collections.synchronizedList(new ArrayList<Gadget>());    
-        portals = Collections.synchronizedList(new ArrayList<Gadget>());
+        spawners = Collections.synchronizedList(new ArrayList<BallSpawner>());    
+        portals = Collections.synchronizedList(new ArrayList<Portal>());
         this.neighborLeftString = wallLeft.toString();
         this.neighborTopString = wallTop.toString();
         this.neighborRightString = wallRight.toString();
@@ -123,7 +123,7 @@ public class Board {
         balls.add(ball);
     }
     
-    public void addIncomingBall(Ball ball){
+    public synchronized void addIncomingBall(Ball ball){
         incomingBalls.add(ball);
     }
     
@@ -162,7 +162,10 @@ public class Board {
      * adds a portal to the board
      * @param portal to be added to the board
      */
-    public void addPortal(Gadget portal){
+    public void addPortal(Portal portal){
+    	if(portal.getTargetPortalBoardName().equals("")){
+    		portal.setTargetPortalBoardName(this.getName());
+    	}
         portals.add(portal);
     }
     
@@ -170,7 +173,7 @@ public class Board {
      * adds a spawner to the board
      * @param spawner to be added to the board
      */
-    public void addSpawner(Gadget spawner){
+    public void addSpawner(BallSpawner spawner){
         spawners.add(spawner);
     }
     
@@ -376,6 +379,16 @@ public class Board {
         
         String string = new String();
         string += neighborTopString + "\n";
+        for (Portal portal: portals){
+        	int xPos = (int) portal.getPosition().x();
+        	int yPos = (int) portal.getPosition().y();
+        	boardString[yPos][xPos] = "P";
+        }
+        for (BallSpawner spawner: spawners){
+        	int xPos = (int) spawner.getPosition().x();
+        	int yPos = (int) spawner.getPosition().y();
+        	boardString[yPos][xPos] = "S";
+        }
         for (Gadget gadget : gadgets) {
                 Vect pos = gadget.getPosition();
                 int xPos = (int) pos.x();
@@ -490,6 +503,13 @@ public class Board {
             }
         }
         
+    }
+    
+    public List<Portal> getPortals(){
+    	return this.portals;
+    }
+    public List<BallSpawner> getSpawners(){
+    	return this.spawners;
     }
     
 }

@@ -24,8 +24,8 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     */
    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
    private ArrayList<Ball> balls = new ArrayList<Ball>();
-   private ArrayList<Gadget> portals = new ArrayList<Gadget>();
-   private ArrayList<Gadget> spawners = new ArrayList<Gadget>();
+   private ArrayList<Portal> portals = new ArrayList<Portal>();
+   private ArrayList<BallSpawner> spawners = new ArrayList<BallSpawner>();
    private HashMap<String, String> gadgetKeyUpListeners = new HashMap<String, String>();
    private HashMap<String, String> gadgetKeyDownListeners = new HashMap<String, String>();
    private Board board;
@@ -40,8 +40,8 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
    public Board getBoard() throws Exception{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
        for(Ball ball: balls) board.addBall(ball);
-       for(Gadget spawner: spawners) board.addSpawner(spawner);
-       for(Gadget portal:portals) board.addPortal(portal);
+       for(BallSpawner spawner: spawners) board.addSpawner(spawner);
+       for(Portal portal:portals) board.addPortal(portal);
        
        board.addKeyUpListener(gadgetKeyUpListeners);
        board.addKeyDownListener(gadgetKeyDownListeners);
