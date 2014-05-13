@@ -32,7 +32,6 @@ public class Main {
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
     	File file = new File("src/../boards/board1P.txt");
-        //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt");
 
 
         String fileString = "";
