@@ -1,5 +1,6 @@
 package pingball.datatypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import physics.Circle;
@@ -16,8 +17,8 @@ public class Portal implements Gadget {
 	private String otherBoard; 
 	private final String otherPortal;
 	private List<Gadget> gadgetsToFire;
-	private List<Ball> sentBallQueue;
-	private List<Ball> receivedBallQueue;
+	private List<Ball> sentBallQueue = new ArrayList<Ball>();
+	private List<Ball> receivedBallQueue = new ArrayList<Ball>();
 	
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
@@ -86,6 +87,7 @@ public class Portal implements Gadget {
 		double ballX = this.x+.25;
 		double ballY = this.y+.25;
 		ball.setNormalPosition(ballX, ballY);
+		receivedBallQueue.add(ball);
 		
 	}
 	
