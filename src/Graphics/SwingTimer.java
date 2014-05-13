@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import BoardExpr2.BoardCreatorListener;
 import BoardExpr2.GrammarFactory;
@@ -54,6 +55,18 @@ public class SwingTimer extends JFrame {
         JMenuItem pause = new JMenuItem("Pause/Unpause");
         options.add(pause);
         
+        JMenuItem connect = new JMenuItem("Connect to");
+        options.add(connect);
+        
+        connect.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String hostValue = JOptionPane.showInputDialog("Please specify a host");
+                String portValue = JOptionPane.showInputDialog("Please specify a port");
+            }
+        });
+        
         JMenuItem quit = new JMenuItem("Quit");
         options.add(quit);
         
@@ -79,6 +92,7 @@ public class SwingTimer extends JFrame {
                     try {
                         Board testing = GrammarFactory.parse(file);
                         setNewBoard(testing);
+                        SwingTimer st = new SwingTimer(testing);
                         System.out.println(testing);
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
@@ -107,6 +121,86 @@ public class SwingTimer extends JFrame {
     public void setNewBoard(Board newBoard) {
         this.newBoard = newBoard;
     }
+    
+    public SwingTimer() {
+
+        
+
+        setTitle("Test");
+        pack();
+        setResizable(true);
+        setLocationRelativeTo(null);        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        JMenuBar menu = new JMenuBar();
+        
+        menu.setBackground(Color.DARK_GRAY);
+        this.setJMenuBar(menu);
+        
+        JMenu options = new JMenu("Options");
+        options.setBackground(Color.DARK_GRAY);
+        menu.add(options);
+        
+        JMenuItem file = new JMenuItem("File");
+        options.add(file);
+        
+        JMenuItem pause = new JMenuItem("Pause/Unpause");
+        options.add(pause);
+        
+        JMenuItem connect = new JMenuItem("Connect to");
+        options.add(connect);
+        
+        connect.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String hostValue = JOptionPane.showInputDialog("Please specify a host");
+                String portValue = JOptionPane.showInputDialog("Please specify a port");
+            }
+        });
+        
+        JMenuItem quit = new JMenuItem("Quit");
+        options.add(quit);
+        
+
+        
+        file.addActionListener(new ActionListener() {
+            
+           
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser fc = new JFileChooser();
+                fc.setCurrentDirectory(null);
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION){
+                    File file = fc.getSelectedFile();
+                    try {
+                        final Board testing = GrammarFactory.parse(file);
+                        setNewBoard(testing);
+                        System.out.println(testing);
+                        EventQueue.invokeLater(new Runnable() {
+                            
+                            @Override
+                            public void run() {                
+                                SwingTimer gui = new SwingTimer(testing);
+                                gui.setMinimumSize(new Dimension(410, 410));
+                                gui.setVisible(true);   
+                               
+                    
+                            }
+                        });
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+                
+            }
+        });
+    
+        
+    }
+
 
 
 }

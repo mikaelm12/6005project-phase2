@@ -67,13 +67,15 @@ public class PingballClient {
     public static void main(String[] args) throws Exception{
         int port = 10987; //default port
         String hostName = null;
+        File file = new File("src/../boards/board1.txt");
+        boolean fileProvided = false;
 //        File file = null;
 //        File file = new File ("/Users/PeterGithaiga/Documents/6.005/projectPhase1/pingball-phase1/sampleBoard1"); 
    //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
-       File file = new File("src/../boards/board2.txt");
+      // File file = new File("src/../boards/board1.txt");
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -87,14 +89,17 @@ public class PingballClient {
                         }
                     } else if (flag.equals("--host")) {
                        hostName = arguments.remove();
-                    } else if (flag.equals("--file")) {  //File is not an argument but a must
-                        file = new File(arguments.remove());
+                    } else   {  //File is not an argument but a must
+                       file = new File(arguments.remove());
+                       
                         if ( ! file.isFile()) {
+                            
                             throw new IllegalArgumentException("file not found: \"" + file + "\"");
                         }
-                    } else {
-                        throw new IllegalArgumentException("unknown option: \"" + flag + "\"");
-                    }
+                        else{
+                            fileProvided = true;
+                        }
+                    } 
                 } catch (NoSuchElementException nsee) {
                     throw new IllegalArgumentException("missing argument for " + flag);
                 } catch (NumberFormatException nfe) {
@@ -113,7 +118,7 @@ public class PingballClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        } else { //Play single machine mode
+        } else if(fileProvided) { //Play single machine mode
            runSingleMachine(file);
         }
     }
@@ -256,7 +261,7 @@ public class PingballClient {
                 double timestep = 0.05;
                 update(board, timestep);
                 counter++;
-              //  System.out.println(board.toString());
+               System.out.println(board.toString());
             }
             
         }

@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +207,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
-        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 + 3);
+        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 +8  , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 );
 
         graph2.setColor(Color.magenta);
         
@@ -215,7 +216,9 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
 //    else if(gadget.getGadgetType().equals("Left Flipper")){
 //        
 //        LeftFlipper leftFlipper = (LeftFlipper)gadget;
-//        Shape flipper = new Rectangle2D.Float((float)leftFlipper.getPosition().x()*20 + 8 , (float)leftFlipper.getPosition().y()*20 , 5 , 30);
+//        float x2 = Math.tan(leftFlipper.getCurrentAngle())* (float)leftFlipper.getPosition().y()
+//        
+//      //  Line2D flipper = new Line2D.Float((float)leftFlipper.getPosition().x(), (float)leftFlipper.getPosition().y(), x2, y2)
 //
 //        graph2.setColor(Color.CYAN);
 //        graph2.rotate(leftFlipper.getCurrentAngle());
