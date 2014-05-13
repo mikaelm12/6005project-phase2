@@ -198,7 +198,22 @@ public class Main {
 			}
 		}
 		
-		
+		//send all the balls in the portals
+				for (Portal portal: board.getPortals()){
+					if(getTargetPortal(board, portal)!=null){
+						for(Ball sentBall: portal.getSentBallQueue()){
+							Portal targetPortal = getTargetPortal(board, portal);
+							targetPortal.receiveBall(sentBall);
+							board.removeBall(sentBall);
+						}
+					}
+				}
+				//recieve all the balls in the portals
+				for (Portal portal: board.getPortals()){
+					for(Ball receivedBall: portal.getReceivedBallQueue()){
+						board.addBall(receivedBall);
+					}
+				}
 		
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timeUntilFirstCollision);
