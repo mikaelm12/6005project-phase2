@@ -29,6 +29,7 @@ import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
@@ -73,6 +74,8 @@ public class Canvas extends JPanel
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
     List<Gadget> gadgets = new ArrayList<Gadget>();
+    List<Gadget> spawners = new ArrayList<Gadget>();
+    List<Gadget> portals = new ArrayList<Gadget>();
     private Board board; 
     private Timer timer;
     public boolean forward = true;
@@ -142,6 +145,9 @@ public class Canvas extends JPanel
         
        balls = this.board.getBalls();
        gadgets = this.board.getGadgets();
+       spawners = this.board.getSpawners();
+       portals = this.board.getPortals();
+       
        makeWalls(graph2);
        for (Ball ball: balls ){
 
@@ -152,10 +158,9 @@ public class Canvas extends JPanel
                graph2.fill(temp);
   
        }
-       for(Gadget gadget: gadgets){
-           makeGadget(gadget, graph2);
-       }
-       
+       for(Gadget gadget: gadgets) makeGadget(gadget, graph2);
+       for(Gadget gadget: spawners) makeGadget(gadget, graph2);
+       for(Gadget gadget: portals) makeGadget(gadget, graph2);
 
         Graphics2D g2d = (Graphics2D) g;
        
@@ -267,10 +272,25 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	
         //Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 + 8 , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 + 3);
 
+    }else if(gadget.getGadgetType().equals("Portal")){
+        Portal p = (Portal)gadget;
+        Shape portal = new Ellipse2D.Float((float)p.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
+                                                (float)p.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
+        Shape portalInner = new Ellipse2D.Float((float)p.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE+2,
+                (float)p.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE+2, 
+                SCALE_FACTOR-4/*width*/,
+                SCALE_FACTOR-4/*height*/);
+        
+        graph2.setColor(Color.BLACK);
+        graph2.fill(portal);
+        graph2.setColor(Color.CYAN);
+        graph2.fill(portalInner);
     }
     
-    
 }
+
 
 //TODO Implement these methods
 
@@ -278,7 +298,6 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
 //    
 //}
 
-// public Shape make
 
    /**
     * This method is called every time the timer is set off and 

@@ -327,7 +327,7 @@ public class Board {
      * @return list of gadgets in this board
      */
     public List<Gadget> getGadgets(){
-        return gadgets;
+        return new ArrayList<Gadget>(gadgets);
     }
     
     /**
@@ -505,11 +505,11 @@ public class Board {
         
     }
     
-    public List<Portal> getPortals(){
-    	return this.portals;
+    public List<Gadget> getPortals(){
+    	return new ArrayList<Gadget>(portals);
     }
-    public List<BallSpawner> getSpawners(){
-    	return this.spawners;
+    public List<Gadget> getSpawners(){
+    	return new ArrayList<Gadget>(spawners);
     }
     
 }
