@@ -13,7 +13,7 @@ public class Portal implements Gadget {
 	private String name;
 	private final int x;
 	private final int y;
-	private final String otherBoard; 
+	private String otherBoard; 
 	private final String otherPortal;
 	private List<Gadget> gadgetsToFire;
 	private List<Ball> sentBallQueue;
@@ -143,6 +143,10 @@ public class Portal implements Gadget {
 	
 	public List<Ball> getReceivedBallQueue(){
 		return this.receivedBallQueue;
+	}
+
+	public void setTargetPortalBoardName(String name) {
+		this.otherBoard = name;
 	}
 
 }

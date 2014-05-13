@@ -163,6 +163,9 @@ public class Board {
      * @param portal to be added to the board
      */
     public void addPortal(Portal portal){
+    	if(portal.getTargetPortalBoardName().equals("")){
+    		portal.setTargetPortalBoardName(this.getName());
+    	}
         portals.add(portal);
     }
     
