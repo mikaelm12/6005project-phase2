@@ -216,7 +216,9 @@ public class Main {
 		}
 		//recieve all the balls in the portals
 		for (Portal portal: board.getPortals()){
+			
 			for(Ball receivedBall: portal.getReceivedBallQueue()){
+				System.out.println("receivedBall == null: " + receivedBall == null);
 				board.addBall(receivedBall);
 			}
 		}
