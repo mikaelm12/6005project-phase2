@@ -97,5 +97,10 @@ public class BallSpawner implements Gadget {
 	public String getGadgetType() {
 		return "Ball Spawner";
 	}
+	
+	@Override
+    public String toString(){
+    	return "S";
+    }
 
 }

@@ -197,6 +197,15 @@ public class Main {
 				}
 			}
 		}
+		
+		
+		
+		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
+			leftFlipper.update(timeUntilFirstCollision);
+		}
+		for (RightFlipper rightFlipper: board.getRightFlippers()){
+			rightFlipper.update(timeUntilFirstCollision);
+		}
 	}
 
 	/**
@@ -210,6 +219,23 @@ public class Main {
 				ball.updateBallPosition(timestep);
 			}
 		}
+		//send all the balls in the portals
+		for (Portal portal: board.getPortals()){
+			if(getTargetPortal(board, portal)!=null){
+				for(Ball sentBall: portal.getSentBallQueue()){
+					Portal targetPortal = getTargetPortal(board, portal);
+					targetPortal.receiveBall(sentBall);
+					board.removeBall(sentBall);
+				}
+			}
+		}
+		//recieve all the balls in the portals
+		for (Portal portal: board.getPortals()){
+			for(Ball receivedBall: portal.getReceivedBallQueue()){
+				board.addBall(receivedBall);
+			}
+		}
+		
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timestep);
 		}
@@ -237,6 +263,24 @@ public class Main {
 			}
 		}
 		return timeUntilFirstCollision;
+	}
+	
+	/**
+	 * Gets the target portal of a source portal if it can be found.
+	 * @param targetBoard the board housing the target portal
+	 * @param sourcePortal the source portal
+	 * @return target portal of a source portal if it can be found, else null.
+	 */
+	private static Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
+		List<Portal> portalList = targetBoard.getPortals();
+		for (Portal portal: portalList){
+			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
+				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
+					return portal;
+				}
+			}
+		}
+		return null;
 	}
 
 }
