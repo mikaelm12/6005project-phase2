@@ -505,11 +505,11 @@ public class Board {
         
     }
     
-    public List<Gadget> getPortals(){
-    	return new ArrayList<Gadget>(portals);
+    public List<Portal> getPortals(){
+    	return new ArrayList<Portal>(portals);
     }
-    public List<Gadget> getSpawners(){
-    	return new ArrayList<Gadget>(spawners);
+    public List<BallSpawner> getSpawners(){
+    	return new ArrayList<BallSpawner>(spawners);
     }
     
 }

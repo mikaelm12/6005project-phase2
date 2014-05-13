@@ -25,6 +25,7 @@ import javax.swing.Timer;
 
 import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
@@ -74,8 +75,8 @@ public class Canvas extends JPanel
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
     List<Gadget> gadgets = new ArrayList<Gadget>();
-    List<Gadget> spawners = new ArrayList<Gadget>();
-    List<Gadget> portals = new ArrayList<Gadget>();
+    List<BallSpawner> spawners = new ArrayList<BallSpawner>();
+    List<Portal> portals = new ArrayList<Portal>();
     private Board board; 
     private Timer timer;
     public boolean forward = true;
