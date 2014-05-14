@@ -137,6 +137,19 @@ public class Main {
 					}
 					
 				}
+				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
+					for (Portal portal: board.getPortals()){
+						if (portal.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the portal
+							if (!portal.ballComingFromPortal(ball)){ //we are not coming outof the portal: we are going in
+								Vect oldV = ball.getPhysicsVelocity();
+								portal.reflectOff(ball);
+								ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+								namesOfBallsCollided.add(ball.getName());
+							}
+						}
+					}
+				}
+				
 				if (!ball.inAbsorber()){
 					for (OuterWall wall: board.getOuterWalls()){ 
 						if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
@@ -168,22 +181,23 @@ public class Main {
 		}
 		
 		//send all the balls in the portals
-				for (Portal portal: board.getPortals()){
-					if(getTargetPortal(board, portal)!=null){
-						for(Ball sentBall: portal.getSentBallQueue()){
-							Portal targetPortal = getTargetPortal(board, portal);
-							targetPortal.receiveBall(sentBall);
-							board.removeBall(sentBall);
-						}
-					}
+		for (Portal portal: board.getPortals()){
+			if(getTargetPortal(board, portal)!=null){
+				System.out.println("getTargetPortal(board, portal)!=null");
+				for(Ball sentBall: portal.getSentBallQueue()){
+					Portal targetPortal = getTargetPortal(board, portal);
+					targetPortal.receiveBall(sentBall);
+					board.removeBall(sentBall);
 				}
-				//recieve all the balls in the portals
-				for (Portal portal: board.getPortals()){
-					for(Ball receivedBall: portal.getReceivedBallQueue()){
-						board.addBall(receivedBall);
-					}
-				}
-		
+			}
+		}
+		//recieve all the balls in the portals
+		for (Portal portal: board.getPortals()){
+			for(Ball receivedBall: portal.getReceivedBallQueue()){
+				board.addBall(receivedBall);
+			}
+		}
+		//update the flipper positions
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timeUntilFirstCollision);
 		}
@@ -244,6 +258,9 @@ public class Main {
 			for (Gadget gadget: board.getGadgets()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, gadget.timeUntilPhysicsCollision(ball));
 			}
+			for (Portal portal: board.getPortals()){
+				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, portal.timeUntilPhysicsCollision(ball));
+			}
 			for (Ball ball2: board.getBalls()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, ball.timeUntilPhysicsCollision(ball2));
 			}
@@ -258,10 +275,16 @@ public class Main {
 	 * @return target portal of a source portal if it can be found, else null.
 	 */
 	private static Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
+		System.out.println("in getTargetPortal()");
 		List<Portal> portalList = targetBoard.getPortals();
 		for (Portal portal: portalList){
 			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
+				System.out.println("2");
+				System.out.println(portal.getName());
+				System.out.println(sourcePortal.getTargetPortalName());
+				
 				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
+					System.out.println("got it!!");
 					return portal;
 				}
 			}

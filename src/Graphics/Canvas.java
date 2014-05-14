@@ -275,7 +275,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	GeneralPath flipperLineDrawer = new GeneralPath();
         LeftFlipper lf = (LeftFlipper)gadget;
         
-    	//positions are relvative to the top left hand corner
+    	//positions are relative to the top left hand corner
         double pivotX = lf.getNormalPivot().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double pivotY = lf.getNormalPivot().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
     	
@@ -284,7 +284,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
    
     	flipperLineDrawer.moveTo(pivotX, pivotY);
     	flipperLineDrawer.lineTo(endX, endY);
-        
+    	flipperLineDrawer.closePath();
         graph2.setColor(Color.RED);
  
         graph2.fill(flipperLineDrawer);  
@@ -294,7 +294,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	GeneralPath flipperLineDrawer = new GeneralPath();
         RightFlipper rf = (RightFlipper)gadget;
         
-    	//positions are relvative to the top left hand corner
+    	//positions are relative to the top left hand corner
         double pivotX = rf.getNormalPivot().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double pivotY = rf.getNormalPivot().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
     	
