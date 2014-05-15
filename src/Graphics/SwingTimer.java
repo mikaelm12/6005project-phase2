@@ -172,7 +172,7 @@ public class SwingTimer extends JFrame {
 
         
 
-        setTitle("Test");
+        setTitle("Pingball!");
         pack();
         setResizable(true);
         setLocationRelativeTo(null);        

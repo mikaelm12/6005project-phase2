@@ -105,7 +105,7 @@ public class PingballClientThread extends Thread {
 //    
 //            }
 //        });
-        System.out.println("Client Thread Loop Before");
+       
         long start = System.currentTimeMillis();
         String pause;
         while(true){

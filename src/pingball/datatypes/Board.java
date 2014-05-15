@@ -644,6 +644,7 @@ public class Board {
                   
                   if(type.equals("Left")){
                       LeftFlipper flip = new LeftFlipper(name, x, y, orientation);
+                      
                       updatedFlippers.add(flip);
                   }
                   else{
