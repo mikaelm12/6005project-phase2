@@ -149,12 +149,12 @@ public class PingballClient {
      * @throws Exception 
      */
     public static void runPingBallServerClient(String host, int port, File file) throws Exception{
-        System.out.println("HEllo");
+       
         String kill = "END OF FILE!!";
         String hostName = host;
         int portNumber = port;
         final Board board = GrammarFactory.parse(file);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
         //Establish communication with the server
         final Socket toServerSocket = new Socket(hostName, portNumber);
         PrintWriter toServe = new PrintWriter(toServerSocket.getOutputStream(), true);
@@ -191,7 +191,7 @@ public class PingballClient {
                 try {
                     while ((fromServer = fromServe.readLine()) != null) {
                         if(!board.isPaused()){
-                        System.out.println(fromServer);
+                        //System.out.println(fromServer);
                        currentChanges = fromServer.toString();
                        
                        board.updateBalls(currentChanges);
@@ -216,7 +216,7 @@ public class PingballClient {
             
             @Override
             public void run() { 
-                System.out.println("Bring up the fucking board");
+                
                 SwingTimer gui = new SwingTimer(board);
                 
                 gui.setMinimumSize(new Dimension(430, 475));
@@ -295,7 +295,7 @@ public class PingballClient {
             if ((current-start) % 30 == 0 && !board.isPaused()){
                 double timestep = 0.01;
                 update(board, timestep);
-                System.out.println(board.toString());
+                //System.out.println(board.toString());
 
             }
             

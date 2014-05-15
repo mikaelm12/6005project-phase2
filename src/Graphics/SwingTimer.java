@@ -106,6 +106,7 @@ public class SwingTimer extends JFrame {
             
             @Override
             public void actionPerformed(ActionEvent e) {
+                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 dispose();
                 
             }
