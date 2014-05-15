@@ -52,7 +52,7 @@ ball name=BallB x=10.0 y=13.0 xVelocity=-3.4 yVelocity=-2.3
   fire trigger=Abs action=Abs 
 
 	#add portals
-  portal name=Alpha x=5 y=7 otherPortal=Beta
+  portal name=Alpha x=6 y=7 otherPortal=Beta
   portal name=Beta x=15 y=7 otherBoard=Mercury otherPortal=Gamma
   spawner name=Maker x=0 y =0
   keydown key=space action=FlipR1

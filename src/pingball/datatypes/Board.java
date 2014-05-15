@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import static org.junit.Assert.*;
 
 import physics.Vect;
 
@@ -130,10 +131,12 @@ public class Board {
      */
     public void addBall(Ball ball){
         balls.add(ball);
+        checkRep();
     }
     
     public synchronized void addIncomingBall(Ball ball){
         incomingBalls.add(ball);
+        checkRep();
     }
     
     public List<Ball> getIncomingBalls(){
@@ -147,6 +150,7 @@ public class Board {
      */
     public void removeBall(Ball ball){
         balls.remove(ball);
+        checkRep();
     }
     
     /**
@@ -155,6 +159,7 @@ public class Board {
      */
     public void addGadget(Gadget gadget){
         gadgets.add(gadget);
+        checkRep();
     }
     
     /**
@@ -162,9 +167,8 @@ public class Board {
      * @param gadgets to be added to the board
      */
     public void addGadgetList(List<Gadget> gadgets){
-        for(Gadget gadget: gadgets){
-            this.gadgets.add(gadget);
-        }
+        for(Gadget gadget: gadgets) this.gadgets.add(gadget);
+        checkRep();
     }
     
     /**
@@ -176,6 +180,7 @@ public class Board {
     		portal.setTargetPortalBoardName(this.getName());
     	}
         portals.add(portal);
+        checkRep();
     }
     
     /**
@@ -184,6 +189,7 @@ public class Board {
      */
     public void addSpawner(BallSpawner spawner){
         spawners.add(spawner);
+        checkRep();
     }
     
     /**
@@ -453,11 +459,6 @@ public class Board {
         return string;
     }
     
-    /**
-     * check representation
-     */
-    private void checkRep(){
-    }
     
     /**
      * This method is called when during the process when the board file is being parsed.
@@ -525,7 +526,6 @@ public class Board {
     	return new ArrayList<BallSpawner>(spawners);
     }
 
-    
     /**
      * Remove the current flippers from the board and replaces them with the current flippers
      * sent from the server
@@ -664,6 +664,106 @@ public class Board {
       this.balls = balls;
   }
 
+  
+  /**
+   * check representation
+   */
+  public void checkRep(){
+      //Check if all balls are within the bounds of the baord
+      double[] position;
+      double xLoc;
+      double yLoc;
+      for(Ball ball: balls){
+          position = ball.getNormalPosition();
+          xLoc = position[0];
+          yLoc = position[1];
+          if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+
+          position = ball.getPhysicsPosition();
+          xLoc = position[0];
+          yLoc = position[1];
+          if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+      }
+      
+      //Check if all gadgets (not including portals/spawners) are within the bounds of the baord
+      Vect gadgetPosition;
+      for(Gadget gadget: gadgets){
+          gadgetPosition = gadget.getPosition();
+          xLoc = gadgetPosition.x();
+          yLoc = gadgetPosition.y();
+
+          if(xLoc > 19 || xLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (x): " + xLoc);
+          if(yLoc > 19 || yLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (y): " + yLoc);
+      }
+      
+      //Check if all portals are within the bounds of the baord
+      for(Portal portal: portals){
+          gadgetPosition = portal.getPosition();
+          xLoc = gadgetPosition.x();
+          yLoc = gadgetPosition.y();
+          
+          if(xLoc > 19 || xLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (x): " + xLoc);
+          if(yLoc > 19 || yLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (y): " + yLoc);
+      }
+      //Check if all spawners are within the bounds of the baord
+
+      for(BallSpawner spawner: spawners){
+          gadgetPosition = spawner.getPosition();
+          xLoc = gadgetPosition.x();
+          yLoc = gadgetPosition.y();
+          
+          if(xLoc > 19 || xLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (x): " + xLoc);
+          if(yLoc > 19 || yLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (y): " + yLoc);
+      }
+      
+      
+      //Set up for checking overlapping objects
+      int[][] gadgetsLoc = new int[20][20]; //just for checking overlapping gadgets
+      for (int i = 0; i < 20; i++) {
+          for (int j = 0; j < 20; j++) {
+              gadgetsLoc[i][j] = 0;
+          }
+      }
+      
+      //check for overlapping GADGETS only
+      //note: not including balls here because balls can overlap with portals and spawners
+      //      balls can also APPEAR to overlap with other balls and flippers due to rounding
+      
+      //this will iterate through all the gadgets in the board and keep track of
+      //how many objects are located at each position
+      //assertion will be thrown if there are more than 1 objects after the iteration is complete
+      
+      for(Gadget gadget:gadgets){
+          Vect pos = gadget.getPosition();
+          int xPos = (int) pos.x();
+          int yPos = (int) pos.y();
+          gadgetsLoc[xPos][yPos] += 1;
+//          System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
+      }
+      for (Portal portal: portals){
+          Vect pos = portal.getPosition();
+          int xPos = (int) pos.x();
+          int yPos = (int) pos.y();
+          gadgetsLoc[xPos][yPos] += 1;
+//          System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
+      }
+      for (BallSpawner spawner: spawners){
+          Vect pos = spawner.getPosition();
+          int xPos = (int) pos.x();
+          int yPos = (int) pos.y();
+          gadgetsLoc[xPos][yPos] +=1;
+//          System.out.println(spawner.getName() + ": " + xPos + ", " + yPos);
+      }
+      
+      for (int i = 0; i < 20; i++) {
+          for (int j = 0; j < 20; j++) {
+              if(gadgetsLoc[i][j] > 1) fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
+          }
+      }
+  }
+  
 }
 
 

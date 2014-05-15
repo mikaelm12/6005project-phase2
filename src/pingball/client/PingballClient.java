@@ -79,7 +79,6 @@ public class PingballClient {
        file = new File("src/../boards/board1P.txt");
 
 
-
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
             while ( ! arguments.isEmpty()) {
