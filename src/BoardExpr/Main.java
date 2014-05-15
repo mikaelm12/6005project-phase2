@@ -1,9 +1,7 @@
 package BoardExpr;
 
 import java.io.File;
-
 import pingball.datatypes.Board;
-
 
 
 public class Main {

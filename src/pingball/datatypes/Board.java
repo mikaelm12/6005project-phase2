@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import static org.junit.Assert.*;
 
 import physics.Vect;
 
@@ -441,11 +442,6 @@ public class Board {
         return string;
     }
     
-    /**
-     * check representation
-     */
-    private void checkRep(){
-    }
     
     /**
      * This method is called when during the process when the board file is being parsed.
@@ -513,6 +509,62 @@ public class Board {
     	return new ArrayList<BallSpawner>(spawners);
     }
     
+    /**
+     * check representation
+     */
+    private void checkRep(){
+        //Check if all balls are within the bounds of the baord
+        double[] position;
+        double xLoc;
+        double yLoc;
+        for(Ball ball: balls){
+            position = ball.getNormalPosition();
+            xLoc = position[0];
+            yLoc = position[1];
+            if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
+            if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+
+            position = ball.getPhysicsPosition();
+            xLoc = position[0];
+            yLoc = position[1];
+            if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
+            if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+        }
+        
+        //Check if all gadgets (not including portals/spawners) are within the bounds of the baord
+        Vect gadgetPosition;
+        for(Gadget gadget: gadgets){
+            gadgetPosition = gadget.getPosition();
+            xLoc = gadgetPosition.x();
+            yLoc = gadgetPosition.y();
+
+            if(xLoc > 19 || xLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (x): " + xLoc);
+            if(yLoc > 19 || yLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (y): " + yLoc);
+        }
+        
+        //Check if all portals are within the bounds of the baord
+        for(Portal portal: portals){
+            gadgetPosition = portal.getPosition();
+            xLoc = gadgetPosition.x();
+            yLoc = gadgetPosition.y();
+            
+            if(xLoc > 19 || xLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (x): " + xLoc);
+            if(yLoc > 19 || yLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (y): " + yLoc);
+        }
+        //Check if all spawners are within the bounds of the baord
+
+        for(BallSpawner spawner: spawners){
+            gadgetPosition = spawner.getPosition();
+            xLoc = gadgetPosition.x();
+            yLoc = gadgetPosition.y();
+            
+            if(xLoc > 19 || xLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (x): " + xLoc);
+            if(yLoc > 19 || yLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (y): " + yLoc);
+        }
+        
+        
+        
+    }
 }
 
 

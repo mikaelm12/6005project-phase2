@@ -23,7 +23,6 @@ public class Ball {
         this.name = name;
         this.circle = new Circle(cx, cy, radius);
         this.velocityVector = new Vect(xVel,yVel);
-        
         checkRep();
     }
     
@@ -216,7 +215,6 @@ public class Ball {
     public void setInAbsorber(boolean bool){
     	this.inAbsorber = bool;
     }
-
 
 
 	public double timeUntilPhysicsCollision(Ball ball2) {

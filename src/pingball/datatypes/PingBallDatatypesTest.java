@@ -7,7 +7,6 @@ import org.junit.Test;
 
 /**
  * 
- * @author PeterGithaiga
  * Testing strategy for Gadgets:
  * 1. Test Action
  * flipper:
@@ -187,6 +186,7 @@ public class PingBallDatatypesTest {
     	Ball ball1 = new Ball("ball1", 5, 5, 0, -1.0); //heading straight down right over the portal
        
         portal1.reflectOff(ball1); //since the portal does not have a valid target portal, nothing should happen to the ball
+
 
         assertTrue(ball1.getNormalCircle().getCenter().x() == 5.0);
         assertTrue(ball1.getNormalCircle().getCenter().y() == 5.0);

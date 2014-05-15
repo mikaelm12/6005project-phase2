@@ -62,11 +62,6 @@ public class PingballClient {
     public static void main(String[] args) throws Exception{
         int port = 10987; //default port
         String hostName = null;
-//        File file = null;
-//        File file = new File ("/Users/PeterGithaiga/Documents/6.005/projectPhase1/pingball-phase1/sampleBoard1"); 
-   //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
-//        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
-       // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
 
        File file = new File("src/../boards/boardG.txt");
 
