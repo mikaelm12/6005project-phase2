@@ -22,7 +22,6 @@ public class Portal implements Gadget {
 	
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
-//		System.out.println("in portal constructor");
 		this.hasDestinationPortal = false;
 		this.circle = new Circle(x+.5, 20-(y+.5), .5);
 		this.name = name;

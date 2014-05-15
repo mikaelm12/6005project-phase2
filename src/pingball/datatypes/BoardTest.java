@@ -69,9 +69,6 @@ public class BoardTest {
         
         GadgetBoard = new Board("IGotGadgets", 20.0, 0.025, 0.025);
 
-        //TODO: FIX ABSORBER doest work for (width,height):
-        // (3,2) (5,1), (4,1)
-        // Seems like when the width is greater than the height
         absorber = new Absorber("Sponge", 6, 4, 1, 4);
         ballSpawner = new BallSpawner("Maker", 19, 19);
         circularBumper = new CircularBumper("circ", 15, 15);
@@ -242,7 +239,7 @@ public class BoardTest {
         SquareBumper sqb = new SquareBumper("square", 3, 5);
         testBoard.addGadget(sqb);
         assertEquals(1,testBoard.getGadgets().size());
-        System.out.println(testBoard.toString());
+//        System.out.println(testBoard.toString());
         
         String expectedOutput = "......................\n"
                 + ".                    .\n"
@@ -315,10 +312,10 @@ public class BoardTest {
                 + ".                    .\n"
                 + ".                    .\n"
                 + ".                    .\n"
-                + ".      ====          .\n"
-                + ".                    .\n"
-                + ".                    .\n"
-                + ".                    .\n"
+                + ".      =             .\n"
+                + ".      =             .\n"
+                + ".      =             .\n"
+                + ".      =             .\n"
                 + ".                    .\n"
                 + ".                    .\n"
                 + ".                    .\n"
