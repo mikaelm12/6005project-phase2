@@ -180,6 +180,11 @@ public Shape makeBall(Ball ball){
     return newCirc;
 }
 
+/**
+ * This method creates the default walls using the Graphics 2D object    
+ * @param graph2
+ * @return
+ */
 public void makeWalls(Graphics2D graph2){
     Shape vertWall1 = new Rectangle2D.Float(BOARD_OFFSET_X,BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
     Shape vertWall2 = new Rectangle2D.Float(BOARD_OFFSET_X + WALL_WIDTH + BOARD_WIDTH,
@@ -324,7 +329,11 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     }
 }
 
-    
+    /**
+     * This method calls other helper methods to add the names of any connected-neighboring
+     * boards, if any exist.
+     * @param graph2
+     */
     public void addNeighborBoardNames(Graphics2D graph2){
         addLeftNeighbor(graph2);
         addTopNeighbor(graph2);
@@ -332,7 +341,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         addBottomNeighbor(graph2);
     }
     
-    
+    /**
+     * This methods adds the correctly centered and oriented name of the left-neighboring wall
+     * @param graph2
+     */
     public void addLeftNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
@@ -359,6 +371,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         
     }
     
+    /**
+     * This methods adds the correctly centered and oriented name of the top-neighboring wall
+     * @param graph2
+     */
     public void addTopNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
@@ -383,6 +399,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         
     }
     
+    /**
+     * This methods adds the correctly centered and oriented name of the right-neighboring wall
+     * @param graph2
+     */
     public void addRightNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
@@ -407,6 +427,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         }
     }
     
+    /**
+     * This methods adds the correctly centered and oriented name of the bottom-neighboring wall
+     * @param graph2
+     */
     public void addBottomNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
