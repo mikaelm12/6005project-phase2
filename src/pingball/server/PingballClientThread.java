@@ -160,9 +160,9 @@ public class PingballClientThread extends Thread {
 			}
 			if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
 				for (Portal portal: board.getPortals()){
-					System.out.println("portal.timeUntilPhysicsCollision(ball) = "+portal.timeUntilPhysicsCollision(ball));
-					System.out.println("timeUntilFirstCollision = "+timeUntilFirstCollision);
-					System.out.println("portal.hasDestinationPortal() = "+ portal.hasDestinationPortal());
+//					System.out.println("portal.timeUntilPhysicsCollision(ball) = "+portal.timeUntilPhysicsCollision(ball));
+//					System.out.println("timeUntilFirstCollision = "+timeUntilFirstCollision);
+//					System.out.println("portal.hasDestinationPortal() = "+ portal.hasDestinationPortal());
 					if (portal.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the portal
 						Vect oldV = ball.getPhysicsVelocity();
 						portal.reflectOff(ball);
@@ -176,14 +176,17 @@ public class PingballClientThread extends Thread {
 				if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
 					if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
 						if(wall.isSolid()){ //we are colliding with the wall
-							//System.out.println("we are colliding with the wall");
+							System.out.println("we are colliding with the wall");
 							Vect oldV = ball.getPhysicsVelocity();
 							wall.reflectOff(ball);
 							ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
 							namesOfBallsCollided.add(ball);
 						} else { //we are going to transfer the ball
-							ball.updateBallPosition(timeUntilFirstCollision);
+							System.out.println("we are transfering the ball");
+//							ball.updateBallPosition(timeUntilFirstCollision);
+//							board.removeBall(ball);
 							world.transferBall(board, ball, wall);
+							
 							ballsToTransfer.add(ball);
 							namesOfBallsCollided.add(ball);
 						}
@@ -212,16 +215,19 @@ public class PingballClientThread extends Thread {
         for (Ball ball: ballsToTransfer){
         	board.removeBall(ball);
         }
-        
-        for (Ball ball : board.getIncomingBalls()){
-            board.addBall(ball);            
+        ballsToTransfer.clear();
+        synchronized(board.getIncomingBalls()){
+	        for (Ball ball : board.getIncomingBalls()){
+	            board.addBall(ball);            
+	        }
+	        board.getIncomingBalls().clear();
         }
         
       //send all the balls in the portals
   		for (Portal portal: board.getPortals()){
   			synchronized (portal.getOutQueue()) {
 				for(Ball sentBall: portal.getOutQueue()){
-					System.out.println("We've got one in the outQueue!");
+//					System.out.println("We've got one in the outQueue!");
 					world.sendBall(sentBall, portal, board);
 				}
 				portal.getOutQueue().clear();
@@ -240,6 +246,15 @@ public class PingballClientThread extends Thread {
 	
 
 	private static void updateWithoutCollision(Board board, double timestep) {
+		// To avoid modifying the list of balls in the middle of an iteration
+        // wait until the iteration is over to add incoming balls
+        // if any of those exist
+		synchronized(board.getIncomingBalls()){
+	        for (Ball ball : board.getIncomingBalls()){
+	            board.addBall(ball);            
+	        }
+	        board.getIncomingBalls().clear();
+        }
 		for (Ball ball: board.getBalls()){
 			ball.updateBallPosition(timestep);
 		}
@@ -249,6 +264,7 @@ public class PingballClientThread extends Thread {
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timestep);
 		}
+        
   		//create all the balls in the spawner queue
 		for (BallSpawner spawner: board.getSpawners()){
 			synchronized(spawner.getCreatedBallQueue()){
