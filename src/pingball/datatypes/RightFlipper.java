@@ -87,8 +87,8 @@ public class RightFlipper implements Gadget{
         
         this.flippedSpot = new Circle(flippedX, 20-flippedY, 0.001);
         this.flippedFlipper = new LineSegment(pivot.getCenter().x(), pivot.getCenter().y(), flippedSpot.getCenter().x(), flippedSpot.getCenter().y());
-        System.out.println("initialSpot = "+initialSpot.getCenter().x()+", "+initialSpot.getCenter().y());
-        System.out.println("flippedSpot = "+flippedSpot.getCenter().x()+", "+flippedSpot.getCenter().y());
+//        System.out.println("initialSpot = "+initialSpot.getCenter().x()+", "+initialSpot.getCenter().y());
+//        System.out.println("flippedSpot = "+flippedSpot.getCenter().x()+", "+flippedSpot.getCenter().y());
         
         //checkRep();
     }
@@ -107,7 +107,7 @@ public class RightFlipper implements Gadget{
      */
     @Override
     public void action() {
-    	System.out.println("in action()");
+//    	System.out.println("in action()");
         if(state.equals("initial")){
         	state = "flipping";
         } else if (state.equals("flipped")){
@@ -117,7 +117,7 @@ public class RightFlipper implements Gadget{
         } else {//state = deflipping
         	state = "flipping";
         }
-        System.out.println(state);
+//        System.out.println(state);
         
        // checkRep();
     }
@@ -129,7 +129,7 @@ public class RightFlipper implements Gadget{
 			} else {
 				double deltaAngle = timestep*angularVelocity;
 				double timeUntilStationary = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), angularVelocity, flippedSpot, new Vect(0,0));
-				System.out.println("timeUntilStationary: "+timeUntilStationary);
+//				System.out.println("timeUntilStationary: "+timeUntilStationary);
 				if (timestep>=timeUntilStationary){ //we will stop rotating during the timestep
 					endPoint = new Circle(flippedSpot.getCenter().x(), flippedSpot.getCenter().y(), 0.0);
 					flipper = new LineSegment(flippedFlipper.p1().x(), flippedFlipper.p1().y(), flippedFlipper.p2().x(), flippedFlipper.p2().y());
@@ -145,7 +145,7 @@ public class RightFlipper implements Gadget{
 			} else {
 				double deltaAngle = timestep*(-1)*angularVelocity;
 				double timeUntilStationary = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), -angularVelocity, initialSpot, new Vect(0,0));
-				System.out.println("timeUntilStationary: "+timeUntilStationary);
+//				System.out.println("timeUntilStationary: "+timeUntilStationary);
 				if (timestep>=timeUntilStationary){ //we will stop rotating during the timestep
 					endPoint = new Circle(initialSpot.getCenter().x(), initialSpot.getCenter().y(), 0.0);
 					flipper = new LineSegment(initialFlipper.p1().x(), initialFlipper.p1().y(), initialFlipper.p2().x(), initialFlipper.p2().y());
@@ -210,7 +210,7 @@ public class RightFlipper implements Gadget{
         	}
         }
     	double minMovingTime = Math.min(timeToEndPoint, timeToLine);
-    	System.out.println("timeUntilCollision = "+Math.min(minMovingTime, timeToPivot));
+//    	System.out.println("timeUntilCollision = "+Math.min(minMovingTime, timeToPivot));
     	return Math.min(minMovingTime, timeToPivot);
     }
     
@@ -220,7 +220,7 @@ public class RightFlipper implements Gadget{
      */
     @Override
     public void reflectOff(Ball ball){
-    	System.out.println("reflect off "+this.name);
+//    	System.out.println("reflect off "+this.name);
         Vect newVelocityVector;
         double timeToLine = Double.POSITIVE_INFINITY;
         double timeToEndPoint = Double.POSITIVE_INFINITY;

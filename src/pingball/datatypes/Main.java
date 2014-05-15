@@ -91,8 +91,8 @@ public class Main {
 				ball.updateBallVelocityBeforeTimestep(board.getGravity(), board.getMu(), board.getMu2(), timestep);
 			}
 
-			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
-			System.out.println("Speed: "+Math.sqrt(ball.getNormalVelocity().dot(ball.getNormalVelocity())));
+//			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
+//			System.out.println("Speed: "+Math.sqrt(ball.getNormalVelocity().dot(ball.getNormalVelocity())));
 			
 		}
 		double timestepLeft = timestep+0;

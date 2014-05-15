@@ -609,9 +609,6 @@ public class Board {
           
           if(ball.length() > 1){
               String[] ballInfo = ball.split(" ");
-          
-              
-              
               if(ballInfo[0].equals("Ball")){
                   String name = ballInfo[1];
                   double x = Double.parseDouble(ballInfo[2]);
@@ -626,6 +623,7 @@ public class Board {
           
       }
       this.balls =  updatedBalls;
+      checkRep();
       
   }
   public void updateFlippers(String info){
