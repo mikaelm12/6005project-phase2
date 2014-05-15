@@ -148,12 +148,12 @@ public class PingballClient {
      * @throws Exception 
      */
     public static void runPingBallServerClient(String host, int port, File file) throws Exception{
-       
+        System.out.println("HEllo");
         String kill = "END OF FILE!!";
         String hostName = host;
         int portNumber = port;
         final Board board = GrammarFactory.parse(file);
-        //System.out.println(board.toString());
+        System.out.println(board.toString());
         //Establish communication with the server
         final Socket toServerSocket = new Socket(hostName, portNumber);
         PrintWriter toServe = new PrintWriter(toServerSocket.getOutputStream(), true);
@@ -190,7 +190,7 @@ public class PingballClient {
                 try {
                     while ((fromServer = fromServe.readLine()) != null) {
                         if(!board.isPaused()){
-                        //System.out.println(fromServer);
+                        System.out.println(fromServer);
                        currentChanges = fromServer.toString();
                        
                        board.updateBalls(currentChanges);
@@ -215,7 +215,7 @@ public class PingballClient {
             
             @Override
             public void run() { 
-                
+                System.out.println("Bring up the fucking board");
                 SwingTimer gui = new SwingTimer(board);
                 
                 gui.setMinimumSize(new Dimension(430, 475));
@@ -226,11 +226,9 @@ public class PingballClient {
             }
         });
        
-        BufferedReader fromServe = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
-        String fromServer;
-        while ((fromServer = fromServe.readLine()) != null) {
-            System.out.println(fromServer);
-        }
+        
+       
+        
     }
     
 
@@ -251,7 +249,7 @@ public class PingballClient {
         for(Ball ball: board.getBalls()){
            initial.add( ball.cloneBall());
         }
-       
+        System.out.println("GOT HERE");
         
         EventQueue.invokeLater(new Runnable() {
             
@@ -291,14 +289,19 @@ public class PingballClient {
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
-            if ((current-start) % 20 == 0 && !board.isPaused()){
-                double timestep = 0.001;
+
+
+            if ((current-start) % 30 == 0 && !board.isPaused()){
+                double timestep = 0.01;
                 update(board, timestep);
-                //System.out.println(board.toString());
+                System.out.println(board.toString());
 
             }
             
         }
+        
+        
+        
     }
 
     /**
@@ -360,7 +363,7 @@ public class PingballClient {
 							namesOfBallsCollided.add(ball2.getName());
 						}
 					}
-
+					
 				}
 				if (!ball.inAbsorber()){
 					for (OuterWall wall: board.getOuterWalls()){ 
