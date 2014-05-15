@@ -15,6 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -282,12 +283,11 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	double endX = lf.getNormalEndpt().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double endY = lf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
    
-    	flipperLineDrawer.moveTo(pivotX, pivotY);
-    	flipperLineDrawer.lineTo(endX, endY);
-    	flipperLineDrawer.closePath();
+    	Line2D line = new Line2D.Double(pivotX, pivotY, endX, endY);
+    	
         graph2.setColor(Color.RED);
  
-        graph2.fill(flipperLineDrawer);  
+        graph2.draw(line);  
 
     }
     else if(gadget.getGadgetType().equals("Right Flipper")){
@@ -301,12 +301,11 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	double endX = rf.getNormalEndpt().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double endY = rf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
    
-    	flipperLineDrawer.moveTo(pivotX, pivotY);
-    	flipperLineDrawer.lineTo(endX, endY);
+    	Line2D line = new Line2D.Double(pivotX, pivotY, endX, endY);
         
         graph2.setColor(Color.RED);
  
-        graph2.fill(flipperLineDrawer);  
+        graph2.draw(line);  
     
     }
     else if(gadget.getGadgetType().equals("Portal")){

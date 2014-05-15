@@ -19,15 +19,18 @@ public class Portal implements Gadget {
 	private List<Gadget> gadgetsToFire = new ArrayList<Gadget>();
 	private List<Ball> sentBallQueue = new ArrayList<Ball>();
 	private List<Ball> receivedBallQueue = new ArrayList<Ball>();
+	private Portal destinationPortal;
+	private boolean hasDestinationPortal = false;
 	
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
-		this.circle = new Circle(x+.5, y+.5, .5);
+		this.circle = new Circle(x+.5, 20-(y+.5), .5);
 		this.name = name.substring(5); //for some reason, "name=[name]" is being passed in to the constructor
 		this.x = x;
 		this.y = y;
 		this.otherBoard = otherBoard;
 		this.otherPortal = otherPortal;
+		
 	}
 	
 	@Override
@@ -42,13 +45,15 @@ public class Portal implements Gadget {
 
 	@Override
 	public double timeUntilPhysicsCollision(Ball ball) {
-		if (ballComingFromPortal(ball)){ 
+		if (this.destinationPortal==null){ 
 			return Double.POSITIVE_INFINITY;
 		}
 		return Geometry.timeUntilCircleCollision(this.circle, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
 	}
 
 	public boolean ballComingFromPortal(Ball ball) {
+		return false;
+		/**
 		double ballX = ball.getNormalCircle().getCenter().x();
 		double ballY = ball.getNormalCircle().getCenter().y();
 		double ballVelX = ball.getNormalVelocity().x();
@@ -59,15 +64,36 @@ public class Portal implements Gadget {
 		double portalY = this.y+.5;
 		double distanceBeforeDelta = Math.sqrt(Math.pow(ballX-portalX, 2)+Math.pow(ballY-portalY, 2));
 		double distanceAfterDelta = Math.sqrt(Math.pow(ballX+ballDeltaX-portalX, 2)+Math.pow(ballY+ballDeltaY-portalY, 2));		
+		System.out.println("ballComingFromPortal: ");
+		System.out.println(distanceAfterDelta>distanceBeforeDelta);
 		return (distanceAfterDelta>distanceBeforeDelta); //we are traveling away from (or out of) the portal
+	**/
+	}
+	
+	public void setDestinationPortal(Portal destinationPortal){
+		this.destinationPortal = destinationPortal;
+	}
+	
+	public Portal getDestinationPortal(){
+		return this.destinationPortal;
 	}
 
 	@Override
 	public void reflectOff(Ball ball) {
-		this.trigger();
-		this.sendBall(ball);
+		if (this.destinationPortal!=null){
+			this.destinationPortal.teleportBall(ball);
+			this.trigger();
+		}
 	}
 	
+	private void teleportBall(Ball ball) {
+		ball.setNormalPosition(this.x, this.y);
+		double speed = Math.sqrt(ball.getNormalVelocity().dot(ball.getNormalVelocity()));
+		double timeTilEdgeOfPortal = .8/speed; //to place the ball safely outside the target portal (Portal has .5 radius and ball has .25 radius)0
+		ball.updateBallPosition(timeTilEdgeOfPortal);
+		
+	}
+
 	/**
 	 * Adds a ball to the portal's sentBallQueue, from which the ball will be retrieved and taken away from the portal to its destination (assuming the destination is valid).
 	 * @param ball ball to be sent "into" the portal
@@ -85,9 +111,15 @@ public class Portal implements Gadget {
 	 * @param ball ball to "come out of" the portal
 	 */
 	public synchronized void receiveBall(Ball ball){
-		System.out.println("in receiveBall()");
-		double ballX = this.x+.25;
-		double ballY = this.y+.25;
+		System.out.println(this.name + " in receiveBall()");
+		double velX = ball.getNormalVelocity().x();
+		double velY = ball.getNormalVelocity().y();
+		double propX = velX/Math.abs(velX+velY);
+		double propY = velY/Math.abs(velX+velY);
+		
+		
+		double ballX = this.x+.25+propX;
+		double ballY = this.y+.25+propY;
 		ball.setNormalPosition(ballX, ballY);
 		receivedBallQueue.add(ball);
 		
@@ -151,6 +183,14 @@ public class Portal implements Gadget {
 
 	public void setTargetPortalBoardName(String name) {
 		this.otherBoard = name;
+	}
+
+	public boolean getHasDestinationPortal() {
+		return hasDestinationPortal;
+	}
+
+	public void setHasDestinationPortal(boolean hasDestinationPortal) {
+		this.hasDestinationPortal = hasDestinationPortal;
 	}
 
 }

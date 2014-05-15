@@ -22,31 +22,13 @@ public class TriangularBumper implements Gadget{
     private final String name;
     private List<Gadget> gadgetsToFire;
     private final LineSegment[] edges = new LineSegment[3];
-//<<<<<<< HEAD
-//    private final Vect origin;
-//    private final CircularBumper cornerA;
-//
-//
-//    private final CircularBumper cornerB;
-//    private final CircularBumper cornerC;
-//    private List<CircularBumper> corners;
-//=======
+    
     private final Circle cornerA;
     private final Circle cornerB;
     private final Circle cornerC;
     private List<Circle> corners;
     private final double x;
     private final double y;
-//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
-    
-    //Rep invariant:
-    //orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270
-    //name!=null && name.length>0
-    //triangle is within board
-    //Abstraction Function:
-    //lineSegments represent sides of a triangle
-    //circularBumpers represent corners of the triangle
-    
     
     public TriangularBumper(String name, int x, int y, int orientation){
         this.name = name;
@@ -68,12 +50,12 @@ public class TriangularBumper implements Gadget{
             this.cornerC = new Circle(x,20-(y+sideLength),0);
         }
         else if(orientation == 90){
-            this.sideA = new LineSegment(x,20-y,x,20-(y+sideLength));
-            this.sideB = new LineSegment(x,20-(y+sideLength),x+sideLength,20-(y+sideLength));
+            this.sideA = new LineSegment(x,20-y,x+sideLength,20-y);
+            this.sideB = new LineSegment(x+sideLength,20-(y+sideLength),x+sideLength,20-y);
             this.hypotenuse = new LineSegment(x,20-y,x+sideLength,20-(y+sideLength));
             
             this.cornerA = new Circle(x,20-y,0);
-            this.cornerB = new Circle(x,20-(y+sideLength),0);
+            this.cornerB = new Circle(x+sideLength,20-y,0);
             this.cornerC = new Circle(x+sideLength,20-(y+sideLength),0);
         }
         else if(orientation == 180){

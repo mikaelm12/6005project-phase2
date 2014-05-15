@@ -41,20 +41,22 @@ board name=sampleBoard1 gravity=20.0 friction1=0.020 friction2=0.020
   # define some triangular bumpers
   triangleBumper name=Tri1 x=8 y=11 orientation=270
   triangleBumper name=Tri2 x=11 y=11 orientation=180
-  triangleBumper name=Tri2 x=19 y=2 orientation=270
+  triangleBumper name=Tri2 x=19 y=2 orientation=90
   
   # add some flippers
-  leftFlipper name=FlipL1 x=8 y=4 orientation=0
-  rightFlipper name=FlipR1 x=11 y=4 orientation=0
+  leftFlipper name=FlipL1 x=8 y=3 orientation=0
+  rightFlipper name=FlipR1 x=10 y=4 orientation=0
   leftFlipper name=FlipL2 x=8 y=9 orientation=0
-  rightFlipper name=FlipR2 x=11 y=9 orientation=0
+  rightFlipper name=FlipR2 x=10 y=9 orientation=0
 
   # add portals
-  portal name=p1 x=10 y=15 otherPortal=p2
-  portal name=p2 x=11 y=2 otherPortal=p1
+  portal name=p1 x=9 y=15 otherPortal=p2
+  portal name=p2 x=11 y=2 otherPortal=p6
 
   # define an absorber to catch the ball at the bottom
   absorber name=Abs x=0 y=19 width=20 height=1 
+  
+  spawner name=spawner1 x=5 y=15
 
   # make the absorber self-triggering
   fire trigger=Abs action=Abs 
@@ -62,4 +64,6 @@ board name=sampleBoard1 gravity=20.0 friction1=0.020 friction2=0.020
   fire trigger=FlipR1 action=FlipR1
   fire trigger=FlipL2 action=FlipL2
   fire trigger=FlipR2 action=FlipR2
+  
+  keydown key=space action=FlipR1
    

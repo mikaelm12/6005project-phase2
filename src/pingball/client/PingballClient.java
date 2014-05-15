@@ -155,8 +155,6 @@ public class PingballClient {
         while ((fromServer = fromServe.readLine()) != null) {
             System.out.println(fromServer);
         }
-       
-        
     }
     
     /**
@@ -203,17 +201,13 @@ public class PingballClient {
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
-
-            if ((current-start) % 30 == 0 && !board.isPaused()){
-                double timestep = 0.01;
+            if ((current-start) % 20 == 0 && !board.isPaused()){
+                double timestep = 0.001;
                 update(board, timestep);
                 System.out.println(board.toString());
             }
             
         }
-        
-        
-        
     }
 
     /**
@@ -275,7 +269,7 @@ public class PingballClient {
 							namesOfBallsCollided.add(ball2.getName());
 						}
 					}
-					
+
 				}
 				if (!ball.inAbsorber()){
 					for (OuterWall wall: board.getOuterWalls()){ 

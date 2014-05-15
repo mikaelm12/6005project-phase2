@@ -62,7 +62,7 @@ public class Ball {
      * @return a vector adjusted if the input vector was too fast
      */
     private Vect adjustSpeed(Vect vect) {
-    	double maxSpeed = 80.0;
+    	double maxSpeed = 50.0; //50 L/sec is the speed at which an absorber shoots a ball out
     	double vectSpeed = Math.sqrt(Math.pow(vect.x(),2)+Math.pow(vect.y(),2));
     	double scalingFactor = vectSpeed/maxSpeed;
     	if (scalingFactor>1){
@@ -141,8 +141,6 @@ public class Ball {
     	double circleY = 20-circle.getCenter().y();
         return new Circle(circleX, circleY,radius);
     }
-    
-    
     
     /**
      * 

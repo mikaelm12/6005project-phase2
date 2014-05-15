@@ -50,7 +50,6 @@ public class PingballServer {
         serverSocket = new ServerSocket(port);
         this.world = world;
     }
-    
     /**
      * Run the server, listening for client connections and handling them.
      * Never returns unless an exception is thrown.
