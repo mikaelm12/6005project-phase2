@@ -286,8 +286,6 @@ public class PingballClient {
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
-
-
             if ((current-start) % 30 == 0 && !board.isPaused()){
                 double timestep = 0.01;
                 update(board, timestep);

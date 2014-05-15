@@ -684,8 +684,8 @@ public class Board {
           position = ball.getPhysicsPosition();
           xLoc = position[0];
           yLoc = position[1];
-          if(xLoc > 19.75 || xLoc < 0) fail("ball out of bounds (x): " + xLoc);
-          if(yLoc > 19.75 || yLoc < 0) fail("ball out of bounds (y): " + yLoc);
+          if(xLoc >= 20 || xLoc < 0) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc >= 20 || yLoc < 0) fail("ball out of bounds (y): " + yLoc);
       }
       
       //Check if all gadgets (not including portals/spawners) are within the bounds of the baord
