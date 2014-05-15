@@ -53,7 +53,7 @@ board name=sampleBoard1 gravity=20.0 friction1=0.020 friction2=0.020
 
   # add portals
   portal name=p1 x=9 y=15 otherPortal=p2
-  portal name=p2 x=11 y=2 otherPortal=p6
+  portal name=p2 x=11 y=2 otherPortal=p1
 
   # define an absorber to catch the ball at the bottom
   absorber name=Abs x=0 y=19 width=20 height=1 
