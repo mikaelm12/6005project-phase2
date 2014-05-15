@@ -44,7 +44,7 @@ public class SwingTimer extends JFrame {
 
         setCanvas(board);
 
-        setTitle("Pingball!");
+        setTitle(board.getName());
         pack();
         setResizable(true);
         setLocationRelativeTo(null);        
@@ -171,7 +171,6 @@ public class SwingTimer extends JFrame {
     public SwingTimer() {
 
         
-
         setTitle("Pingball!");
         pack();
         setResizable(true);
@@ -211,22 +210,6 @@ public class SwingTimer extends JFrame {
                 catch(NumberFormatException e2){
                     return;
                 }
-//                    try {
-//                       //final Board board =  GrammarFactory.parse(file);
-//                        //setCanvas(board);
-//                        
-//                        System.out.println("PingBall Client");
-//                        
-//                         //PingballClient.runSingleMachine(file);
-//                               
-//                        //dispose();
-//                       
-//                        System.out.println("HERE NOW");
-//                    } catch (Exception e2) {
-//                        System.err.println(e2);
-//                    }
-                  
-                
                 
                 final JFileChooser fc = new JFileChooser();
                 fc.setCurrentDirectory(null);

@@ -18,10 +18,16 @@ public class Board {
     private OuterWall wallRight;
     private OuterWall wallTop;
     private OuterWall wallBottom;
+    
     private Board neighborLeft = null;
     private Board neighborRight = null;
     private Board neighborTop = null;
     private Board neighborBottom = null;
+    private String neighborLeftString;
+    private String neighborTopString;
+    private String neighborBottomString;
+    private String neighborRightString;
+    
     private final int width = 20;
     private final int height = 20;
     private final double gravity;
@@ -32,10 +38,6 @@ public class Board {
     private List<Portal> portals;
     private List<BallSpawner> spawners;
     private String[][] boardString;
-    private String neighborLeftString;
-    private String neighborTopString;
-    private String neighborBottomString;
-    private String neighborRightString;
     private List<Ball> incomingBalls = Collections.synchronizedList(new ArrayList<Ball>());
     private boolean paused = false;
     private HashMap<String, String> gadgetKeyUpListeners;
@@ -235,6 +237,7 @@ public class Board {
     * @param board new neighbor
     */
     public void setNeighborLeft(Board board){
+
         neighborLeft = board;
         wallLeft.setWallSolidity(false);
         String neighborName = neighborLeft.getName();
@@ -249,6 +252,8 @@ public class Board {
             }
         }
         
+        System.out.println("MY NEIGHBOR LEFT IS SET");
+        System.out.println(this.getNeighborLeft().getName());
     }
     
     /**
@@ -256,6 +261,7 @@ public class Board {
      * @param board new neighbor
      */
     public void setNeighborRight(Board board){
+
         neighborRight = board;
         wallRight.setWallSolidity(false);
         String neighborName = neighborRight.getName();
@@ -269,6 +275,8 @@ public class Board {
                 counter++;
             }
         }
+        System.out.println("MY NEIGHBOR RIGHT IS SET");
+        System.out.println(this.getNeighborRight().getName());
     }
 
     /**
