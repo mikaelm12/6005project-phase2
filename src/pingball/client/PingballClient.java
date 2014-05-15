@@ -19,11 +19,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import BoardExpr.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;

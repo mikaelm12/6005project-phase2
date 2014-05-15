@@ -173,7 +173,7 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
      */
     @Override
     public void exitKeys(GrammarParser.KeysContext ctx){
-        System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
+//        System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
         String keyBoardChar = ctx.key().ID().toString();
         String gadget = ctx.action().ID().toString();
         
