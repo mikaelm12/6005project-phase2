@@ -10,13 +10,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
-import BoardExpr.BoardFactory;
-import BoardExpr2.GrammarFactory;
+
 import Graphics.SwingTimer;
-=======
+
 import BoardExpr.GrammarFactory;
->>>>>>> 228630266a587e354084b06bdda67816d7080d4c
+
 import physics.Geometry;
 import physics.Vect;
 import physics.Geometry.VectPair;
