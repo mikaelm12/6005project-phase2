@@ -161,7 +161,7 @@ public class FileParsingTest {
                 + ".################|   .\n"
                 + ".          O     |   .\n"
                 + ".           O        .\n"
-                + ".            O       .\n"
+                + ".            O      /.\n"
                 + ".             O      .\n"
                 + ".              O     .\n"
                 + ".               O    .\n"
