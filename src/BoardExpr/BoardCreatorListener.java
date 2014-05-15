@@ -198,7 +198,7 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
     public void exitSpawner(GrammarParser.SpawnerContext ctx){
         String name = ctx.objectName().getText();
         String xLoc = ctx.xLoc().getChild(2).getText();
-        String yLoc = ctx.xLoc().getChild(2).getText();
+        String yLoc = ctx.yLoc().getChild(2).getText();
         
         spawners.add(new BallSpawner(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc)));
     }
