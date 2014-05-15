@@ -31,7 +31,7 @@ public class Main {
 
     	//File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
 
-    	File file = new File("src/../boards/board1P.txt");
+    	File file = new File("src/../boards/portalWorldLeft.txt");
 
 
 

@@ -279,9 +279,7 @@ public class PingballClient {
      */
     public static void simulateGame(final Board board){
     	for (Portal portal: board.getPortals()){
-        	if(getTargetPortal(board, portal)==null){//there is no valid destination portal
-        		portal.setHasDestinationPortal(false);
-        	} else {//there is a valid destination portal
+        	if(getTargetPortal(board, portal)!=null){//there is no valid destination portal
         		portal.setHasDestinationPortal(true);
         	}
         }

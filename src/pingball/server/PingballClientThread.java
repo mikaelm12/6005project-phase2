@@ -97,7 +97,7 @@ public class PingballClientThread extends Thread {
         while(true){
             long current = System.currentTimeMillis();
             if ((current-start) % 30 == 0 && !board.isPaused()){
-                double timestep = 0.005;
+                double timestep = 0.001;
                 update(board, world, timestep);
                 if(board.isPaused()){
                     pause = "T";
@@ -160,10 +160,13 @@ public class PingballClientThread extends Thread {
 			}
 			if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
 				for (Portal portal: board.getPortals()){
+					System.out.println("portal.timeUntilPhysicsCollision(ball) = "+portal.timeUntilPhysicsCollision(ball));
+					System.out.println("timeUntilFirstCollision = "+timeUntilFirstCollision);
+					System.out.println("portal.hasDestinationPortal() = "+ portal.hasDestinationPortal());
 					if (portal.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the portal
 						Vect oldV = ball.getPhysicsVelocity();
 						portal.reflectOff(ball);
-						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+//						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
 						namesOfBallsCollided.add(ball);
 						
 					}
@@ -218,6 +221,7 @@ public class PingballClientThread extends Thread {
   		for (Portal portal: board.getPortals()){
   			synchronized (portal.getOutQueue()) {
 				for(Ball sentBall: portal.getOutQueue()){
+					System.out.println("We've got one in the outQueue!");
 					world.sendBall(sentBall, portal, board);
 				}
 				portal.getOutQueue().clear();
@@ -267,6 +271,9 @@ public class PingballClientThread extends Thread {
 			}
 			for (Ball ball2: board.getBalls()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, ball.timeUntilPhysicsCollision(ball2));
+			}
+			for (Portal portal: board.getPortals()){
+				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, portal.timeUntilPhysicsCollision(ball));
 			}
 		}
 		return timeUntilFirstCollision;
