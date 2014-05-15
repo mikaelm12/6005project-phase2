@@ -19,8 +19,6 @@ public class CircularBumper implements Gadget{
     private List<Gadget> gadgetsToFire;
     private final Vect position;
     
-    
-    
     //Rep invariant:
     //name!=null && name.length>0
     //circle != null

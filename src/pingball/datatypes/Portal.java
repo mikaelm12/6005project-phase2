@@ -29,7 +29,6 @@ public class Portal implements Gadget {
 		this.y = y;
 		this.otherBoard = otherBoard;
 		this.otherPortal = otherPortal;
-//		System.out.println("otherBoard = "+otherBoard);
 		
 	}
 	
@@ -54,7 +53,6 @@ public class Portal implements Gadget {
 	@Override
 	public void reflectOff(Ball ball) {
 		if (this.hasDestinationPortal){
-//			System.out.println("We're reflecting off a valid portal");
 			synchronized(this.outQueue){
 				this.outQueue.add(ball);
 			}
@@ -135,7 +133,6 @@ public class Portal implements Gadget {
 	}
 
 	public void setHasDestinationPortal(boolean newHasDestinationPortal) {
-//		System.out.println("we're setting the portal on " + name +" to " + newHasDestinationPortal);
 		this.hasDestinationPortal = newHasDestinationPortal;
 	}
 

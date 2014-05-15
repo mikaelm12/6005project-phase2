@@ -92,11 +92,6 @@ import org.junit.Test;
  *  -test absorber shoots ball correctly with height >1
  *  
  * 2. Test timeUntilRe
- * 
- * 
- * 
- * 
- *
  */
 
 public class PingBallDatatypesTest {
@@ -111,8 +106,6 @@ public class PingBallDatatypesTest {
         square.reflectOff(ball1);
         
         assertTrue(leftFlipper.getState().equals("flipping"));
-        
-        
         square.reflectOff(ball1);
         
         assertTrue(leftFlipper.getState().equals("deflipping"));
@@ -137,24 +130,17 @@ public class PingBallDatatypesTest {
         SquareBumper square = new SquareBumper("square",3,1);
         square.addGadgetToFire(leftFlipper);
         
-        
         assertTrue(leftFlipper.toString().equals("- - "));
-        
         
         Ball ball1 = new Ball("ball1",3.2,1.2,-5.0,0);
         square.reflectOff(ball1);
         
         assertTrue(leftFlipper.getState().equals("flipping"));
-        
-        
         assertTrue(leftFlipper.toString().equals("  ||"));
-        
         
         square.reflectOff(ball1);
         
         assertTrue(leftFlipper.getState().equals("deflipping"));
-        
-        
         assertTrue(leftFlipper.toString().equals("  ||"));
         
     }
@@ -185,102 +171,4 @@ public class PingBallDatatypesTest {
 //        RightFlipper rightFlipper = new RightFlipper("rightFlipper",1,1,90);
         assertTrue(square.timeUntilPhysicsCollision(ball) < triangle.timeUntilPhysicsCollision(ball));   
     }
-    /**
-    @Test public void testReflectOffGadgetAndAbsorberAction(){
-        SquareBumper square = new SquareBumper("square",3,3);
-        Ball ball1 = new Ball("ball1",4.2,3.3,-1.0,0); //moving in -x direction
-        square.reflectOff(ball1);
-        assertTrue(ball1.getNormalVelocity().x() == 1.0);
-        assertTrue(ball1.getNormalVelocity().y() == 0);
-        
-        TriangularBumper triangle = new TriangularBumper("triangle",5,5,180);
-        Ball ball2 = new Ball("ball2",6.2,5.2,-1,0); //moving in -x direction
-        triangle.reflectOff(ball2);
-        assertTrue(ball2.getNormalVelocity().x() == 1);
-        assertTrue(ball2.getNormalVelocity().y() == 0);
-        
-        CircularBumper circular = new CircularBumper("circular",2,2);
-        Ball ball3 = new Ball("ball3",3.2,2.5,-1,0); //moving in -x direction
-        circular.reflectOff(ball3);
-        assertTrue(ball3.getNormalVelocity().x() == 1.0);
-        assertTrue(ball3.getNormalVelocity().y() == 0);
-        
-        LeftFlipper leftFlipper = new LeftFlipper("leftFlipper",3,3,0);
-        Ball ball4 = new Ball("ball4",3.25,4,-1,0); //moving in -x direction
-        assertTrue(leftFlipper.toString().equals("||  "));
-        leftFlipper.addGadgetToFire(leftFlipper);
-        leftFlipper.reflectOff(ball4);
-        assertTrue(leftFlipper.toString().equals("- - "));
-
-        RightFlipper rightFlipper = new RightFlipper("rightFlipper",3,3,0);
-        Ball ball5 = new Ball("ball5",4.75,4,1,0); //moving in +x direction
-        assertTrue(rightFlipper.toString().equals("  ||"));
-        rightFlipper.addGadgetToFire(rightFlipper);
-        rightFlipper.reflectOff(ball5);
-        assertTrue(rightFlipper.toString().equals("- - "));
-        assertTrue(ball5.getNormalVelocity().x() == -ball4.getNormalVelocity().x());
-        assertTrue(ball5.getNormalVelocity().y() == -ball4.getNormalVelocity().y());
-        
-        Absorber absorber = new Absorber("abs",0,19,20,1);
-        Ball ball7 = new Ball("ball7",5,18,0,1); //moving in +y direction
-        absorber.reflectOff(ball7);
-        assertTrue(ball7.getNormalVelocity().x() == 0);
-        assertTrue(ball7.getNormalVelocity().y() == 0);
-        assertTrue(ball7.getNormalPosition()[0] == 19.75);
-        assertTrue(ball7.getNormalPosition()[1] == 19.75);
-        
-        absorber.addGadgetToFire(absorber);
-        
-        Ball ball8 = new Ball("ball8",5,18,0,1); //moving in +y direction
-        absorber.reflectOff(ball8);
-        assertTrue(ball7.getNormalVelocity().x() == 0);
-        assertTrue(ball7.getNormalVelocity().y() == -50.0);
-        assertTrue(ball8.getNormalPosition()[0] == 19.75);
-        assertTrue(ball8.getNormalPosition()[1] == 19.75);
-        
-        OuterWall wallLeft = new OuterWall("left", 0,0,0,20,true);
-        Ball ball9 = new Ball("ball9",1,1,-1,0); //moving in -x direction
-        wallLeft.reflectOff(ball9);
-        assertTrue(ball9.getNormalVelocity().x() == 1.0);
-        assertTrue(ball9.getNormalVelocity().y() == 0);
-        RightFlipper testR = new RightFlipper("testR",2,1,0);
-        CircularBumper test = new CircularBumper("test",4,3,0);
-        Ball tester = new Ball("tester",4,4,0,-1);
-        Ball tester2 = new Ball("tester",4,4,0,-1);
-        System.out.println(test.timeUntilPhysicsCollision(tester));
-        test.reflectOff(tester);
-        testR.reflectOff(tester2);
-
-        
-        
-    }
-    
-    @Test public void testNonExistentTargetPortal(){
-    	Portal portal1 = new Portal("portal1", 5, 5, "", "nonExistentPortal");
-    	Ball ball1 = new Ball("ball1", 5, 5, 0, -1.0); //heading straight down right over the portal
-       
-        portal1.reflectOff(ball1); //since the portal does not have a valid target portal, nothing should happen to the ball
-
-
-        assertTrue(ball1.getNormalCircle().getCenter().x() == 5.0);
-        assertTrue(ball1.getNormalCircle().getCenter().y() == 5.0);
-
-        assertTrue(ball1.getNormalVelocity().x() == 0.0);
-        assertTrue(ball1.getNormalVelocity().x() == -1.0); 
-    }
-    
-    @Test public void testExistentTargetPortal(){
-    	Portal portal1 = new Portal("portal1", 5, 5, "", "portal2");
-    	Portal portal2 = new Portal("portal2", 5, 12, "", "nonExistentPortal");
-    	Ball ball1 = new Ball("ball1", 5, 5, 0, -1.0); //heading straight down right over portal1
-       
-        portal1.reflectOff(ball1); //since the portal has a valid target portal, the ball should be transported to portal2
-
-        assertFalse(ball1.getNormalCircle().getCenter().x() == 5.0);
-        assertFalse(ball1.getNormalCircle().getCenter().y() == 5.0);
-
-        assertTrue(ball1.getNormalVelocity().x() == 0.0);
-        assertTrue(ball1.getNormalVelocity().x() == -1.0); 
-    }
-**/
 }

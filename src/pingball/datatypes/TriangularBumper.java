@@ -153,7 +153,6 @@ public class TriangularBumper implements Gadget{
         //find nearest edge
         for (LineSegment edge : edges) {
             double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
-            //System.out.println("Edge: timeUntilWallCollision: " + timeToEdge);
             if(timeToEdge < closestTimeToCollision){
                 closestTimeToCollision = timeToEdge;
                 edgeShortestTimeToCollision = edge;
@@ -162,14 +161,12 @@ public class TriangularBumper implements Gadget{
         //find nearest corner
         for (Circle corner : corners) {
             double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
-            //System.out.println("Corner: timeUntilCornerCollision: " + timeToCorner);
             //if corner closer than nearest edge, update
             if(timeToCorner < closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
                 closestCorner = corner;
             }
         }
-       // System.out.println("Position: "+ ball.getNormalCircle().getCenter().x() + ", " + ball.getNormalCircle().getCenter().y());
         Vect newVelocityVector;
         //reflect using appropriate corner or edge
         if(closestCorner == null){//we've hit an edge;

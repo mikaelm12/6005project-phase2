@@ -57,11 +57,8 @@ public class PingballServer {
                 BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
                 try {
                     for (String line = fromUser.readLine(); line != null; line = fromUser.readLine()) {
-                        String output = handleRequest(line);
-                           // System.out.println(output);
                     }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 
@@ -73,7 +70,6 @@ public class PingballServer {
             // block until a client connects
             Socket ClientSocket = serverSocket.accept();
             new PingballClientThread(ClientSocket, world).start();
-            //System.out.println(world);
         } 
     }
     

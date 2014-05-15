@@ -127,7 +127,6 @@ public class SquareBumper implements Gadget{
      */
     @Override
     public void reflectOff(Ball ball){
-//    	System.out.println("Reflecting Off of "+this.getName());
         LineSegment edgeShortestTimeToCollision = null;
         Circle closestCorner = null; 
         double closestTimeToCollision = Double.POSITIVE_INFINITY; //default value since double has to be initialized
@@ -135,7 +134,6 @@ public class SquareBumper implements Gadget{
         //find nearest edge
         for (LineSegment edge : edges) {
         	double timeToEdge = Geometry.timeUntilWallCollision(edge, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
-        	//System.out.println("Edge: timeUntilWallCollision: " + timeToEdge);
             if(timeToEdge <= closestTimeToCollision){
                 closestTimeToCollision = timeToEdge;
                 edgeShortestTimeToCollision = edge;
@@ -144,18 +142,15 @@ public class SquareBumper implements Gadget{
         //find nearest corner
         for (Circle corner : corners) {
             double timeToCorner = Geometry.timeUntilCircleCollision(corner, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
-            //System.out.println("Corner: timeUntilCornerCollision: " + timeToCorner);
             //if corner closer than nearest edge, update
             if(timeToCorner <= closestTimeToCollision){
                 closestTimeToCollision = timeToCorner;
                 closestCorner = corner;
             }
         }
-//        System.out.println("Position: "+ ball.getNormalCircle().getCenter().x() + ", " + ball.getNormalCircle().getCenter().y());
         Vect newVelocityVector;
         //reflect using appropriate corner or edge
         if(closestCorner == null){ //we've hit an edge
-//        	System.out.println(edgeShortestTimeToCollision);
             newVelocityVector = Geometry.reflectWall(edgeShortestTimeToCollision, ball.getPhysicsVelocity(), coR);
         }
         else{//we've hit a corner
@@ -216,9 +211,7 @@ public class SquareBumper implements Gadget{
             assertTrue(edge.p1().x() >=0 && edge.p1().y() >= 0);
             assertTrue(edge.p1().x() <=20 && edge.p1().y() <=20);
         }
-        
         assertTrue(coR == 1.0 && edgeLength == 1.0);
-        
     }
 
     @Override

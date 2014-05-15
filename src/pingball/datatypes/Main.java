@@ -50,7 +50,6 @@ public class Main {
        }
         // Create the board
         final Board board  =  GrammarFactory.parse(fileString);
-        System.out.println(board);
         
        EventQueue.invokeLater(new Runnable() {
             
@@ -71,7 +70,6 @@ public class Main {
         	}
         }
         
-
         while(true){
             long current = System.currentTimeMillis();
 
@@ -79,7 +77,6 @@ public class Main {
                 double timestep = 90.0/1080.0/100.0; //it will take exactly 1000 timesteps for the flipper to rotate
 
                 update(board, timestep);
-//                System.out.println(board.toString());
             }
         }
     }
@@ -94,16 +91,10 @@ public class Main {
 			synchronized(ball){
 				ball.updateBallVelocityBeforeTimestep(board.getGravity(), board.getMu(), board.getMu2(), timestep);
 			}
-
-//			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
-//			System.out.println("Speed: "+Math.sqrt(ball.getNormalVelocity().dot(ball.getNormalVelocity())));
-			
 		}
 		double timestepLeft = timestep+0;
 		while (timestepLeft > 0){
 			double timeUntilFirstCollision = getTimeUntilFirstCollision(board);
-//			System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
-//			System.out.println("timestepLeft: "+timestepLeft);
 			
 			if (timeUntilFirstCollision<=timestepLeft){ //we have a collision in the timestep
 				updateWithCollision(board, timeUntilFirstCollision);
@@ -122,18 +113,13 @@ public class Main {
 	 */
 	private static void updateWithCollision(Board board, double timeUntilFirstCollision) { //will not work correctly if a ball collides with two things at the EXACT same time--which is extremely improbable
 		//updateWithoutCollision(board, timeUntilFirstCollision); //we will update flippers and balls as usual, and then collide the balls
-//		System.out.println("in updateWithCollision()");
-		
 		List<String> namesOfBallsCollided = new ArrayList<String>();
 		
 		for (Ball ball: board.getBalls()){
-//			System.out.println("ball.inAbsorber()==" +ball.inAbsorber());
-
 			if (!ball.inAbsorber()){
 				for (Ball ball2: board.getBalls()){
 					if (!namesOfBallsCollided.contains(ball.getName()) && !namesOfBallsCollided.contains(ball2.getName()) && !ball.getName().equals(ball2.getName())){ //make sure to only collide balls that have not been collided yet
 						if (ball.timeUntilPhysicsCollision(ball2)<=timeUntilFirstCollision){
-//							System.out.println("Two Balls are colliding");
 							VectPair newVels = Geometry.reflectBalls(ball.getPhysicsCircle().getCenter(), 1.0, ball.getPhysicsVelocity(), ball2.getPhysicsCircle().getCenter(), 1.0, ball2.getPhysicsVelocity());
 							ball.updateBallPosition(timeUntilFirstCollision); //update the positions to right before the collision
 							ball2.updateBallPosition(timeUntilFirstCollision);
@@ -161,7 +147,6 @@ public class Main {
 					for (OuterWall wall: board.getOuterWalls()){ 
 						if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
 							if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
-//								System.out.println("we are colliding with the wall");
 								Vect oldV = ball.getPhysicsVelocity();
 								wall.reflectOff(ball);
 								ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);

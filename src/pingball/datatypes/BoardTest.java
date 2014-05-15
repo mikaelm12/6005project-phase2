@@ -239,7 +239,6 @@ public class BoardTest {
         SquareBumper sqb = new SquareBumper("square", 3, 5);
         testBoard.addGadget(sqb);
         assertEquals(1,testBoard.getGadgets().size());
-//        System.out.println(testBoard.toString());
         
         String expectedOutput = "......................\n"
                 + ".                    .\n"

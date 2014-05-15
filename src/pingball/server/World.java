@@ -1,6 +1,5 @@
 package pingball.server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,6 @@ public class World implements WorldInterface {
 
     @Override
     public synchronized void joinHorizontal(String boardLeft, String boardRight) {
-    	System.out.println("in joinHorizontal");
         boards.get(boardLeft).setNeighborRight(boards.get(boardRight));
         boards.get(boardRight).setNeighborLeft(boards.get(boardLeft));
 
@@ -82,13 +80,10 @@ public class World implements WorldInterface {
     
     @Override
     public synchronized  void transferBall(Board from, Ball ball, OuterWall wall){
-        System.out.println("Moving Boards");
         if (wall.getName().equals("left")){
             Board neighbor = from.getNeighborLeft();
-        	System.out.println("leftNeighbor is " + neighbor.getName());
             if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(),19.0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-                System.out.println("LEFT: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
                 
                 neighbor.addIncomingBall(newBall);
             }
@@ -96,28 +91,19 @@ public class World implements WorldInterface {
             Board neighbor = from.getNeighborTop();
             if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 19.0, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-                System.out.println("TOP: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
 
                 neighbor.addIncomingBall(newBall);
             }
         } else if (wall.getName().equals("right")){
             Board neighbor = from.getNeighborRight();
-        	System.out.println("rightNeighbor is " + neighbor.getName());
            if(!neighbor.isPaused()){
-          		System.out.println("new ball at 1, " + ball.getNormalPosition()[1]);
-           		System.out.println("new velocity is " + ball.getNormalVelocity().x()+", "+ball.getNormalVelocity().y());
-
                 Ball newBall = new Ball(ball.getName(), 1, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
                 neighbor.addBall(newBall);
-
-//                neighbor.addIncomingBall(newBall);
             }
         } else {
             Board neighbor = from.getNeighborBottom();
             if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 1, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-                System.out.println("BOTTOM: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
-
                 neighbor.addIncomingBall(newBall);
             }
         }
@@ -136,13 +122,8 @@ public class World implements WorldInterface {
     private synchronized Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
 		List<Portal> portalList = targetBoard.getPortals();
 		for (Portal portal: portalList){
-//			System.out.println("sourcePortal.getTargetPortalBoardName() = "+sourcePortal.getTargetPortalBoardName());
-//			System.out.println("targetBoard.getName() = "+targetBoard.getName());
-			
 			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
-//				System.out.println("sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())");
 				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
-//					System.out.println("we should return a portal");
 					return portal;
 				}
 			}
@@ -150,16 +131,13 @@ public class World implements WorldInterface {
 		return null;
 	}
     private synchronized void reevaluatePortalValidity(){  
-//    	System.out.println("in reevaluatePortalValidity()");
     	for (Board board: boards.values()){
 			for (Portal portal: board.getPortals()){
 				if (boards.containsKey(portal.getTargetPortalBoardName())){ //we found the targetBoard
 					Board otherBoard = boards.get(portal.getTargetPortalBoardName());
 					if(getTargetPortal(otherBoard, portal)==null){//there is no valid destination portal
-//						System.out.println("getTargetPortal(board, portal)==null");
 						portal.setHasDestinationPortal(false);
 					} else {//there is a valid destination portal
-//						System.out.println("We've got a portal!");
 						portal.setHasDestinationPortal(true);
 					}
 				} else {
@@ -170,7 +148,6 @@ public class World implements WorldInterface {
     }
 
 	public synchronized void sendBall(Ball sentBall, Portal sourcePortal, Board sourceBoard) {
-//		System.out.println("in World.sendBall();");
 		sourceBoard.removeBall(sentBall);
 		synchronized(boards){
 			if(boards.containsKey(sourcePortal.getTargetPortalBoardName())){//we found the targetBoard
@@ -186,7 +163,5 @@ public class World implements WorldInterface {
 				}
 			}
 		}
-		
 	}
-
 }
