@@ -58,7 +58,7 @@ public class Board {
     }
 
     /**
-     * 
+     * Constructor
      * @param x width of board
      * @param y height of board
      */
@@ -135,7 +135,10 @@ public class Board {
         balls.add(ball);
         checkRep();
     }
-    
+    /**
+     * adds a ball to the queue of incoming balls
+     * @param ball ball to be added to the queue
+     */
     public synchronized void addIncomingBall(Ball ball){
         incomingBalls.add(ball);
         checkRep();
