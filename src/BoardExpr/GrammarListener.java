@@ -3,7 +3,6 @@
 package BoardExpr;
 
 import org.antlr.v4.runtime.tree.*;
-import org.antlr.v4.runtime.Token;
 
 public interface GrammarListener extends ParseTreeListener {
 	void enterFriction1(GrammarParser.Friction1Context ctx);

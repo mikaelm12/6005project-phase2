@@ -175,7 +175,6 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
      */
     @Override
     public void exitKeys(GrammarParser.KeysContext ctx){
-//        System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
         String keyBoardChar = ctx.key().ID().toString();
         String gadget = ctx.action().ID().toString();
         
@@ -220,8 +219,6 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
         if(ctx.getChildCount() == 6){
             otherBoard = ctx.getChild(4).getChild(2).getText();
         }
-//        System.out.println(ctx.getChildCount());
-//        System.out.println(name + ", " + xLoc + ", " + yLoc + ", " + otherPortal + ", " + otherBoard);
         portals.add(new Portal(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc), otherBoard, otherPortal));
     }
     
