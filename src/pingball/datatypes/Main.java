@@ -76,10 +76,10 @@ public class Main {
             long current = System.currentTimeMillis();
 
             if ((current-start) % 20 == 0){
-                double timestep = 90.0/1080.0/30.0; //it will take exactly 30 timesteps for the flipper to rotate
+                double timestep = 90.0/1080.0/100.0; //it will take exactly 1000 timesteps for the flipper to rotate
 
                 update(board, timestep);
-                System.out.println(board.toString());
+//                System.out.println(board.toString());
             }
         }
     }

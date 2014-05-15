@@ -12,12 +12,14 @@ import java.util.List;
 
 
 
+
 import Graphics.SwingTimer;
 import BoardExpr.GrammarFactory;
 import physics.Geometry;
 import physics.Vect;
 import physics.Geometry.VectPair;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
@@ -221,6 +223,15 @@ public class PingballClientThread extends Thread {
 				portal.getOutQueue().clear();
 			}
 		}
+  		//create all the balls in the spawner queue
+  		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
+		}
 	}
 	
 
@@ -233,6 +244,15 @@ public class PingballClientThread extends Thread {
 		}
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timestep);
+		}
+  		//create all the balls in the spawner queue
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
 		}
 	}
 

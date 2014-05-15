@@ -196,7 +196,7 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
      */
     @Override
     public void exitSpawner(GrammarParser.SpawnerContext ctx){
-        String name = ctx.objectName().getText();
+        String name = ctx.objectName().getChild(2).getText();
         String xLoc = ctx.xLoc().getChild(2).getText();
         String yLoc = ctx.yLoc().getChild(2).getText();
         

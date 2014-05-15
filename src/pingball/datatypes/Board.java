@@ -504,6 +504,7 @@ public class Board {
                     
                 }
                 for(BallSpawner curGadget: spawners){
+
                     if(curGadget.getName().equals(gadgetStr))gadget = curGadget;
                     
                 }
@@ -513,19 +514,22 @@ public class Board {
         }
         
         if(gadgetKeyDownListeners.containsKey(key)){ //Keydown
-            Gadget gadget = null;
             if(!pressed){//Key is released
                 //Find associated gadget
                 String gadgetStr = gadgetKeyDownListeners.get(key);
                 for(Gadget curGadget: gadgets){
-                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
+                    if(curGadget.getName().equals(gadgetStr)){
+                    	curGadget.action();
+                    }
                 }
                 for(BallSpawner curGadget: spawners){
-                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
+                	System.out.println(curGadget.getName());
+                    if(curGadget.getName().equals(gadgetStr)){
+                    	curGadget.action();
+                    }
                     
                 }
                 
-                gadget.action();
 
             }
         }
