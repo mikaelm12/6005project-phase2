@@ -1,6 +1,6 @@
 // Generated from Grammar.g4 by ANTLR 4.0
 
-package BoardExpr2;
+package BoardExpr;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

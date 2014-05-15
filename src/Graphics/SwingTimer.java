@@ -19,8 +19,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import BoardExpr2.BoardCreatorListener;
-import BoardExpr2.GrammarFactory;
+import BoardExpr.BoardCreatorListener;
+import BoardExpr.GrammarFactory;
 import pingball.datatypes.Board;
 
 

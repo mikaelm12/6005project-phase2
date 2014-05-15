@@ -24,8 +24,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import BoardExpr.BoardFactory;
-import BoardExpr2.GrammarFactory;
+import BoardExpr.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Vect;

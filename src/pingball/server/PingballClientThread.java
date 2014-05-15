@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import BoardExpr.BoardFactory;
+import BoardExpr.GrammarFactory;
 import physics.Geometry;
 import physics.Vect;
 import physics.Geometry.VectPair;
@@ -34,9 +34,9 @@ public class PingballClientThread extends Thread {
      * Initializes a user
      * @param socket to be used by this thread
      * @param world where this client's game is stored
-     * @throws IOException 
+     * @throws Exception 
      */
-    public PingballClientThread(Socket socket, World world) throws IOException {
+    public PingballClientThread(Socket socket, World world) throws Exception {
         super("PingballClientThread");
         String kill = "END OF FILE!!";
         this.socket = socket;
@@ -52,7 +52,7 @@ public class PingballClientThread extends Thread {
             }
             fileBoard+= line + "\n";
         }
-        board = BoardFactory.parse(fileBoard);
+        board = GrammarFactory.parse(fileBoard);
         world.addBoard(board);
     }
 

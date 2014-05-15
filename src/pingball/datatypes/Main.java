@@ -12,8 +12,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import BoardExpr.BoardFactory;
-import BoardExpr2.GrammarFactory;
+import BoardExpr.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Geometry.VectPair;

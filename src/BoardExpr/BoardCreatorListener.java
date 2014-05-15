@@ -1,4 +1,4 @@
-package BoardExpr2;
+package BoardExpr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
 
-public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
+public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
    /**
     * gadgets, balls
     * 

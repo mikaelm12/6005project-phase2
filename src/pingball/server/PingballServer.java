@@ -54,11 +54,9 @@ public class PingballServer {
     /**
      * Run the server, listening for client connections and handling them.
      * Never returns unless an exception is thrown.
-     * 
-     * @throws IOException if the main server socket is broken
-     *                     (IOExceptions from individual clients do *not* terminate serve())
+     * @throws Exception 
      */
-    public void serve() throws IOException {
+    public void serve() throws Exception {
         Thread consoleInput = new Thread (new Runnable(){
             @Override
             public void run() {
@@ -96,9 +94,10 @@ public class PingballServer {
      * specifying the port where the server should listen for incoming connections. 
      * The default port is 10987. E.g. "PingballServer --port 1234"
      * starts the server listening on port 1234.
+     * @throws Exception 
      * 
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         int port = 10987; //default port
         // Read the input argument port
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
@@ -134,9 +133,9 @@ public class PingballServer {
     /**
      * Start a MinesweeperServer running on the specified port
      * @param port The network port on which the server should listen.
-     * @throws IOException
+     * @throws Exception 
      */
-    public static void runPingballServer(int port) throws IOException{
+    public static void runPingballServer(int port) throws Exception{
         World worl = new World();
         PingballServer server = new PingballServer(port, worl);
         server.serve();

@@ -1,4 +1,4 @@
-package BoardExpr2;
+package BoardExpr;
 
 import static org.junit.Assert.*;
 
