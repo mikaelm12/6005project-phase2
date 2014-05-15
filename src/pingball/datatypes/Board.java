@@ -150,7 +150,9 @@ public class Board {
      * @param ball to be removed to the board
      */
     public void removeBall(Ball ball){
+    	System.out.println("in removeBall");
         balls.remove(ball);
+        System.out.println(balls.size()+"in this board.");
         checkRep();
     }
     

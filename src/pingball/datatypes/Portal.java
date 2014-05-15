@@ -22,7 +22,7 @@ public class Portal implements Gadget {
 	
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
-		System.out.println("in portal constructor");
+//		System.out.println("in portal constructor");
 		this.hasDestinationPortal = false;
 		this.circle = new Circle(x+.5, 20-(y+.5), .5);
 		this.name = name;
@@ -30,7 +30,7 @@ public class Portal implements Gadget {
 		this.y = y;
 		this.otherBoard = otherBoard;
 		this.otherPortal = otherPortal;
-		System.out.println("otherBoard = "+otherBoard);
+//		System.out.println("otherBoard = "+otherBoard);
 		
 	}
 	
@@ -55,7 +55,7 @@ public class Portal implements Gadget {
 	@Override
 	public void reflectOff(Ball ball) {
 		if (this.hasDestinationPortal){
-			System.out.println("We're reflecting off a valid portal");
+//			System.out.println("We're reflecting off a valid portal");
 			synchronized(this.outQueue){
 				this.outQueue.add(ball);
 			}
@@ -136,7 +136,7 @@ public class Portal implements Gadget {
 	}
 
 	public void setHasDestinationPortal(boolean newHasDestinationPortal) {
-		System.out.println("we're setting the portal on " + name +" to " + newHasDestinationPortal);
+//		System.out.println("we're setting the portal on " + name +" to " + newHasDestinationPortal);
 		this.hasDestinationPortal = newHasDestinationPortal;
 	}
 

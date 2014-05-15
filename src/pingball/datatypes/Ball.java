@@ -179,6 +179,12 @@ public class Ball {
     	
         double xPos = this.getNormalCircle().getCenter().x() + velocityVector.x()*timeStep;
         double yPos = this.getNormalCircle().getCenter().y()+ velocityVector.y()*timeStep;
+        
+        if(xPos>20){xPos = 40-xPos;}
+        if(yPos>20){yPos = 40-yPos;}
+        if(xPos<0){xPos = 0-xPos;}
+        if(yPos<0){yPos = 0-yPos;}
+        
 
         this.setNormalPosition(xPos, yPos);
         checkRep();
@@ -191,6 +197,11 @@ public class Ball {
         //calculate the position of the ball and update it
         double xPos = this.getPhysicsCircle().getCenter().x() + oldPhysicsVelocity.x()*timeStep;
         double yPos = this.getPhysicsCircle().getCenter().y()+ oldPhysicsVelocity.y()*timeStep;
+        
+        if(xPos>20){xPos = 40-xPos;}
+        if(yPos>20){yPos = 40-yPos;}
+        if(xPos<0){xPos = 0-xPos;}
+        if(yPos<0){yPos = 0-yPos;}
 
         this.setPhysicsPosition(xPos, yPos);
         checkRep();
