@@ -38,13 +38,15 @@ board name=sampleBoard1 gravity=20.0 friction1=0.020 friction2=0.020
   circleBumper name=Circle14 x=14 y=6
   circleBumper name=Circle15 x=15 y=5
   
+  circleBumper name=Circle16 x=1 y=3
+  
   # define some triangular bumpers
   triangleBumper name=Tri1 x=8 y=11 orientation=270
   triangleBumper name=Tri2 x=11 y=11 orientation=180
   triangleBumper name=Tri3 x=19 y=2 orientation=90
   
   # add some flippers
-  leftFlipper name=FlipL1 x=8 y=3 orientation=0
+  leftFlipper name=FlipL1 x=8 y=4 orientation=0
   rightFlipper name=FlipR1 x=10 y=4 orientation=0
   leftFlipper name=FlipL2 x=8 y=9 orientation=0
   rightFlipper name=FlipR2 x=10 y=9 orientation=0

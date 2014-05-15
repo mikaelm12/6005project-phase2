@@ -133,7 +133,7 @@ public class LeftFlipper implements Gadget{
 			} else {
 				double deltaAngle = timestep*angularVelocity;
 				double timeUntilStationary = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), angularVelocity, flippedSpot, new Vect(0,0));
-				System.out.println("timeUntilStationary: "+timeUntilStationary);
+//				System.out.println("timeUntilStationary: "+timeUntilStationary);
 				if (timestep>=timeUntilStationary){ //we will stop rotating during the timestep
 					endPoint = new Circle(flippedSpot.getCenter().x(), flippedSpot.getCenter().y(), 0.0);
 					flipper = new LineSegment(flippedFlipper.p1().x(), flippedFlipper.p1().y(), flippedFlipper.p2().x(), flippedFlipper.p2().y());
@@ -149,7 +149,7 @@ public class LeftFlipper implements Gadget{
 			} else {
 				double deltaAngle = timestep*(-1)*angularVelocity;
 				double timeUntilStationary = Geometry.timeUntilRotatingCircleCollision(endPoint, pivot.getCenter(), -angularVelocity, initialSpot, new Vect(0,0));
-				System.out.println("timeUntilStationary: "+timeUntilStationary);
+//				System.out.println("timeUntilStationary: "+timeUntilStationary);
 				if (timestep>=timeUntilStationary){ //we will stop rotating during the timestep
 					endPoint = new Circle(initialSpot.getCenter().x(), initialSpot.getCenter().y(), 0.0);
 					flipper = new LineSegment(initialFlipper.p1().x(), initialFlipper.p1().y(), initialFlipper.p2().x(), initialFlipper.p2().y());
@@ -160,6 +160,17 @@ public class LeftFlipper implements Gadget{
 				}
 			}
 		}
+		double pivotX = pivot.getCenter().x();
+		double pivotY = pivot.getCenter().y();
+		double initX = initialSpot.getCenter().x();
+		double initY = initialSpot.getCenter().y();
+		double endX = endPoint.getCenter().x();
+		double endY = endPoint.getCenter().y();
+		Vect initVect = new Vect(initX-pivotX, initY-pivotY);
+		Vect endVect = new Vect(endX-pivotX, endY-pivotY);
+		Angle initAngle = initVect.angle();
+		Angle endAngle = endVect.angle();
+		this.currentAngle = -1*Math.abs((endAngle.minus(initAngle)).radians());
 	}
     
     /**
@@ -213,7 +224,7 @@ public class LeftFlipper implements Gadget{
         	}
         }
     	double minMovingTime = Math.min(timeToEndPoint, timeToLine);
-    	System.out.println("timeUntilCollision = "+Math.min(minMovingTime, timeToPivot));
+//    	System.out.println("timeUntilCollision = "+Math.min(minMovingTime, timeToPivot));
     	return Math.min(minMovingTime, timeToPivot);
     }
     
@@ -400,6 +411,7 @@ public class LeftFlipper implements Gadget{
             }
         }
     }
+  
     
     /**
      * check representation
