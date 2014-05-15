@@ -4,9 +4,10 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import physics.Vect;
 
 
@@ -761,6 +762,19 @@ public class Board {
               if(gadgetsLoc[i][j] > 1) fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
           }
       }
+      
+      //Check that balls have unique names
+      HashSet<String> ballNames = new HashSet<String>();
+      
+      for(Ball ball:balls){
+          String ballName = ball.getName();
+          if(ballNames.contains(ballName)){
+              fail("There are multiple balls with the same name: "+ ballName);
+          }else{
+              ballNames.add(ballName);
+          }
+      }
+      
   }
   
 }
