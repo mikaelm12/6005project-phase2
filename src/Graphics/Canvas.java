@@ -77,6 +77,7 @@ public class Canvas extends JPanel
     List<Gadget> gadgets = new ArrayList<Gadget>();
     List<BallSpawner> spawners = new ArrayList<BallSpawner>();
     List<Portal> portals = new ArrayList<Portal>();
+    List<Board> neighbors;
     private Board board; 
     private Timer timer;
     public boolean forward = true;
@@ -94,6 +95,9 @@ public class Canvas extends JPanel
     }
     
 
+    public void UpdateCanvasBoard(Board board){
+        this.board = board;
+    }
     
     /**
      * This method initializes the starting conditions of our
@@ -143,19 +147,17 @@ public class Canvas extends JPanel
        spawners = this.board.getSpawners();
        portals = this.board.getPortals();
        
+       neighbors= new ArrayList<Board>(); //always needs to be reset to empty
+       neighbors.add(this.board.getNeighborTop());
+       neighbors.add(this.board.getNeighborRight());
+       neighbors.add(this.board.getNeighborBottom());
+       neighbors.add(this.board.getNeighborLeft());
+       
        makeWalls(graph2);
-       for (Ball ball: balls ){
-
-               Shape temp = makeBall(ball);
-             
-               graph2.setColor(Color.GREEN);
-               
-               graph2.fill(temp);
-  
-       }
-       for(Gadget gadget: gadgets) makeGadget(gadget, graph2);
-       for(Gadget gadget: spawners) makeGadget(gadget, graph2);
-       for(Gadget gadget: portals) makeGadget(gadget, graph2);
+       for (Ball ball: balls ) drawBall(ball, graph2);
+       for(Gadget gadget: gadgets) drawGadget(gadget, graph2);
+       for(Gadget gadget: spawners) drawGadget(gadget, graph2);
+       for(Gadget gadget: portals) drawGadget(gadget, graph2);
 
        addNeighborBoardNames(graph2);
        
@@ -168,13 +170,15 @@ public class Canvas extends JPanel
  * @param ball
  * @return
  */
-public Shape makeBall(Ball ball){
+public void drawBall(Ball ball, Graphics2D graph2){
     
     Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*SCALE_FACTOR + GADGET_OFFSET_X_EDGE, 
                                         (float) ball.getNormalPosition()[1]*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE,
                                         10,
                                         10);
-    return newCirc;
+    graph2.setColor(Color.GREEN);
+    Shape temp = newCirc;
+    graph2.fill(temp);
 }
 
 /**
@@ -206,7 +210,7 @@ public void makeWalls(Graphics2D graph2){
  * @param gadget
  * @param graph2
  */
-public void makeGadget(Gadget gadget, Graphics2D graph2){
+public void drawGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
@@ -354,6 +358,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         addTopNeighbor(graph2);
         addRightNeighbor(graph2);
         addBottomNeighbor(graph2);
+//        System.out.println("Neighbors: " + board.getNeighborTop() + ", " + board.getNeighborRight() + ", " + board.getNeighborBottom() + ", " + board.getNeighborLeft());
     }
     
     /**
@@ -371,8 +376,8 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
     
         String leftNeighbor = "";
-      if(board.getNeighborLeft() != null){
-          leftNeighbor = board.getNeighborLeft().getName();
+      if(neighbors.get(3) != null){
+          leftNeighbor = neighbors.get(3).getName();
               
           //Set necessary rotation
           affineTransform.rotate(Math.toRadians(270), 0, 0);
@@ -401,8 +406,8 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
     
         String topNeighbor = "";
-        if(board.getNeighborTop() != null){
-            topNeighbor = board.getNeighborTop().getName();
+        if(neighbors.get(0) != null){
+            topNeighbor = neighbors.get(0).getName();
             //Set necessary rotation
             affineTransform.rotate(Math.toRadians(0), 0, 0);
             Font rotatedFont = font.deriveFont(affineTransform);
@@ -429,8 +434,8 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
         
         String rightNeighbor = "";
-        if(board.getNeighborRight() != null){
-            rightNeighbor = board.getNeighborRight().getName();
+        if(neighbors.get(1) != null){
+            rightNeighbor = neighbors.get(1).getName();
             
             //Set necessary rotation
             affineTransform.rotate(Math.toRadians(90), 0, 0);
@@ -457,8 +462,8 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
 
         String bottomNeighbor = "";
-        if(board.getNeighborBottom() != null){
-            bottomNeighbor = board.getNeighborBottom().getName();
+        if(neighbors.get(2) != null){
+            bottomNeighbor = neighbors.get(2).getName();
             
             //Set necessary rotation
             affineTransform.rotate(Math.toRadians(0), 0, 0);

@@ -86,24 +86,32 @@ public class World implements WorldInterface {
             Board neighbor = from.getNeighborLeft();
             if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(),19.0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                System.out.println("LEFT: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
+                
                 neighbor.addIncomingBall(newBall);
             }
         } else if (wall.getName().equals("top")){
             Board neighbor = from.getNeighborTop();
             if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 19.0, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                System.out.println("TOP: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
+
                 neighbor.addIncomingBall(newBall);
             }
         } else if (wall.getName().equals("right")){
             Board neighbor = from.getNeighborRight();
            if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(), 1, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                System.out.println("RIGHT: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
+
                 neighbor.addIncomingBall(newBall);
             }
         } else {
             Board neighbor = from.getNeighborBottom();
             if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 1, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                System.out.println("BOTTOM: " + newBall.getName()+ ", "+ newBall.getNormalPosition()[0]+ ", "+ newBall.getNormalPosition()[1]+ ", "+  newBall.getNormalVelocity().x()+ ", "+ newBall.getNormalVelocity().y());
+
                 neighbor.addIncomingBall(newBall);
             }
         }

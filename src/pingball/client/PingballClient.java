@@ -1,10 +1,7 @@
 package pingball.client;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import BoardExpr.GrammarFactory;
@@ -64,19 +60,9 @@ public class PingballClient {
     public static void main(String[] args) throws Exception{
         int port = 10987; //default port
         String hostName = null;
-        File file = new File("src/../boards/boardG.txt"); //note that this file isn't used
+        File file = new File("src/../boards/boardG.txt"); //note that this file isn't used (just a placeholder)
+                                                           //file selected with GUI menu file chooser
         boolean fileProvided = false;
-//        File file = null;
-//        File file = new File ("/Users/PeterGithaiga/Documents/6.005/projectPhase1/pingball-phase1/sampleBoard1"); 
-   //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
-//        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
-       // File file = new File ("/Users/mikaelm/Desktop/6.005/pingball-phase1/sampleBoard1");
-       // File file = new File("/Users/mikemikael3/Desktop/board1.txt");
-
-
-      // File file = new File("src/../boards/board1.txt");
-
-//       file = new File("src/../boards/board1P.txt");
 
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
@@ -289,9 +275,9 @@ public class PingballClient {
             long current = System.currentTimeMillis();
 
             if ((current-start) % 20 == 0 && !board.isPaused()){
-                double timestep = 90.0/1080.0/30.0; //it will take exactly 30 timesteps for the flipper to rotate
+                double timestep = 90.0/1080.0/60.0; //it will take exactly 60 timesteps for the flipper to rotate
                 update(board, timestep);
-//                System.out.println(board.toString());
+                System.out.println(board.toString());
 
             }
             
