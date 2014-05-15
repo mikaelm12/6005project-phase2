@@ -771,15 +771,29 @@ public class Board {
       }
       
       //Check that balls have unique names
-      HashSet<String> ballNames = new HashSet<String>();
-      
+//      HashSet<String> ballNames = new HashSet<String>();
+//      
+//      for(Ball ball:balls){
+//          String ballName = ball.getName();
+//          if(ballNames.contains(ballName)){
+//              fail("There are multiple balls with the same name: "+ ballName);
+//          }else{
+//              ballNames.add(ballName);
+//          }
+//      }
+      List<String> ballNames = new ArrayList<String>();
+      boolean containsReferentialName = false;
       for(Ball ball:balls){
           String ballName = ball.getName();
-          if(ballNames.contains(ballName)){
-              fail("There are multiple balls with the same name: "+ ballName);
-          }else{
-              ballNames.add(ballName);
+          for(String curBallName: ballNames){
+              if(ballName == curBallName){
+                  fail("The same ball is added twice to the board (referential equals)");
+                  containsReferentialName = true;
+              }
           }
+          
+          if(!containsReferentialName) ballNames.add(ballName);
+          containsReferentialName = false;
       }
       
   }
