@@ -221,7 +221,7 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
             otherBoard = ctx.getChild(4).getChild(2).getText();
         }
 //        System.out.println(ctx.getChildCount());
-        System.out.println(name + ", " + xLoc + ", " + yLoc + ", " + otherPortal + ", " + otherBoard);
+//        System.out.println(name + ", " + xLoc + ", " + yLoc + ", " + otherPortal + ", " + otherBoard);
         portals.add(new Portal(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc), otherBoard, otherPortal));
     }
     
