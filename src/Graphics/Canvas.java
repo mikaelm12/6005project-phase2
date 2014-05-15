@@ -358,7 +358,6 @@ public void drawGadget(Gadget gadget, Graphics2D graph2){
         addTopNeighbor(graph2);
         addRightNeighbor(graph2);
         addBottomNeighbor(graph2);
-//        System.out.println("Neighbors: " + board.getNeighborTop() + ", " + board.getNeighborRight() + ", " + board.getNeighborBottom() + ", " + board.getNeighborLeft());
     }
     
     /**

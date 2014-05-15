@@ -1,19 +1,12 @@
 package Graphics;
 
-
-
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,18 +14,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-
-
-
-
 import pingball.client.PingballClient;
-
-
 import BoardExpr.GrammarFactory;
-
 import pingball.datatypes.Board;
-
-
 
 
 public class SwingTimer extends JFrame {
@@ -112,11 +96,7 @@ public class SwingTimer extends JFrame {
             }
         });
         
-
-        
         file.addActionListener(new ActionListener() {
-            
-           
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JFileChooser fc = new JFileChooser();
@@ -128,11 +108,7 @@ public class SwingTimer extends JFrame {
                     try {
                         Board testing = GrammarFactory.parse(file);
                         setNewBoard(testing);
-                        //PingballClient.runSingleMachine(file);
-                        //setVisible(false);
-                        System.out.println(testing);
                     } catch (Exception e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                 }
@@ -260,34 +236,23 @@ public class SwingTimer extends JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION){
                     final File file = fc.getSelectedFile();
                     try {
-                       //final Board board =  GrammarFactory.parse(file);
-                        //setCanvas(board);
-                        
-                        System.out.println("PingBall Client");
-                        
                         Thread one = new Thread() {
                             public void run() {
                                 
                                 try {
                                     PingballClient.runSingleMachine(file);
                                 } catch (Exception e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                                
                             }  
                         };
-
                         one.start();
-                         
-                      
                         dispose();
                        
-                        System.out.println("HERE NOW");
                     } catch (Exception e2) {
                         System.err.println(e2);
                     }
-                  
                 }
                 
             }
