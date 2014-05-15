@@ -51,7 +51,6 @@ public class Portal implements Gadget {
 
 	@Override
 	public void reflectOff(Ball ball) {
-		System.out.println("reflectOff portal");
 		if (this.hasDestinationPortal){
 			synchronized(this.outQueue){
 				this.outQueue.add(ball);

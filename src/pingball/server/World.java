@@ -40,6 +40,7 @@ public class World implements WorldInterface {
     @Override
     public synchronized void addBoard(Board board) {
         boards.put(board.getName(), board);
+        reevaluatePortalValidity();
     }
 
     @Override
@@ -59,6 +60,7 @@ public class World implements WorldInterface {
             boards.get(name).getNeighborBottom().unNeighbor(board);
         }
         boards.remove(boards.get(name));
+        reevaluatePortalValidity();
         
     }
 
@@ -117,5 +119,46 @@ public class World implements WorldInterface {
         return boards.containsKey(board);
     }
     
+    private synchronized Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
+		List<Portal> portalList = targetBoard.getPortals();
+		for (Portal portal: portalList){
+			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
+				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
+					return portal;
+				}
+			}
+		}
+		return null;
+	}
+    private synchronized void reevaluatePortalValidity(){  
+    	for (Board board: boards.values()){
+			for (Portal portal: board.getPortals()){
+				if(getTargetPortal(board, portal)==null){//there is no valid destination portal
+					portal.setHasDestinationPortal(false);
+				} else {//there is a valid destination portal
+					portal.setHasDestinationPortal(true);
+				}
+			}
+    	}
+    }
+
+	public synchronized void sendBall(Ball sentBall, Portal sourcePortal, Board sourceBoard) {
+		sourceBoard.removeBall(sentBall);
+		synchronized(boards){
+			if(boards.containsKey(sourcePortal.getTargetPortalBoardName())){//we found the targetBoard
+				Board targetBoard = boards.get(sourcePortal.getTargetPortalBoardName());
+				if (getTargetPortal(targetBoard, sourcePortal)!=null){//we found the targetPortal
+					Portal targetPortal = getTargetPortal(targetBoard, sourcePortal);
+					synchronized(targetPortal){
+						targetPortal.receiveBall(sentBall);
+					}
+					synchronized(targetBoard){
+						targetBoard.addBall(sentBall);
+					}
+				}
+			}
+		}
+		
+	}
 
 }
