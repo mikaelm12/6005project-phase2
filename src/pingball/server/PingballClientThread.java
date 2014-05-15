@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 import Graphics.SwingTimer;
-
 import BoardExpr.GrammarFactory;
-
 import physics.Geometry;
 import physics.Vect;
 import physics.Geometry.VectPair;
@@ -23,6 +22,7 @@ import pingball.datatypes.Board;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
 import pingball.datatypes.OuterWall;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 
 /**
@@ -90,28 +90,12 @@ public class PingballClientThread extends Thread {
         //sent every so often. 
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         
-        //PLAY!!
-        //18.206.1.78
-//       EventQueue.invokeLater(new Runnable() {
-//            
-//            @Override
-//            public void run() {                
-//                SwingTimer gui = new SwingTimer(board);
-//                gui.setCanvas(board);
-//                gui.setMinimumSize(new Dimension(430, 475));
-//                gui.setVisible(true);   
-//                
-//               
-//    
-//            }
-//        });
-       
         long start = System.currentTimeMillis();
         String pause;
         while(true){
             long current = System.currentTimeMillis();
             if ((current-start) % 30 == 0 && !board.isPaused()){
-                double timestep = 0.01;
+                double timestep = 0.005;
                 update(board, world, timestep);
                 if(board.isPaused()){
                     pause = "T";
@@ -172,6 +156,17 @@ public class PingballClientThread extends Thread {
 				}
 				
 			}
+			if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
+				for (Portal portal: board.getPortals()){
+					if (portal.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the portal
+						Vect oldV = ball.getPhysicsVelocity();
+						portal.reflectOff(ball);
+						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+						namesOfBallsCollided.add(ball);
+						
+					}
+				}
+			}
 			for (OuterWall wall: board.getOuterWalls()){ 
 				if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
 					if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
@@ -216,7 +211,18 @@ public class PingballClientThread extends Thread {
         for (Ball ball : board.getIncomingBalls()){
             board.addBall(ball);            
         }
+        
+      //send all the balls in the portals
+  		for (Portal portal: board.getPortals()){
+  			synchronized (portal.getOutQueue()) {
+				for(Ball sentBall: portal.getOutQueue()){
+					world.sendBall(sentBall, portal, board);
+				}
+				portal.getOutQueue().clear();
+			}
+		}
 	}
+	
 
 	private static void updateWithoutCollision(Board board, double timestep) {
 		for (Ball ball: board.getBalls()){
