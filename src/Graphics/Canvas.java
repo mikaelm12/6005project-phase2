@@ -2,25 +2,25 @@ package Graphics;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
+
 import java.awt.geom.Line2D;
+
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -35,7 +35,6 @@ import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
-import sun.java2d.loops.DrawPolygons;
 
 public class Canvas extends JPanel 
     implements ActionListener {
@@ -138,13 +137,7 @@ public class Canvas extends JPanel
         Graphics2D graph2 = (Graphics2D) g;
         
         graph2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        
-        
-        
-        
-        List<Shape> shapes = new ArrayList<Shape>();
-        
+
        balls = this.board.getBalls();
        gadgets = this.board.getGadgets();
        spawners = this.board.getSpawners();
@@ -164,10 +157,10 @@ public class Canvas extends JPanel
        for(Gadget gadget: spawners) makeGadget(gadget, graph2);
        for(Gadget gadget: portals) makeGadget(gadget, graph2);
 
-        Graphics2D g2d = (Graphics2D) g;
+       addNeighborBoardNames(graph2);
        
-        Toolkit.getDefaultToolkit().sync();
-        g.dispose();        
+       Toolkit.getDefaultToolkit().sync();
+       g.dispose();        
     }
 
 /**
@@ -179,11 +172,16 @@ public Shape makeBall(Ball ball){
     
     Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*SCALE_FACTOR + GADGET_OFFSET_X_EDGE, 
                                         (float) ball.getNormalPosition()[1]*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE,
-                                        5,
-                                        5);
+                                        10,
+                                        10);
     return newCirc;
 }
 
+/**
+ * This method creates the default walls using the Graphics 2D object    
+ * @param graph2
+ * @return
+ */
 public void makeWalls(Graphics2D graph2){
     Shape vertWall1 = new Rectangle2D.Float(BOARD_OFFSET_X,BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
     Shape vertWall2 = new Rectangle2D.Float(BOARD_OFFSET_X + WALL_WIDTH + BOARD_WIDTH,
@@ -236,12 +234,15 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
+
         Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE , (float)abs.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE , abs.getWidth()*SCALE_FACTOR, abs.getHeight()*SCALE_FACTOR);
+
 
         graph2.setColor(Color.magenta);
         
         graph2.fill(absorber);  
     }
+
     else if(gadget.getGadgetType().equals("Triangluar Bumper")){
     	TriangularBumper tb = (TriangularBumper) gadget;
     	GeneralPath tbLineDrawer = new GeneralPath();
@@ -273,6 +274,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	graph2.fill(tbLineDrawer);
     }
     else if(gadget.getGadgetType().equals("Left Flipper")){
+        
     	GeneralPath flipperLineDrawer = new GeneralPath();
         LeftFlipper lf = (LeftFlipper)gadget;
         
@@ -284,13 +286,13 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	double endY = lf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
    
     	Line2D line = new Line2D.Double(pivotX, pivotY, endX, endY);
-    	
+
         graph2.setColor(Color.RED);
- 
         graph2.draw(line);  
 
     }
     else if(gadget.getGadgetType().equals("Right Flipper")){
+        
     	GeneralPath flipperLineDrawer = new GeneralPath();
         RightFlipper rf = (RightFlipper)gadget;
         
@@ -324,16 +326,155 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         graph2.setColor(Color.CYAN);
         graph2.fill(portalInner);
     }
+    else if(gadget.getGadgetType().equals("Ball Spawner")){
+        BallSpawner s = (BallSpawner)gadget;
+        Shape spawner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
+                                                (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
+        Shape portalInner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE+2,
+                (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE+2, 
+                SCALE_FACTOR-4/*width*/,
+                SCALE_FACTOR-4/*height*/);
+        
+        graph2.setColor(Color.BLACK);
+        graph2.fill(spawner);
+        graph2.setColor(Color.ORANGE);
+        graph2.fill(portalInner);
+    }
 }
 
+    /**
+     * This method calls other helper methods to add the names of any connected-neighboring
+     * boards, if any exist.
+     * @param graph2
+     */
+    public void addNeighborBoardNames(Graphics2D graph2){
+        addLeftNeighbor(graph2);
+        addTopNeighbor(graph2);
+        addRightNeighbor(graph2);
+        addBottomNeighbor(graph2);
+    }
+    
+    /**
+     * This methods adds the correctly centered and oriented name of the left-neighboring wall
+     * @param graph2
+     */
+    public void addLeftNeighbor(Graphics2D graph2){
+        //Settings for the actual text printed
+        graph2.setColor(Color.BLACK);
+        Font font = new Font("Dialog", Font.BOLD, 12);
+        AffineTransform affineTransform = new AffineTransform();
+        
+        //Font created to measure size of text
+        Font fontGetSize = new Font("Dialog", Font.PLAIN, 12);
+        FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
+    
+        String leftNeighbor = "";
+      if(board.getNeighborLeft() != null){
+          leftNeighbor = board.getNeighborLeft().getName();
+              
+          //Set necessary rotation
+          affineTransform.rotate(Math.toRadians(270), 0, 0);
+          Font rotatedFont = font.deriveFont(affineTransform);
+          graph2.setFont(rotatedFont);
+          
+          int loc = BOARD_HEIGHT/2 + metrics.stringWidth(leftNeighbor)/2;
+          graph2.drawString(leftNeighbor, 10, loc);
 
-//TODO Implement these methods
+      }
+        
+    }
+    
+    /**
+     * This methods adds the correctly centered and oriented name of the top-neighboring wall
+     * @param graph2
+     */
+    public void addTopNeighbor(Graphics2D graph2){
+        //Settings for the actual text printed
+        graph2.setColor(Color.BLACK);
+        Font font = new Font("Dialog", Font.BOLD, 12);
+        AffineTransform affineTransform = new AffineTransform();
+        
+        //Font created to measure size of text
+        Font fontGetSize = new Font("Dialog", Font.PLAIN, 12);
+        FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
+    
+        String topNeighbor = "";
+        if(board.getNeighborTop() != null){
+            topNeighbor = board.getNeighborTop().getName();
+            //Set necessary rotation
+            affineTransform.rotate(Math.toRadians(0), 0, 0);
+            Font rotatedFont = font.deriveFont(affineTransform);
+            graph2.setFont(rotatedFont);
+            
+            int loc = BOARD_HEIGHT/2 - metrics.stringWidth(topNeighbor)/2;
+            graph2.drawString(topNeighbor, loc, 10);
+        }
+        
+    }
+    
+    /**
+     * This methods adds the correctly centered and oriented name of the right-neighboring wall
+     * @param graph2
+     */
+    public void addRightNeighbor(Graphics2D graph2){
+        //Settings for the actual text printed
+        graph2.setColor(Color.BLACK);
+        Font font = new Font("Dialog", Font.BOLD, 12);
+        AffineTransform affineTransform = new AffineTransform();
+        
+        //Font created to measure size of text
+        Font fontGetSize = new Font("Dialog", Font.PLAIN, 12);
+        FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
+        
+        String rightNeighbor = "";
+        if(board.getNeighborRight() != null){
+            rightNeighbor = board.getNeighborRight().getName();
+            
+            //Set necessary rotation
+            affineTransform.rotate(Math.toRadians(90), 0, 0);
+            Font rotatedFont = font.deriveFont(affineTransform);
+            graph2.setFont(rotatedFont);
+            
+            int loc = BOARD_HEIGHT/2 - metrics.stringWidth(rightNeighbor)/2;
+            graph2.drawString(rightNeighbor, BOARD_WIDTH+BOARD_OFFSET_X*2, loc);
+        }
+    }
+    
+    /**
+     * This methods adds the correctly centered and oriented name of the bottom-neighboring wall
+     * @param graph2
+     */
+    public void addBottomNeighbor(Graphics2D graph2){
+        //Settings for the actual text printed
+        graph2.setColor(Color.BLACK);
+        Font font = new Font("Dialog", Font.BOLD, 12);
+        AffineTransform affineTransform = new AffineTransform();
+        
+        //Font created to measure size of text
+        Font fontGetSize = new Font("Dialog", Font.PLAIN, 12);
+        FontMetrics metrics = graph2.getFontMetrics(fontGetSize);
 
-//public Shape makeFlipper(){
-//    
-//}
-
-
+        String bottomNeighbor = "";
+        if(board.getNeighborBottom() != null){
+            bottomNeighbor = board.getNeighborBottom().getName();
+            
+            //Set necessary rotation
+            affineTransform.rotate(Math.toRadians(0), 0, 0);
+            Font rotatedFont = font.deriveFont(affineTransform);
+            graph2.setFont(rotatedFont);
+            
+            int loc = BOARD_WIDTH/2 - metrics.stringWidth(bottomNeighbor)/2;
+            graph2.drawString(bottomNeighbor, loc, BOARD_HEIGHT+BOARD_OFFSET_Y*3); 
+                                                    //notes times 3 instead of 2 because 
+                                                    //the y gives the location of the bottom of the text
+                                                    //not the top
+            
+        }
+    
+    }
+    
    /**
     * This method is called every time the timer is set off and 
     * it repaints the GUI

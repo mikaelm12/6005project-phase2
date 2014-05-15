@@ -414,4 +414,13 @@ public class RightFlipper implements Gadget{
     public double getCurrentAngle() {
         return currentAngle;
     }
+    public String getRightFlipperGraphicsInfo(){
+        String name = this.name;
+        String x = String.valueOf(this.origin.x());
+        String y = String.valueOf(this.origin.y());
+        String orientation = String.valueOf(this.orientation);
+        String currentAngle = String.valueOf(this.currentAngle);
+        
+        return "Right"+ " " + name + " " + x + " " + y + " " + orientation + " " + currentAngle; 
+    }
 }

@@ -1,4 +1,4 @@
-package BoardExpr2;
+package BoardExpr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
 
-public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
+public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
    /**
     * gadgets, balls
     * 
@@ -23,6 +23,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     * from the file.  After all the objects are read from antlr, they are used to create the a new board.
     */
    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
+   private ArrayList<Gadget> flippers = new ArrayList<Gadget>();
    private ArrayList<Ball> balls = new ArrayList<Ball>();
    private ArrayList<Portal> portals = new ArrayList<Portal>();
    private ArrayList<BallSpawner> spawners = new ArrayList<BallSpawner>();
@@ -39,6 +40,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     */
    public Board getBoard() throws Exception{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
+       for(Gadget flipper: flippers) board.addGadget(flipper);
        for(Ball ball: balls) board.addBall(ball);
        for(BallSpawner spawner: spawners) board.addSpawner(spawner);
        for(Portal portal:portals) board.addPortal(portal);
@@ -173,7 +175,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
      */
     @Override
     public void exitKeys(GrammarParser.KeysContext ctx){
-        System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
+//        System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
         String keyBoardChar = ctx.key().ID().toString();
         String gadget = ctx.action().ID().toString();
         
@@ -210,17 +212,16 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
      */
     @Override
     public void exitPortal(GrammarParser.PortalContext ctx){
-        String name = ctx.objectName().getText();
+        String name = ctx.objectName().getChild(2).getText();
         String xLoc = ctx.xLoc().getChild(2).getText();
         String yLoc = ctx.yLoc().getChild(2).getText();
         String otherPortal = ctx.otherPortal().getChild(2).getText();
         String otherBoard = "";
         if(ctx.getChildCount() == 6){
-            otherBoard = ctx.getChild(4).getText();
+            otherBoard = ctx.getChild(4).getChild(2).getText();
         }
 //        System.out.println(ctx.getChildCount());
 //        System.out.println(name + ", " + xLoc + ", " + yLoc + ", " + otherPortal + ", " + otherBoard);
-        
         portals.add(new Portal(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc), otherBoard, otherPortal));
     }
     

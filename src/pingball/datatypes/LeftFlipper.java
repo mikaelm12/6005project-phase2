@@ -414,4 +414,14 @@ public class LeftFlipper implements Gadget{
        
         return "Left Flipper";
     }
+    public String getLeftFlipperGraphicsInfo(){
+        String name = this.name;
+        String x = String.valueOf(this.origin.x());
+        String y = String.valueOf(this.origin.y());
+        String orientation = String.valueOf(this.orientation);
+        String currentAngle = String.valueOf(this.currentAngle);
+        
+        return "Left" + " " + name + " " + x + " " + y + " " + orientation + " " + currentAngle; 
+    }
+    
 }

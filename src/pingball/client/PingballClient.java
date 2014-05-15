@@ -19,13 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
-import BoardExpr.BoardFactory;
-import BoardExpr2.GrammarFactory;
+import BoardExpr.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Vect;
@@ -46,6 +40,8 @@ import pingball.datatypes.RightFlipper;
  *
  */
 public class PingballClient {
+    
+    
 
     /**
      * Start a PingballClient using the given arguments.
@@ -68,13 +64,21 @@ public class PingballClient {
     public static void main(String[] args) throws Exception{
         int port = 10987; //default port
         String hostName = null;
+        File file = new File("src/../boards/board1.txt");
+        boolean fileProvided = false;
 //        File file = null;
 //        File file = new File ("/Users/PeterGithaiga/Documents/6.005/projectPhase1/pingball-phase1/sampleBoard1"); 
    //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
-       // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
+       // File file = new File ("/Users/mikaelm/Desktop/6.005/pingball-phase1/sampleBoard1");
+       // File file = new File("/Users/mikemikael3/Desktop/board1.txt");
 
-       File file = new File("src/../boards/board1P.txt");
+
+      // File file = new File("src/../boards/board1.txt");
+
+       file = new File("src/../boards/board1P.txt");
+
+
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -88,16 +92,19 @@ public class PingballClient {
                         }
                     } else if (flag.equals("--host")) {
                        hostName = arguments.remove();
-                    } else if (flag.equals("--file")) {  //File is not an argument but a must
-                        file = new File(arguments.remove());
+                    } else    {  //File is not an argument but a must
+                       file = new File(flag);
+                       
                         if ( ! file.isFile()) {
+                            
                             throw new IllegalArgumentException("file not found: \"" + file + "\"");
                         }
-                    } else {
-                        throw new IllegalArgumentException("unknown option: \"" + flag + "\"");
-                    }
-                } catch (NoSuchElementException nsee) {
-                    throw new IllegalArgumentException("missing argument for " + flag);
+                        else{
+                            fileProvided = true;
+                            System.out.println("Its a file");
+                        }
+                    } 
+                
                 } catch (NumberFormatException nfe) {
                     throw new IllegalArgumentException("unable to parse number for " + flag);
                 }
@@ -114,25 +121,42 @@ public class PingballClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        } else { //Play single machine mode
+        } else if(fileProvided) { //Play single machine mode
            runSingleMachine(file);
         }
+        else{
+            EventQueue.invokeLater(new Runnable() {
+                
+                @Override
+                public void run() {                
+                    SwingTimer gui = new SwingTimer();
+                    gui.setMinimumSize(new Dimension(430, 475));
+                    gui.setVisible(true);   
+                    
+        
+                }
+            });
+            
+        }
     }
-    
+    //18.206.1.78
 
     /**
      * Runs a multiplayer pingball... creates board and connects to server
      * @param host where the game is being held
      * @param port to establish communication to the server
      * @param file containing board of this client
-     * @throws IOException
+     * @throws Exception 
      */
-    public static void runPingBallServerClient(String host, int port, File file) throws IOException{
+    public static void runPingBallServerClient(String host, int port, File file) throws Exception{
+       
         String kill = "END OF FILE!!";
         String hostName = host;
         int portNumber = port;
+        final Board board = GrammarFactory.parse(file);
+        //System.out.println(board.toString());
         //Establish communication with the server
-        Socket toServerSocket = new Socket(hostName, portNumber);
+        final Socket toServerSocket = new Socket(hostName, portNumber);
         PrintWriter toServe = new PrintWriter(toServerSocket.getOutputStream(), true);
         
         //Send file to the server
@@ -149,6 +173,59 @@ public class PingballClient {
                 inputFileStream.close();
             }
         }
+        
+        
+        
+        Thread serverGame = new Thread() {
+            public void run() {
+             
+                BufferedReader fromServe = null;
+                try {
+                    fromServe = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                String fromServer;
+                String currentChanges;
+                try {
+                    while ((fromServer = fromServe.readLine()) != null) {
+                        if(!board.isPaused()){
+                        //System.out.println(fromServer);
+                       currentChanges = fromServer.toString();
+                       
+                       board.updateBalls(currentChanges);
+                       board.updateFlippers(currentChanges);
+                       
+                      
+                      
+                        }
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+            }
+        };
+
+        serverGame.start();
+        
+        
+        EventQueue.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() { 
+                
+                SwingTimer gui = new SwingTimer(board);
+                
+                gui.setMinimumSize(new Dimension(430, 475));
+                gui.setVisible(true);   
+                
+               
+    
+            }
+        });
        
         BufferedReader fromServe = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
         String fromServer;
@@ -157,6 +234,8 @@ public class PingballClient {
         }
     }
     
+
+    
     /**
      * Runs the Pingball Client in single machine mode
      * @param file of the board to be created and run
@@ -164,39 +243,51 @@ public class PingballClient {
      */
     public static void runSingleMachine (File file) throws Exception{
         //Turn file into a string
-        String fileString = "";
-        BufferedReader inputFileStream = null;
-        try {
-           inputFileStream = new BufferedReader(new FileReader(file));
-           String l;
-           while ((l = inputFileStream.readLine()) != null) {
-               fileString += l + "\n";
-           }
-       } finally {
-           if (inputFileStream != null) {
-               inputFileStream.close();
-           }
-       }
+        SwingTimer gui = null;
+       
         // Create the board
-        final Board board  =  GrammarFactory.parse(fileString);
+        final Board board  =  GrammarFactory.parse(file);
+        
+        List<Ball> initial = new ArrayList<Ball>();
+        for(Ball ball: board.getBalls()){
+           initial.add( ball.cloneBall());
+        }
+       
         
         EventQueue.invokeLater(new Runnable() {
             
             @Override
             public void run() {                
                 SwingTimer gui = new SwingTimer(board);
+                gui.setCanvas(board);
                 gui.setMinimumSize(new Dimension(430, 475));
                 gui.setVisible(true);   
+                
                
     
             }
+          
         });
-        System.out.println(board.toString());
         
-        
-        //PLAY!
-        
-        System.out.println("hello world");
+        if(board.isRestart()){
+            board.intialBallPositions(initial);
+        }
+       
+        Thread game = new Thread() {
+            public void run() {
+                simulateGame(board);
+            }  
+        };
+        game.start();
+       
+    }
+ 
+    
+    /**
+     * This method takes in a board and starts simulating pingball
+     * @param board - The board which will be played on
+     */
+    public static void simulateGame(final Board board){
         
         long start = System.currentTimeMillis();
         while(true){
@@ -204,7 +295,8 @@ public class PingballClient {
             if ((current-start) % 20 == 0 && !board.isPaused()){
                 double timestep = 0.001;
                 update(board, timestep);
-                System.out.println(board.toString());
+                //System.out.println(board.toString());
+
             }
             
         }

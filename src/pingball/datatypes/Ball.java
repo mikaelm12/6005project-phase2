@@ -27,6 +27,10 @@ public class Ball {
         checkRep();
     }
     
+    public Ball cloneBall(){
+        return new Ball(name, circle.getCenter().x(), circle.getCenter().y(), velocityVector.x(), velocityVector.y());
+    }
+    
     
     /**
      * 
@@ -221,6 +225,15 @@ public class Ball {
 		return Geometry.timeUntilBallBallCollision(this.getPhysicsCircle(), this.getPhysicsVelocity(), ball2.getPhysicsCircle(), ball2.getPhysicsVelocity());
 	}
     
+	public String getBallGraphicsInfo(){
+	    String x = String.valueOf(this.circle.getCenter().x());
+	    String y = String.valueOf(this.circle.getCenter().y());
+	    String xVel = String.valueOf(this.velocityVector.x());
+	    String yVel = String.valueOf(this.velocityVector.y());
+	    
+	    return "Ball"+" " +this.name +" "+ x + " " + y + " " + xVel + " " + yVel;  
+	    
+	}
 
 
 }

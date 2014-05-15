@@ -5,15 +5,12 @@ import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFrame;
 
-import BoardExpr.BoardFactory;
-import BoardExpr2.GrammarFactory;
+import BoardExpr.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Geometry.VectPair;
@@ -31,7 +28,11 @@ public class Main {
     public static void main(String[] args) throws Exception{
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
+
+    	//File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
+
     	File file = new File("src/../boards/board1P.txt");
+
 
 
         String fileString = "";
@@ -72,6 +73,7 @@ public class Main {
 
             if ((current-start) % 20 == 0){
                 double timestep = 90.0/1080.0/80.0; //it will take exactly 80 timesteps for the flipper to rotate
+
                 update(board, timestep);
 //                System.out.println(board.toString());
             }

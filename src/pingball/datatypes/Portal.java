@@ -25,7 +25,7 @@ public class Portal implements Gadget {
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
 		this.circle = new Circle(x+.5, 20-(y+.5), .5);
-		this.name = name.substring(5); //for some reason, "name=[name]" is being passed in to the constructor
+		this.name = name;
 		this.x = x;
 		this.y = y;
 		this.otherBoard = otherBoard;

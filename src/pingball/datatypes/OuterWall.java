@@ -84,7 +84,7 @@ public class OuterWall implements Gadget{
      */
     @Override
     public void reflectOff(Ball ball){
-    	System.out.println("Reflect off "+this.name);
+    	//System.out.println("Reflect off "+this.name);
         //reflect only if solid
         if(solid){
             double closestTimeToCollision = Geometry.timeUntilWallCollision(wall, ball.getPhysicsCircle(), ball.getPhysicsVelocity());

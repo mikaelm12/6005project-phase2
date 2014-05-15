@@ -2,7 +2,6 @@ package pingball.datatypes;
 
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 import physics.Vect;
 

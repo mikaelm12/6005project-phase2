@@ -3,18 +3,12 @@ package pingball.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-
-import physics.Vect;
-import pingball.datatypes.Board;
-import warmup.Ball;
-
 
 /**
  * Creates and manages a world of Pingball boards for multiple users
@@ -53,11 +47,9 @@ public class PingballServer {
     /**
      * Run the server, listening for client connections and handling them.
      * Never returns unless an exception is thrown.
-     * 
-     * @throws IOException if the main server socket is broken
-     *                     (IOExceptions from individual clients do *not* terminate serve())
+     * @throws Exception 
      */
-    public void serve() throws IOException {
+    public void serve() throws Exception {
         Thread consoleInput = new Thread (new Runnable(){
             @Override
             public void run() {
@@ -66,7 +58,7 @@ public class PingballServer {
                 try {
                     for (String line = fromUser.readLine(); line != null; line = fromUser.readLine()) {
                         String output = handleRequest(line);
-                            System.out.println(output);
+                           // System.out.println(output);
                     }
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -81,7 +73,7 @@ public class PingballServer {
             // block until a client connects
             Socket ClientSocket = serverSocket.accept();
             new PingballClientThread(ClientSocket, world).start();
-            System.out.println(world);
+            //System.out.println(world);
         } 
     }
     
@@ -95,9 +87,10 @@ public class PingballServer {
      * specifying the port where the server should listen for incoming connections. 
      * The default port is 10987. E.g. "PingballServer --port 1234"
      * starts the server listening on port 1234.
+     * @throws Exception 
      * 
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         int port = 10987; //default port
         // Read the input argument port
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
@@ -124,7 +117,8 @@ public class PingballServer {
         
         try {
             runPingballServer(port);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
@@ -133,9 +127,9 @@ public class PingballServer {
     /**
      * Start a MinesweeperServer running on the specified port
      * @param port The network port on which the server should listen.
-     * @throws IOException
+     * @throws Exception 
      */
-    public static void runPingballServer(int port) throws IOException{
+    public static void runPingballServer(int port) throws Exception{
         World worl = new World();
         PingballServer server = new PingballServer(port, worl);
         server.serve();
@@ -167,10 +161,10 @@ public class PingballServer {
         }
         if (tokens[0].equals("h")) {
             world.joinHorizontal(tokens[1], tokens[2]); 
-            return "";
+            return joined;
         } else if (tokens[0].equals("v")) {
             world.joinVertical(tokens[1], tokens[2]);
-            return "";
+            return joined;
         // Should never get here
         }
         throw new UnsupportedOperationException();

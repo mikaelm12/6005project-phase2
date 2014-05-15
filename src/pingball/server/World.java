@@ -80,23 +80,32 @@ public class World implements WorldInterface {
 
     
     @Override
-    public synchronized void transferBall(Board from, Ball ball, OuterWall wall){
+    public synchronized  void transferBall(Board from, Ball ball, OuterWall wall){
+        System.out.println("Moving Boards");
         if (wall.getName().equals("left")){
             Board neighbor = from.getNeighborLeft();
-            Ball newBall = new Ball(ball.getName(),19.8, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-            neighbor.addIncomingBall(newBall);
+            if(!neighbor.isPaused()){
+                Ball newBall = new Ball(ball.getName(),19.0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                neighbor.addIncomingBall(newBall);
+            }
         } else if (wall.getName().equals("top")){
             Board neighbor = from.getNeighborTop();
-            Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 19.8, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-            neighbor.addIncomingBall(newBall);
+            if(!neighbor.isPaused()){
+                Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 19.0, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                neighbor.addIncomingBall(newBall);
+            }
         } else if (wall.getName().equals("right")){
             Board neighbor = from.getNeighborRight();
-            Ball newBall = new Ball(ball.getName(), 0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-            neighbor.addIncomingBall(newBall);
+           if(!neighbor.isPaused()){
+                Ball newBall = new Ball(ball.getName(), 0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                neighbor.addIncomingBall(newBall);
+            }
         } else {
             Board neighbor = from.getNeighborBottom();
-            Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 0, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
-            neighbor.addIncomingBall(newBall);
+            if(!neighbor.isPaused()){
+                Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 0, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                neighbor.addIncomingBall(newBall);
+            }
         }
     }
     
