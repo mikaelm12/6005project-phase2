@@ -9,7 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -19,22 +21,26 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import BoardExpr2.BoardCreatorListener;
 import BoardExpr2.GrammarFactory;
+import pingball.client.PingballClient;
 import pingball.datatypes.Board;
+import sun.text.normalizer.UBiDiProps;
 
 
 
 public class SwingTimer extends JFrame {
     private Board newBoard;
-
+    public File boardFile;
 
 
     public SwingTimer(final Board board) {
 
-        add(new Canvas(board));
+        setCanvas(board);
 
-        setTitle("Test");
+        setTitle("Pingball!");
         pack();
         setResizable(true);
         setLocationRelativeTo(null);        
@@ -69,6 +75,14 @@ public class SwingTimer extends JFrame {
         
         JMenuItem quit = new JMenuItem("Quit");
         options.add(quit);
+       quit.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                
+            }
+        });
         
         pause.addActionListener(new ActionListener() {
             
@@ -89,10 +103,12 @@ public class SwingTimer extends JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION){
                     File file = fc.getSelectedFile();
+
                     try {
                         Board testing = GrammarFactory.parse(file);
                         setNewBoard(testing);
-                        SwingTimer st = new SwingTimer(testing);
+                        //PingballClient.runSingleMachine(file);
+                        //setVisible(false);
                         System.out.println(testing);
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
@@ -103,15 +119,19 @@ public class SwingTimer extends JFrame {
             }
         });
         
-        addKeyListener(new KeyAdapter() {
+        KeyListener listener = new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                board.checkKeyListener(e, true);
-            }
+                    board.checkKeyListener(e, true);
+                }
 
-            public void keyReleased(KeyEvent e) {
-                board.checkKeyListener(e, false);
-            }
-        });
+                public void keyReleased(KeyEvent e) {
+                    board.checkKeyListener(e, false);
+                }
+        };
+
+        KeyListener magical = new MagicKeyListener(listener);
+
+        addKeyListener(magical);
         
     }
     public Board getNewBoard() {
@@ -122,6 +142,11 @@ public class SwingTimer extends JFrame {
         this.newBoard = newBoard;
     }
     
+    
+    /**
+     * This no board constructor is for starting a pingball game with out a file.
+     * A file is chosen and a new gui is created.
+     */
     public SwingTimer() {
 
         
@@ -154,13 +179,69 @@ public class SwingTimer extends JFrame {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                String hostValue = JOptionPane.showInputDialog("Please specify a host");
+                int port = 0;
+                String host = JOptionPane.showInputDialog("Please specify a host");
+                
                 String portValue = JOptionPane.showInputDialog("Please specify a port");
+                
+                try{
+                 port = Integer.parseInt(portValue);
+                }
+                catch(NumberFormatException e2){
+                    return;
+                }
+//                    try {
+//                       //final Board board =  GrammarFactory.parse(file);
+//                        //setCanvas(board);
+//                        
+//                        System.out.println("PingBall Client");
+//                        
+//                         //PingballClient.runSingleMachine(file);
+//                               
+//                        //dispose();
+//                       
+//                        System.out.println("HERE NOW");
+//                    } catch (Exception e2) {
+//                        System.err.println(e2);
+//                    }
+                  
+                
+                
+                final JFileChooser fc = new JFileChooser();
+                fc.setCurrentDirectory(null);
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION){
+                    final File testFile = fc.getSelectedFile();
+                    
+                try {
+                    
+                    PingballClient.runPingBallServerClient(host, port, testFile );
+                    dispose();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                }
             }
         });
         
+        JMenuItem disconnect = new JMenuItem("Disconnect");
+        options.add(disconnect);
+        
+        JMenuItem restart = new JMenuItem("Restart");
+        options.add(restart);
+        
         JMenuItem quit = new JMenuItem("Quit");
         options.add(quit);
+        
+        quit.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                
+            }
+        });
         
 
         
@@ -173,32 +254,47 @@ public class SwingTimer extends JFrame {
                 fc.setCurrentDirectory(null);
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION){
-                    File file = fc.getSelectedFile();
+                    final File file = fc.getSelectedFile();
                     try {
-                        final Board testing = GrammarFactory.parse(file);
-                        setNewBoard(testing);
-                        System.out.println(testing);
-                        EventQueue.invokeLater(new Runnable() {
-                            
-                            @Override
-                            public void run() {                
-                                SwingTimer gui = new SwingTimer(testing);
-                                gui.setMinimumSize(new Dimension(410, 410));
-                                gui.setVisible(true);   
+                       //final Board board =  GrammarFactory.parse(file);
+                        //setCanvas(board);
+                        
+                        System.out.println("PingBall Client");
+                        
+                        Thread one = new Thread() {
+                            public void run() {
+                                
+                                try {
+                                    PingballClient.runSingleMachine(file);
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
                                
-                    
-                            }
-                        });
-                    } catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                            }  
+                        };
+
+                        one.start();
+                         
+                      
+                        dispose();
+                       
+                        System.out.println("HERE NOW");
+                    } catch (Exception e2) {
+                        System.err.println(e2);
                     }
+                  
                 }
                 
             }
         });
     
-        
+        //PingballClient.simulateGame(board);
+    //this.pack();
+    }
+    
+    public void setCanvas(Board board){
+        this.add(new Canvas(board));
     }
 
 

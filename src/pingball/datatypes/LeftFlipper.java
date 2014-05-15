@@ -348,6 +348,26 @@ public class LeftFlipper implements Gadget{
     }
     
     /**
+     * 
+     * @return the pivot circle in the normal xy coordinate system
+     */
+    public Circle getNormalPivot(){
+    	double pivotX = this.pivot.getCenter().x();
+    	double pivotY = 20-this.pivot.getCenter().y();
+    	return new Circle(pivotX, pivotY, 0);
+    }
+    
+    /**
+     * 
+     * @return the endPoint circle in the normal xy coordinate system
+     */
+    public Circle getNormalEndpt(){
+    	double endPointX = this.endPoint.getCenter().x();
+    	double endPointY = 20-this.endPoint.getCenter().y();
+    	return new Circle(endPointX, endPointY, 0);
+    }
+    
+    /**
      * @return String representation of the flipper
      */
     @Override
@@ -396,4 +416,14 @@ public class LeftFlipper implements Gadget{
        
         return "Left Flipper";
     }
+    public String getLeftFlipperGraphicsInfo(){
+        String name = this.name;
+        String x = String.valueOf(this.origin.x());
+        String y = String.valueOf(this.origin.y());
+        String orientation = String.valueOf(this.orientation);
+        String currentAngle = String.valueOf(this.currentAngle);
+        
+        return "Left" + " " + name + " " + x + " " + y + " " + orientation + " " + currentAngle; 
+    }
+    
 }

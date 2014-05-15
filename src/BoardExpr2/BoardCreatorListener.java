@@ -2,14 +2,15 @@ package BoardExpr2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
@@ -22,7 +23,10 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     * from the file.  After all the objects are read from antlr, they are used to create the a new board.
     */
    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
+   private ArrayList<Gadget> flippers = new ArrayList<Gadget>();
    private ArrayList<Ball> balls = new ArrayList<Ball>();
+   private ArrayList<Portal> portals = new ArrayList<Portal>();
+   private ArrayList<BallSpawner> spawners = new ArrayList<BallSpawner>();
    private HashMap<String, String> gadgetKeyUpListeners = new HashMap<String, String>();
    private HashMap<String, String> gadgetKeyDownListeners = new HashMap<String, String>();
    private Board board;
@@ -36,7 +40,10 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     */
    public Board getBoard() throws Exception{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
+       for(Gadget flipper: flippers) board.addGadget(flipper);
        for(Ball ball: balls) board.addBall(ball);
+       for(BallSpawner spawner: spawners) board.addSpawner(spawner);
+       for(Portal portal:portals) board.addPortal(portal);
        
        board.addKeyUpListener(gadgetKeyUpListeners);
        board.addKeyDownListener(gadgetKeyDownListeners);
@@ -88,7 +95,6 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     }
     
     
-    
     /**
      * This method extends ANTLR's GrammarBaseListener.
      * 
@@ -121,10 +127,10 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
             gadgets.add(new TriangularBumper(ObjectName, doubleContent.get(0).intValue(), doubleContent.get(1).intValue(), doubleContent.get(2).intValue()));
         } else if (ObjectType.equals("leftFlipper")){
             if(doubleContent.size() != 3) System.err.println("error creating leftFlipper: file was parsed incorrectly or did not contain the correct amount of information");
-            gadgets.add(new LeftFlipper(ObjectName, doubleContent.get(0).intValue(), doubleContent.get(1).intValue(), doubleContent.get(2).intValue()));
+            flippers.add(new LeftFlipper(ObjectName, doubleContent.get(0).intValue(), doubleContent.get(1).intValue(), doubleContent.get(2).intValue()));
         } else if (ObjectType.equals("rightFlipper")){
             if(doubleContent.size() != 3) System.err.println("error creating rightFlipper: file was parsed incorrectly or did not contain the correct amount of information");
-            gadgets.add(new RightFlipper(ObjectName, doubleContent.get(0).intValue(), doubleContent.get(1).intValue(), doubleContent.get(2).intValue()));
+            flippers.add(new RightFlipper(ObjectName, doubleContent.get(0).intValue(), doubleContent.get(1).intValue(), doubleContent.get(2).intValue()));
         } else if (ObjectType.equals("absorber")){
             if(doubleContent.size() != 4) System.err.println("error creating absorber: file was parsed incorrectly or did not contain the correct amount of information");
             gadgets.add(new Absorber(ObjectName, doubleContent.get(0).intValue(), doubleContent.get(1).intValue(), doubleContent.get(2).intValue(), doubleContent.get(3).intValue()));            
@@ -135,7 +141,7 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
     /**
      * This method extends ANTLR's GrammarBaseListener.
      * 
-     * When exiting out of the a Fire Object in the tree, this method extracts the necessary information
+     * When exiting out of the Fire Object in the tree, this method extracts the necessary information
      * in the file to store the fire information.  This method stores the fire commands as a list of
      * Strings -> [String trigger, String action] and adds it to the global object fireCmds.
      */
@@ -160,6 +166,13 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         }
     }
     
+    /**
+     * This method extends ANTLR's GrammarBaseListener.
+     * 
+     * When exiting out of the Keys Object in the tree, this method extracts the necessary information
+     * in the file to store the key listener information.  This method stores the key commands in a global
+     * hashmap that stores the key board character with the associated action.
+     */
     @Override
     public void exitKeys(GrammarParser.KeysContext ctx){
         System.out.println("KEYS: "+ ctx.keyCmd().getText() + ", " + ctx.key().ID().toString() + ", " + ctx.action().ID().toString() );
@@ -171,6 +184,46 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
         }else if(ctx.keyCmd().getText().toLowerCase().equals("keydown")){
             gadgetKeyDownListeners.put(keyBoardChar, gadget);
         }
+    }
+    
+    
+    /**
+     * This method extends ANTLR's GrammarBaseListener.
+     * 
+     * When exiting out of the Spawner Object in the tree, this method extracts the necessary information
+     * in the file to store the spawner information.  This method adds the spawner to a global list containing
+     * all of the board's spawners.
+     */
+    @Override
+    public void exitSpawner(GrammarParser.SpawnerContext ctx){
+        String name = ctx.objectName().getText();
+        String xLoc = ctx.xLoc().getChild(2).getText();
+        String yLoc = ctx.xLoc().getChild(2).getText();
+        
+        spawners.add(new BallSpawner(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc)));
+    }
+    
+    /**
+     * This method extends ANTLR's GrammarBaseListener.
+     * 
+     * When exiting out of the Portal Object in the tree, this method extracts the necessary information
+     * in the file to store the Portal information.  This method adds the portal to a global list containing
+     * all of the board's portals.
+     */
+    @Override
+    public void exitPortal(GrammarParser.PortalContext ctx){
+        String name = ctx.objectName().getText();
+        String xLoc = ctx.xLoc().getChild(2).getText();
+        String yLoc = ctx.yLoc().getChild(2).getText();
+        String otherPortal = ctx.otherPortal().getChild(2).getText();
+        String otherBoard = "";
+        if(ctx.getChildCount() == 6){
+            otherBoard = ctx.getChild(4).getText();
+        }
+//        System.out.println(ctx.getChildCount());
+//        System.out.println(name + ", " + xLoc + ", " + yLoc + ", " + otherPortal + ", " + otherBoard);
+        
+        portals.add(new Portal(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc), otherBoard, otherPortal));
     }
     
 }

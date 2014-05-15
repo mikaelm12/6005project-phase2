@@ -1,7 +1,5 @@
 package Graphics;
 
-
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -16,7 +14,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
+
 import java.awt.geom.Line2D;
+
+import java.awt.geom.GeneralPath;
+
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +29,12 @@ import javax.swing.Timer;
 
 import pingball.datatypes.Absorber;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.CircularBumper;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
@@ -39,19 +43,46 @@ import sun.java2d.loops.DrawPolygons;
 public class Canvas extends JPanel 
     implements ActionListener {
 
+    /**
+     * Note: 
+     *      The total GUI width >= CANVAS_WIDTH = (currently 430)
+     *      The total GUI height >= CANVAS_HEIGHT + MenuBarHeight = (currently 475)
+     *                                             MenuBarHeight = 45
+     */
+    
+    //Fixed variables for the Board/Wall/Canvas
     private final int BOARD_WIDTH = 400;
     private final int BOARD_HEIGHT = 400;
-    private final int INITIAL_X = 0;
-    private final int INITIAL_Y = 0;
-    private final int DELAY = 10;  //Miliseconds to repaint
+    private final int BOARD_OFFSET_X = 10;
+    private final int BOARD_OFFSET_Y = 10;
+
+    private final int WALL_LENGTH = 410; //BOARD_HEIGHT + 2*WALL_WIDTH
+    private final int WALL_WIDTH = 5;
+
+    private final int CANVAS_WIDTH = BOARD_OFFSET_X*2 + WALL_WIDTH*2 + BOARD_WIDTH;
+    private final int CANVAS_HEIGHT = BOARD_OFFSET_Y*2 + WALL_WIDTH*2 + BOARD_HEIGHT;
+
+    //Scaling factor - used for all gadgets
+    private final int SCALE_FACTOR = 20;
+    
+    //Fixed variables for all generic gadgets
+    private final int GADGET_OFFSET_X_EDGE = BOARD_OFFSET_X + WALL_WIDTH;
+    private final int GADGET_OFFSET_Y_EDGE = BOARD_OFFSET_Y + WALL_WIDTH;
+    private final int GADGET_OFFSET_TOCENTER = SCALE_FACTOR/2;
+    
+    //Fixed variable for the square bumper specifically
+    private final int SQR_BUMPER_LENGTH = 18;
+    private final int SQR_BUMPER_OFFSET = (SCALE_FACTOR - SQR_BUMPER_LENGTH)/2;
+    
+    private final int DELAY = 10;  //Milliseconds to repaint
     Color backgroundColor = Color.white;
     List<Shape> shapes = new ArrayList<Shape>();
     List<Ball> balls = new ArrayList<Ball>();
     List<Gadget> gadgets = new ArrayList<Gadget>();
+    List<BallSpawner> spawners = new ArrayList<BallSpawner>();
+    List<Portal> portals = new ArrayList<Portal>();
     private Board board; 
-    private Image star;
     private Timer timer;
-    private int x, y;
     public boolean forward = true;
 
     /**
@@ -62,8 +93,6 @@ public class Canvas extends JPanel
      * @param board -The pingball board to be displayed
      */
     public Canvas(Board board) {
-                
-     
         initCanvas(); 
         this.board = board;
     }
@@ -78,7 +107,7 @@ public class Canvas extends JPanel
     private void initCanvas() {
         
         setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
+        setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         setDoubleBuffered(true);
 
@@ -121,6 +150,9 @@ public class Canvas extends JPanel
         
        balls = this.board.getBalls();
        gadgets = this.board.getGadgets();
+       spawners = this.board.getSpawners();
+       portals = this.board.getPortals();
+       
        makeWalls(graph2);
        for (Ball ball: balls ){
 
@@ -131,14 +163,9 @@ public class Canvas extends JPanel
                graph2.fill(temp);
   
        }
-       for(Gadget gadget: gadgets){
-           
-          
-               
-               makeGadget(gadget, graph2);
-
-       }
-       
+       for(Gadget gadget: gadgets) makeGadget(gadget, graph2);
+       for(Gadget gadget: spawners) makeGadget(gadget, graph2);
+       for(Gadget gadget: portals) makeGadget(gadget, graph2);
 
         Graphics2D g2d = (Graphics2D) g;
        
@@ -153,24 +180,28 @@ public class Canvas extends JPanel
  */
 public Shape makeBall(Ball ball){
     
-
-//<<<<<<< HEAD
-//    Shape newCirc = new Ellipse2D.Float((float)ball.getPosition()[0]*20 + 50 , (float) ball.getPosition()[1]*20, 10, 10);
-//=======
-    Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*20 , (float) ball.getNormalPosition()[1]*20 , 5, 5);
-//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
+    Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*SCALE_FACTOR + GADGET_OFFSET_X_EDGE, 
+                                        (float) ball.getNormalPosition()[1]*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE,
+                                        10,
+                                        10);
     return newCirc;
 }
 
 public void makeWalls(Graphics2D graph2){
-    Shape vertWall1 = new Rectangle2D.Float(8,0, 2, 400);
-    Shape vertWall2 = new Rectangle2D.Float(400,0, 2, 400);
+    Shape vertWall1 = new Rectangle2D.Float(BOARD_OFFSET_X,BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
+    Shape vertWall2 = new Rectangle2D.Float(BOARD_OFFSET_X + WALL_WIDTH + BOARD_WIDTH,
+                                            BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
+    Shape horWall1 = new Rectangle2D.Float(BOARD_OFFSET_X, BOARD_OFFSET_Y, WALL_LENGTH, WALL_WIDTH);
+    Shape horWall2 = new Rectangle2D.Float(BOARD_OFFSET_X, 
+                                            BOARD_OFFSET_Y + WALL_WIDTH + BOARD_HEIGHT, 
+                                            WALL_LENGTH, WALL_WIDTH);
     
     graph2.setColor(Color.BLACK);
     
     graph2.fill(vertWall1);
     graph2.fill(vertWall2);
-    
+    graph2.fill(horWall1);
+    graph2.fill(horWall2);
 }
 
 
@@ -184,76 +215,128 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     if(gadget.getGadgetType().equals("Circular Bumper")){
         
         CircularBumper cb = (CircularBumper)gadget;
-//<<<<<<< HEAD
-//        //Add 50 beacause its the shifting constant
-//        Shape circleBumper = new Ellipse2D.Float((float)cb.getCircle().getCenter().x()*20 + 50 ,(float)cb.getCircle().getCenter().y()*20, 20,20);
-//=======
-        Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*20 + 8 ,(float)cb.getNormalCircle().getCenter().y()*20, 20,20);
-//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
+        Shape circleBumper = new Ellipse2D.Float((float)cb.getNormalCircle().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE - GADGET_OFFSET_TOCENTER,
+                                                (float)cb.getNormalCircle().getCenter().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE - GADGET_OFFSET_TOCENTER, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
 
         graph2.setColor(Color.ORANGE);
         
         graph2.fill(circleBumper);
     }
     else if(gadget.getGadgetType().equals("Square Bumper")){
+        
         SquareBumper sb = (SquareBumper)gadget;
-        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*20 + 8 , (float)gadget.getPosition().y()*20, 12, 5);
+        Shape squareBumper = new Rectangle2D.Float((float)gadget.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE + SQR_BUMPER_OFFSET, 
+                                                (float)gadget.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE + SQR_BUMPER_OFFSET, 
+                                                SQR_BUMPER_LENGTH, 
+                                                SQR_BUMPER_LENGTH);
 
         graph2.setColor(Color.BLUE);
         
         graph2.fill(squareBumper);  
-        
     }
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
-        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*20 +8  , (float)abs.getPosition().y()*20 , abs.getWidth()*20 - 6 , abs.getHeight()*10 );
+
+        Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE , (float)abs.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE , abs.getWidth()*SCALE_FACTOR, abs.getHeight()*SCALE_FACTOR);
+
 
         graph2.setColor(Color.magenta);
         
         graph2.fill(absorber);  
     }
-//    else if(gadget.getGadgetType().equals("Left Flipper")){
-//        
-//        LeftFlipper leftFlipper = (LeftFlipper)gadget;
-//        float x2 = Math.tan(leftFlipper.getCurrentAngle())* (float)leftFlipper.getPosition().y()
-//        
-//      //  Line2D flipper = new Line2D.Float((float)leftFlipper.getPosition().x(), (float)leftFlipper.getPosition().y(), x2, y2)
-//
-//        graph2.setColor(Color.CYAN);
-//        graph2.rotate(leftFlipper.getCurrentAngle());
-//        graph2.fill(flipper); 
-//        
-//        
-//    }
-//    else if(gadget.getGadgetType().equals("Right Flipper")){
-//        
-//        RightFlipper rightFlipper = (RightFlipper)gadget;
-//        Shape flipper = new Rectangle2D.Float((float)rightFlipper.getPosition().x()*20 + 8 , (float)rightFlipper.getPosition().y()*20 , 5 , 30);
-//
-//        graph2.setColor(Color.CYAN);
-//        graph2.rotate(rightFlipper.getCurrentAngle());
-//        graph2.fill(flipper); 
-//        
-//        
-//    }
-//    else if(gadget.getGadgetType().equals("Triangle Bumper")){
-//        
-//        TriangularBumper tri = (TriangularBumper)gadget;
-//        double[] x = new double[3];
-//        double[] y = new double[3];
-//        int index = 0;
-//        for (CircularBumper cb : tri.getCorners()){
-//            x[index] = cb.getCircle().getCenter().x();
-//           y[index] = cb.getCircle().getCenter().y();
-//           index++;
-//        }
-//        
-//        
-//    }
+
+    else if(gadget.getGadgetType().equals("Triangluar Bumper")){
+    	TriangularBumper tb = (TriangularBumper) gadget;
+    	GeneralPath tbLineDrawer = new GeneralPath();
+    	
+    	//positions are relvative to the top left hand corner
+    	double xPosition = tb.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
+    	double yPosition = tb.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
+    	
+    	if (tb.getOrientation()==90){ //top-right corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition);                            //starts top-left hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition);               //moves to right
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR);  //moves downward
+    	} else if(tb.getOrientation()==180){ //bottom-right corner triangle
+    		tbLineDrawer.moveTo(xPosition+SCALE_FACTOR, yPosition);               //starts top-right hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR);  //moves downward
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR);               //moves left
+    	} else if(tb.getOrientation()==270){//bottom-left corner triangle
+    		tbLineDrawer.moveTo(xPosition, yPosition);                            //starts top-left hand corner
+    		tbLineDrawer.lineTo(xPosition+SCALE_FACTOR, yPosition+SCALE_FACTOR);  //moves diagonally to bottom-right corner
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR);               // moves left
+    	} else if(tb.getOrientation()==0){//top-left corner triangle
+    		tbLineDrawer.moveTo(xPosition+SCALE_FACTOR, yPosition);               //starts top-right corner
+    		tbLineDrawer.lineTo(xPosition, yPosition);                            //moves left
+    		tbLineDrawer.lineTo(xPosition, yPosition+SCALE_FACTOR);               //moves downward
+    	}
+    	
+    	tbLineDrawer.closePath();
+    	graph2.setColor(Color.RED);
+    	graph2.fill(tbLineDrawer);
+    }
+    else if(gadget.getGadgetType().equals("Left Flipper")){
+        
+    	GeneralPath flipperLineDrawer = new GeneralPath();
+        LeftFlipper lf = (LeftFlipper)gadget;
+        
+    	//positions are relvative to the top left hand corner
+        double pivotX = lf.getNormalPivot().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
+    	double pivotY = lf.getNormalPivot().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
+    	
+    	double endX = lf.getNormalEndpt().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
+    	double endY = lf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
+   
+    	flipperLineDrawer.moveTo(pivotX, pivotY);
+    	flipperLineDrawer.lineTo(endX, endY);
+        
+        graph2.setColor(Color.BLACK);
+ 
+        graph2.fill(flipperLineDrawer);  
+
+    }
+    else if(gadget.getGadgetType().equals("Right Flipper")){
+        
+    	GeneralPath flipperLineDrawer = new GeneralPath();
+        RightFlipper rf = (RightFlipper)gadget;
+        
+    	//positions are relvative to the top left hand corner
+        double pivotX = rf.getNormalPivot().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
+    	double pivotY = rf.getNormalPivot().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
+    	
+    	double endX = rf.getNormalEndpt().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
+    	double endY = rf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
+   
+    	flipperLineDrawer.moveTo(pivotX, pivotY);
+    	flipperLineDrawer.lineTo(endX, endY);
+        
+        graph2.setColor(Color.RED);
+ 
+        graph2.fill(flipperLineDrawer);  
+
     
-    
+    }
+    else if(gadget.getGadgetType().equals("Portal")){
+        Portal p = (Portal)gadget;
+        Shape portal = new Ellipse2D.Float((float)p.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
+                                                (float)p.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
+        Shape portalInner = new Ellipse2D.Float((float)p.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE+2,
+                (float)p.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE+2, 
+                SCALE_FACTOR-4/*width*/,
+                SCALE_FACTOR-4/*height*/);
+        
+        graph2.setColor(Color.BLACK);
+        graph2.fill(portal);
+        graph2.setColor(Color.CYAN);
+        graph2.fill(portalInner);
+    }
 }
+
 
 //TODO Implement these methods
 
@@ -261,7 +344,6 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
 //    
 //}
 
-// public Shape make
 
    /**
     * This method is called every time the timer is set off and 

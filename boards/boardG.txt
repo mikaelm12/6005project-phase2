@@ -5,6 +5,9 @@ board name=sampleBoard2_2 gravity=20.0 friction1=0.020 friction2=0.020
 # It is the same board as sampleBoard1, but scaled and broken 
 # into two halves horizontally. This file contains the right half.
 
+# define a ball
+ball name=BallA x=1.8 y=4.5 xVelocity=10.4 yVelocity=10.3 
+ball name=BallB x=10.0 y=13.0 xVelocity=-3.4 yVelocity=-2.3 
 
   # the ball is defined in sampleBoard2-1.txt
 
@@ -48,4 +51,9 @@ board name=sampleBoard2_2 gravity=20.0 friction1=0.020 friction2=0.020
   # make the absorber self-triggering
   fire trigger=Abs action=Abs 
 
+	#add portals
+  portal name=Alpha x=5 y=7 otherPortal=Beta
+  portal name=Beta x=15 y=7 otherBoard=Mercury otherPortal=Gamma
+  spawner name=Maker x=0 y =0
   keydown key=space action=FlipR1
+    keyup key=space action=FlipR1

@@ -27,6 +27,8 @@ public class Board {
     private final double mu2;
     private List<Ball> balls;
     private List<Gadget> gadgets;
+    private List<Portal> portals;
+    private List<BallSpawner> spawners;
     private String[][] boardString;
     private String neighborLeftString;
     private String neighborTopString;
@@ -61,7 +63,8 @@ public class Board {
         this.mu2 = mu2;
         balls = Collections.synchronizedList(new ArrayList<Ball>());
         gadgets = Collections.synchronizedList(new ArrayList<Gadget>());
-                
+        spawners = Collections.synchronizedList(new ArrayList<BallSpawner>());    
+        portals = Collections.synchronizedList(new ArrayList<Portal>());
         this.neighborLeftString = wallLeft.toString();
         this.neighborTopString = wallTop.toString();
         this.neighborRightString = wallRight.toString();
@@ -120,7 +123,7 @@ public class Board {
         balls.add(ball);
     }
     
-    public void addIncomingBall(Ball ball){
+    public synchronized void addIncomingBall(Ball ball){
         incomingBalls.add(ball);
     }
     
@@ -153,6 +156,25 @@ public class Board {
         for(Gadget gadget: gadgets){
             this.gadgets.add(gadget);
         }
+    }
+    
+    /**
+     * adds a portal to the board
+     * @param portal to be added to the board
+     */
+    public void addPortal(Portal portal){
+    	if(portal.getTargetPortalBoardName().equals("")){
+    		portal.setTargetPortalBoardName(this.getName());
+    	}
+        portals.add(portal);
+    }
+    
+    /**
+     * adds a spawner to the board
+     * @param spawner to be added to the board
+     */
+    public void addSpawner(BallSpawner spawner){
+        spawners.add(spawner);
     }
     
     /**
@@ -305,7 +327,7 @@ public class Board {
      * @return list of gadgets in this board
      */
     public List<Gadget> getGadgets(){
-        return gadgets;
+        return new ArrayList<Gadget>(gadgets);
     }
     
     /**
@@ -357,6 +379,16 @@ public class Board {
         
         String string = new String();
         string += neighborTopString + "\n";
+        for (Portal portal: portals){
+        	int xPos = (int) portal.getPosition().x();
+        	int yPos = (int) portal.getPosition().y();
+        	boardString[yPos][xPos] = "P";
+        }
+        for (BallSpawner spawner: spawners){
+        	int xPos = (int) spawner.getPosition().x();
+        	int yPos = (int) spawner.getPosition().y();
+        	boardString[yPos][xPos] = "S";
+        }
         for (Gadget gadget : gadgets) {
                 Vect pos = gadget.getPosition();
                 int xPos = (int) pos.x();
@@ -414,14 +446,26 @@ public class Board {
     private void checkRep(){
     }
     
-    
+    /**
+     * This method is called when during the process when the board file is being parsed.
+     * This adds a hashmap of the listeners -> {String keyBoardChar: String gadget}
+     * These listeners are specifically for when the associated key is being released
+     * @param listeners the hashmap of listeners
+     */
     public void addKeyUpListener(HashMap<String, String> listeners){
         gadgetKeyUpListeners = listeners;
     }
     
+    /**
+     * This method is called when during the process when the board file is being parsed.
+     * This adds a hashmap of the listeners -> {String keyBoardChar: String gadget}
+     * These listeners are specifically for when the associated key is being pressed
+     * @param listeners the hashmap of listeners
+     */
     public void addKeyDownListener(HashMap<String, String> listeners){
         gadgetKeyDownListeners = listeners;
     }
+    
     /**
      * This method is called when a key is pressed when the GUI is active.
      * If the key that was pressed is associated with a gadget, the gadget is then activated.
@@ -430,7 +474,6 @@ public class Board {
     public void checkKeyListener(KeyEvent e, boolean pressed){
         String key = String.valueOf(e.getKeyChar());
         if(key.equals(" ")) key = "space";
-
         if(gadgetKeyUpListeners.containsKey(key)){ //Keyup
             Gadget gadget = null;
 
@@ -442,7 +485,6 @@ public class Board {
                         gadget = curGadget;
                     }
                 }
-                
                 gadget.action();
             }
         }
@@ -463,6 +505,148 @@ public class Board {
         
     }
     
+    public List<Portal> getPortals(){
+    	return new ArrayList<Portal>(portals);
+    }
+    public List<BallSpawner> getSpawners(){
+    	return new ArrayList<BallSpawner>(spawners);
+    }
+
+    
+    /**
+     * Remove the current flippers from the board and replaces them with the current flippers
+     * sent from the server
+     * @param flippers - new flipper obejcts that represent the current state of the flipper
+     */
+    public synchronized void refreshFlippers(List<Gadget> flippers){
+         List<Gadget> deleteIndices = new ArrayList<Gadget>();
+         for(int index = 0; index < this.gadgets.size()-1; index++){
+             if(gadgets.get(index).getGadgetType().equals("Left Flipper")||gadgets.get(index).getGadgetType().equals("Right Flipper")){
+                 deleteIndices.add(gadgets.get(index));
+             }
+             
+         }
+         for (Gadget g: deleteIndices){
+             gadgets.remove(g);
+            
+         }
+         for (Gadget gadget: flippers){
+             this.gadgets.add(gadget);
+         }
+         
+     }
+    
+    
+   /**
+    * This is for use in the runPingballServerClient, it is a string representation of the updates occuring for the balls
+    * on the board.
+    * @return -A string to be split 
+    */
+    public String ballGraphicsInfo(){
+        StringBuilder sb = new StringBuilder();
+        List<LeftFlipper> leftFlippers = this.getLeftFlippers();
+        List<RightFlipper> rightFlippers = this.getRightFlippers();
+        
+        
+        for (Ball ball: balls){
+            //Ball info comes in the form 
+            // name x y xVel yVel
+            sb.append(ball.getBallGraphicsInfo() + "_##_");
+        }
+
+        return sb.toString();
+
+    }
+    
+  
+   
+    /**
+     * This is for use in the runPingballServerClient, it is a string representation of the updates occuring for the flippers
+     * on the board.
+     * @return -A string to be split 
+     */
+  public String flipperGraphicsInfo(){
+        
+    StringBuilder sb = new StringBuilder();
+    List<LeftFlipper> leftFlippers = this.getLeftFlippers();
+    List<RightFlipper> rightFlippers = this.getRightFlippers();
+    
+    for(LeftFlipper lf : leftFlippers){
+        //Flipper info comes in the form   name x y orientation current angl
+        
+        sb.append(lf.getLeftFlipperGraphicsInfo() + "_##_");
+    }
+    for(RightFlipper rf: rightFlippers){
+        sb.append(rf.getRightFlipperGraphicsInfo() + "_##_");
+    }
+        return sb.toString();
+  }
+    
+  /**
+   * Takes the String for the updated balls from the 
+   * @param info
+   * @return
+   */
+  public void updateBalls(String info){
+      List<Ball> updatedBalls = new ArrayList<Ball>();
+      String[] ballList = info.split("_##_");
+      
+      for(String ball: ballList){
+          
+          if(ball.length() > 1){
+              String[] ballInfo = ball.split(" ");
+          
+              
+              
+              if(ballInfo[0].equals("Ball")){
+                  String name = ballInfo[1];
+                  double x = Double.parseDouble(ballInfo[2]);
+                  double y = Double.parseDouble(ballInfo[3]);
+                  double xVel = Double.parseDouble(ballInfo[4]);
+                  double yVel = Double.parseDouble(ballInfo[5]);
+                  Ball newBall  = new  Ball(name, x, y, xVel, yVel);
+                  updatedBalls.add(newBall);
+              }
+          
+          }
+          
+      }
+      this.balls =  updatedBalls;
+      
+  }
+  public void updateFlippers(String info){
+      List<Gadget> updatedFlippers = new ArrayList<Gadget>();
+      String[] flipperList = info.split("_##_");
+      
+      for(String flipper: flipperList){
+          if(flipper.length() > 1){
+              
+              String[] flipperInfo = flipper.split(" ");
+              if(flipperInfo[0].equals("Left")||flipperInfo[0].equals("Right")){
+                  String type = flipperInfo[0];
+                  String name = flipperInfo[1];
+                  int x = (int)Math.round(Double.parseDouble(flipperInfo[2]));
+                  int y = (int)Math.round(Double.parseDouble(flipperInfo[3]));
+                  int orientation = Integer.parseInt(flipperInfo[4]);
+                  double currentAngle = Double.parseDouble(flipperInfo[5]);
+                  
+                  if(type.equals("Left")){
+                      LeftFlipper flip = new LeftFlipper(name, x, y, orientation);
+                      updatedFlippers.add(flip);
+                  }
+                  else{
+                      RightFlipper flip = new RightFlipper(name, x, y, orientation);
+                      updatedFlippers.add(flip);
+                  }
+              }
+          
+          }
+          
+      }
+      
+     refreshFlippers(updatedFlippers); 
+  }
+
 }
 
 

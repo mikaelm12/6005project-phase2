@@ -80,7 +80,8 @@ public class World implements WorldInterface {
 
     
     @Override
-    public synchronized void transferBall(Board from, Ball ball, OuterWall wall){
+    public synchronized  void transferBall(Board from, Ball ball, OuterWall wall){
+        System.out.println("Moving Boards");
         if (wall.getName().equals("left")){
             Board neighbor = from.getNeighborLeft();
             if(!neighbor.isPaused()){
@@ -95,7 +96,7 @@ public class World implements WorldInterface {
             }
         } else if (wall.getName().equals("right")){
             Board neighbor = from.getNeighborRight();
-            if(!neighbor.isPaused()){
+           if(!neighbor.isPaused()){
                 Ball newBall = new Ball(ball.getName(), 0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
                 neighbor.addIncomingBall(newBall);
             }

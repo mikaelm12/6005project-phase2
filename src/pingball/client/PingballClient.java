@@ -35,6 +35,7 @@ import pingball.datatypes.Board;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
 import pingball.datatypes.OuterWall;
+import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 
 
@@ -45,6 +46,8 @@ import pingball.datatypes.RightFlipper;
  *
  */
 public class PingballClient {
+    
+    
 
     /**
      * Start a PingballClient using the given arguments.
@@ -73,9 +76,14 @@ public class PingballClient {
 //        File file = new File ("/Users/PeterGithaiga/Documents/6.005/projectPhase1/pingball-phase1/sampleBoard1"); 
    //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
-       // File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/sampleBoard1");
+       // File file = new File ("/Users/mikaelm/Desktop/6.005/pingball-phase1/sampleBoard1");
+       // File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt ");
+
 
       // File file = new File("src/../boards/board1.txt");
+
+       file = new File("src/../boards/board1P.txt");
+
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
@@ -121,22 +129,39 @@ public class PingballClient {
         } else if(fileProvided) { //Play single machine mode
            runSingleMachine(file);
         }
+        else{
+            EventQueue.invokeLater(new Runnable() {
+                
+                @Override
+                public void run() {                
+                    SwingTimer gui = new SwingTimer();
+                    gui.setMinimumSize(new Dimension(430, 475));
+                    gui.setVisible(true);   
+                    
+        
+                }
+            });
+            
+        }
     }
-    
+    //18.206.1.78
 
     /**
      * Runs a multiplayer pingball... creates board and connects to server
      * @param host where the game is being held
      * @param port to establish communication to the server
      * @param file containing board of this client
-     * @throws IOException
+     * @throws Exception 
      */
-    public static void runPingBallServerClient(String host, int port, File file) throws IOException{
+    public static void runPingBallServerClient(String host, int port, File file) throws Exception{
+        System.out.println("HEllo");
         String kill = "END OF FILE!!";
         String hostName = host;
         int portNumber = port;
+        final Board board = GrammarFactory.parse(file);
+        System.out.println(board.toString());
         //Establish communication with the server
-        Socket toServerSocket = new Socket(hostName, portNumber);
+        final Socket toServerSocket = new Socket(hostName, portNumber);
         PrintWriter toServe = new PrintWriter(toServerSocket.getOutputStream(), true);
         
         //Send file to the server
@@ -153,15 +178,63 @@ public class PingballClient {
                 inputFileStream.close();
             }
         }
+        
+        
+        
+        Thread serverGame = new Thread() {
+            public void run() {
+             
+                BufferedReader fromServe = null;
+                try {
+                    fromServe = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                String fromServer;
+                String currentChanges;
+                try {
+                    while ((fromServer = fromServe.readLine()) != null) {
+                        System.out.println(fromServer);
+                       currentChanges = fromServer.toString();
+                       
+                       board.updateBalls(currentChanges);
+                       board.updateFlippers(currentChanges);
+                       //System.out.println("Client \n"+ board);
+                       
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+            }
+        };
+
+        serverGame.start();
+        
+        
+        EventQueue.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() { 
+                System.out.println("Bring up the fucking board");
+                SwingTimer gui = new SwingTimer(board);
+                
+                gui.setMinimumSize(new Dimension(430, 475));
+                gui.setVisible(true);   
+                
+               
+    
+            }
+        });
        
-        BufferedReader fromServe = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
-        String fromServer;
-        while ((fromServer = fromServe.readLine()) != null) {
-            System.out.println(fromServer);
-        }
+        
        
         
     }
+    
+
     
     /**
      * Runs the Pingball Client in single machine mode
@@ -170,98 +243,55 @@ public class PingballClient {
      */
     public static void runSingleMachine (File file) throws Exception{
         //Turn file into a string
-        String fileString = "";
-        BufferedReader inputFileStream = null;
-        try {
-           inputFileStream = new BufferedReader(new FileReader(file));
-           String l;
-           while ((l = inputFileStream.readLine()) != null) {
-               fileString += l + "\n";
-           }
-       } finally {
-           if (inputFileStream != null) {
-               inputFileStream.close();
-           }
-       }
+        SwingTimer gui = null;
+       
         // Create the board
-        final Board board  =  GrammarFactory.parse(fileString);
+        final Board board  =  GrammarFactory.parse(file);
+        System.out.println("GOT HERE");
         
         EventQueue.invokeLater(new Runnable() {
             
             @Override
             public void run() {                
                 SwingTimer gui = new SwingTimer(board);
-                gui.setMinimumSize(new Dimension(410, 410));
+                gui.setCanvas(board);
+                gui.setMinimumSize(new Dimension(430, 475));
                 gui.setVisible(true);   
+                
                
     
             }
         });
-        //System.out.println(board.toString());
-        
-        
-        //PLAY!
-        
-        System.out.println("hello world");
+       
+        Thread game = new Thread() {
+            public void run() {
+                simulateGame(board);
+            }  
+        };
+        game.start();
+       
+    }
+ 
+    
+    /**
+     * This method takes in a board and starts simulating pingball
+     * @param board - The board which will be played on
+     */
+    public static void simulateGame(final Board board){
         
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
-//<<<<<<< HEAD
-//            
-//            if ((current-start) % 100 == 0){
-//                int counter = 1;
-//                
-//                for (Ball ball : board.getBalls()) {
-//                    double timeToClosestWallCollision = Double.POSITIVE_INFINITY;
-//                    OuterWall wallToCollide = null;
-//                    double timeToBallCollide = Double.POSITIVE_INFINITY;
-//                    Ball ballToCollide = null;
-//                    
-//                    double timeToClosestCollision = Double.POSITIVE_INFINITY;
-//                    Gadget gadgetToReflect = null;
-//                    
-//                    for (Gadget gadget : board.getGadgets()) {//find the time until the closest gadget collision--and the gadget
-//                        double timeUntilGadgetCollision = gadget.timeUntilCollision(ball);
-//                        if(timeUntilGadgetCollision < timeToClosestCollision){
-//                            timeToClosestCollision = timeUntilGadgetCollision;
-//                            gadgetToReflect = gadget;
-//                        }
-//                    }
-//                    
-//                    for (int i = counter; i < board.getBalls().size(); i++) {//find the time until the closest ball collision--and the corresponding ball
-//                        if (!(board.getBalls().get(i).getName().equals(ball.getName()))){ //make sure that the ball we are looking at in this loop is not the same ball as the outer loop
-//                            Ball that = board.getBalls().get(i);
-//                            double timeToThatCollide = Geometry.timeUntilBallBallCollision(ball.getCircle(), 
-//                                                                                    ball.getVelocity(), that.getCircle(), 
-//                                                                                    that.getVelocity());
-//                            if(timeToThatCollide < timeToBallCollide){
-//                                timeToBallCollide = timeToThatCollide;
-//                                ballToCollide = that;
-//                            }
-//                        }
-//                    }
-//                    
-//                    
-//                    if(ball.ballOutOfBounds(0.08)){
-//                        
-//                        
-//                        for(OuterWall wall: board.getOuterWalls()){//if the ball hits an outer wall, find which wall and the time until that collision
-//                            double timeUntilWallCollision = wall.timeUntilCollision(ball);
-//                            if(timeUntilWallCollision < timeToClosestWallCollision){
-//                                timeToClosestWallCollision = timeUntilWallCollision;
-//                                wallToCollide = wall;
-//                            } 
-//                        }                        
-//=======
-//>>>>>>> b996b95b9bd1d19656ccb4d977ea9332daa36d6c
 
-            if ((current-start) % 30 == 0 && !board.isPaused()){
-                int counter = 1;
-                double timestep = 0.05;
+
+            if ((current-start) % 100 == 0 && !board.isPaused()){
+
+                double timestep = 0.001;
                 update(board, timestep);
-                counter++;
-               System.out.println(board.toString());
+                
+
+              // System.out.println(board.toString());
+
             }
             
         }
@@ -270,84 +300,152 @@ public class PingballClient {
         
     }
 
+    /**
+     * Updates the board after one timestep     
+     * @param board the board to update
+     * @param timestep timestep in seconds
+     */
 	private static void update(Board board, double timestep) {
 		for (Ball ball: board.getBalls()){
 			synchronized(ball){
 				ball.updateBallVelocityBeforeTimestep(board.getGravity(), board.getMu(), board.getMu2(), timestep);
 			}
 
-			//System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
-			//System.out.println("Velocity: "+ball.getNormalVelocity());
+//			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
+//			System.out.println("Velocity: "+ball.getNormalVelocity());
+			
 		}
 		double timestepLeft = timestep+0;
 		while (timestepLeft > 0){
 			double timeUntilFirstCollision = getTimeUntilFirstCollision(board);
-			//System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
+//			System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
+//			System.out.println("timestepLeft: "+timestepLeft);
+			
 			if (timeUntilFirstCollision<=timestepLeft){ //we have a collision in the timestep
 				updateWithCollision(board, timeUntilFirstCollision);
 				timestepLeft -= timeUntilFirstCollision;
 			} else { //we have no collision in the timestep
-				updateWithoutCollision(board, timestep);
+				updateWithoutCollision(board, timestepLeft);
 				timestepLeft = 0;
 			}
 		}		
 	}
 
+	/**
+	 * updates the board one subtimestep (timeUntilFirstCollision), and then executes changes in ball velocity due to the pending collision(s)
+	 * @param board to update
+	 * @param timeUntilFirstCollision time until the first collision in seconds
+	 */
 	private static void updateWithCollision(Board board, double timeUntilFirstCollision) { //will not work correctly if a ball collides with two things at the EXACT same time--which is extremely improbable
 		//updateWithoutCollision(board, timeUntilFirstCollision); //we will update flippers and balls as usual, and then collide the balls
+//		System.out.println("in updateWithCollision()");
 		
 		List<String> namesOfBallsCollided = new ArrayList<String>();
 		
 		for (Ball ball: board.getBalls()){
-			for (Ball ball2: board.getBalls()){
-				if (!namesOfBallsCollided.contains(ball.getName()) && !namesOfBallsCollided.contains(ball2.getName()) && !ball.getName().equals(ball2.getName())){ //make sure to only collide balls that have not been collided yet
-					if (ball.timeUntilPhysicsCollision(ball2)<=timeUntilFirstCollision){
-//						System.out.println("Two Balls are colliding");
-						VectPair newVels = Geometry.reflectBalls(ball.getPhysicsCircle().getCenter(), 1.0, ball.getPhysicsVelocity(), ball2.getPhysicsCircle().getCenter(), 1.0, ball2.getPhysicsVelocity());
-						ball.updateBallPosition(timeUntilFirstCollision); //update the positions to right before the collision
-						ball2.updateBallPosition(timeUntilFirstCollision);
-						ball.setPhysicsVelocity(newVels.v1); //set the velocities to their post-collision values
-						ball2.setPhysicsVelocity(newVels.v2);
-						namesOfBallsCollided.add(ball.getName());
-						namesOfBallsCollided.add(ball2.getName());
+//			System.out.println("ball.inAbsorber()==" +ball.inAbsorber());
+
+			if (!ball.inAbsorber()){
+				for (Ball ball2: board.getBalls()){
+					if (!namesOfBallsCollided.contains(ball.getName()) && !namesOfBallsCollided.contains(ball2.getName()) && !ball.getName().equals(ball2.getName())){ //make sure to only collide balls that have not been collided yet
+						if (ball.timeUntilPhysicsCollision(ball2)<=timeUntilFirstCollision){
+//							System.out.println("Two Balls are colliding");
+							VectPair newVels = Geometry.reflectBalls(ball.getPhysicsCircle().getCenter(), 1.0, ball.getPhysicsVelocity(), ball2.getPhysicsCircle().getCenter(), 1.0, ball2.getPhysicsVelocity());
+							ball.updateBallPosition(timeUntilFirstCollision); //update the positions to right before the collision
+							ball2.updateBallPosition(timeUntilFirstCollision);
+							ball.setPhysicsVelocity(newVels.v1); //set the velocities to their post-collision values
+							ball2.setPhysicsVelocity(newVels.v2);
+							namesOfBallsCollided.add(ball.getName());
+							namesOfBallsCollided.add(ball2.getName());
+						}
+					}
+					
+				}
+				if (!ball.inAbsorber()){
+					for (OuterWall wall: board.getOuterWalls()){ 
+						if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
+							if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
+//								System.out.println("we are colliding with the wall");
+								Vect oldV = ball.getPhysicsVelocity();
+								wall.reflectOff(ball);
+								ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+								namesOfBallsCollided.add(ball.getName());
+							}
+						}
 					}
 				}
-				
-			}
-			for (OuterWall wall: board.getOuterWalls()){ 
-				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
-					if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
-//						System.out.println("we are colliding with the wall");
-						Vect oldV = ball.getPhysicsVelocity();
-						wall.reflectOff(ball);
-						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
-						namesOfBallsCollided.add(ball.getName());
+				for (Gadget gadget: board.getGadgets()){
+					if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
+						if (gadget.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the gadget
+							Vect oldV = ball.getPhysicsVelocity();
+							gadget.reflectOff(ball);
+							ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+							namesOfBallsCollided.add(ball.getName());
+						}
 					}
 				}
-				
-			}
-			for (Gadget gadget: board.getGadgets()){
-				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
-					if (gadget.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the gadget
-						Vect oldV = ball.getPhysicsVelocity();
-						gadget.reflectOff(ball);
-						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
-						namesOfBallsCollided.add(ball.getName());
-					}
+				if (!namesOfBallsCollided.contains(ball.getName())){
+					ball.updateBallPosition(timeUntilFirstCollision);
+					namesOfBallsCollided.add(ball.getName());
 				}
-			}
-			if (!namesOfBallsCollided.contains(ball.getName())){
-				ball.updateBallPosition(timeUntilFirstCollision);
-				namesOfBallsCollided.add(ball.getName());
 			}
 		}
 		
+		//send all the balls in the portals
+				for (Portal portal: board.getPortals()){
+					if(getTargetPortal(board, portal)!=null){
+						for(Ball sentBall: portal.getSentBallQueue()){
+							Portal targetPortal = getTargetPortal(board, portal);
+							targetPortal.receiveBall(sentBall);
+							board.removeBall(sentBall);
+						}
+					}
+				}
+				//recieve all the balls in the portals
+				for (Portal portal: board.getPortals()){
+					for(Ball receivedBall: portal.getReceivedBallQueue()){
+						board.addBall(receivedBall);
+					}
+				}
+		
+		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
+			leftFlipper.update(timeUntilFirstCollision);
+		}
+		for (RightFlipper rightFlipper: board.getRightFlippers()){
+			rightFlipper.update(timeUntilFirstCollision);
+		}
 	}
 
+	/**
+	 * updates the board by one timestep. The board must not have a collision at the end of the timestep.
+	 * @param board the board to be updated
+	 * @param timestep the timestep to execute
+	 */
 	private static void updateWithoutCollision(Board board, double timestep) {
 		for (Ball ball: board.getBalls()){
-			ball.updateBallPosition(timestep);
+			if (!ball.inAbsorber()){
+				ball.updateBallPosition(timestep);
+			}
 		}
+		//send all the balls in the portals
+		for (Portal portal: board.getPortals()){
+			if(getTargetPortal(board, portal)!=null){
+				for(Ball sentBall: portal.getSentBallQueue()){
+					Portal targetPortal = getTargetPortal(board, portal);
+					targetPortal.receiveBall(sentBall);
+					board.removeBall(sentBall);
+				}
+			}
+		}
+		//recieve all the balls in the portals
+		for (Portal portal: board.getPortals()){
+			
+			for(Ball receivedBall: portal.getReceivedBallQueue()){
+				System.out.println("receivedBall == null: " + receivedBall == null);
+				board.addBall(receivedBall);
+			}
+		}
+		
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timestep);
 		}
@@ -356,6 +454,11 @@ public class PingballClient {
 		}
 	}
 
+	/**
+	 * Calculates the time until the first collision happens on the board
+	 * @param board the board on which the collision is happening
+	 * @return the time until the board's first collision, in seconds
+	 */
 	private static double getTimeUntilFirstCollision(Board board) {
 		double timeUntilFirstCollision = Double.POSITIVE_INFINITY;
 		for (Ball ball: board.getBalls()){
@@ -370,6 +473,24 @@ public class PingballClient {
 			}
 		}
 		return timeUntilFirstCollision;
+	}
+	
+	/**
+	 * Gets the target portal of a source portal if it can be found.
+	 * @param targetBoard the board housing the target portal
+	 * @param sourcePortal the source portal
+	 * @return target portal of a source portal if it can be found, else null.
+	 */
+	private static Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
+		List<Portal> portalList = targetBoard.getPortals();
+		for (Portal portal: portalList){
+			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
+				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
+					return portal;
+				}
+			}
+		}
+		return null;
 	}
 
 }
