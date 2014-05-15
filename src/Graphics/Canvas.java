@@ -327,6 +327,22 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         graph2.setColor(Color.CYAN);
         graph2.fill(portalInner);
     }
+    else if(gadget.getGadgetType().equals("Ball Spawner")){
+        BallSpawner s = (BallSpawner)gadget;
+        Shape spawner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
+                                                (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
+        Shape portalInner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE+2,
+                (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE+2, 
+                SCALE_FACTOR-4/*width*/,
+                SCALE_FACTOR-4/*height*/);
+        
+        graph2.setColor(Color.BLACK);
+        graph2.fill(spawner);
+        graph2.setColor(Color.ORANGE);
+        graph2.fill(portalInner);
+    }
 }
 
     /**
