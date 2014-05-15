@@ -59,7 +59,7 @@ public class Board {
     }
 
     /**
-     * 
+     * Constructor
      * @param x width of board
      * @param y height of board
      */
@@ -136,7 +136,10 @@ public class Board {
         balls.add(ball);
         checkRep();
     }
-    
+    /**
+     * adds a ball to the queue of incoming balls
+     * @param ball ball to be added to the queue
+     */
     public synchronized void addIncomingBall(Ball ball){
         incomingBalls.add(ball);
         checkRep();
@@ -152,9 +155,9 @@ public class Board {
      * @param ball to be removed to the board
      */
     public void removeBall(Ball ball){
-    	System.out.println("in removeBall");
+//    	System.out.println("in removeBall");
         balls.remove(ball);
-        System.out.println(balls.size()+"in this board.");
+//        System.out.println(balls.size()+"in this board.");
         checkRep();
     }
     
