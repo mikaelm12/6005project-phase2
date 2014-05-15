@@ -213,7 +213,7 @@ public class LeftFlipper implements Gadget{
         	}
         }
     	double minMovingTime = Math.min(timeToEndPoint, timeToLine);
-    	System.out.println("timeUntilCollision = "+Math.min(minMovingTime, timeToPivot));
+    	//System.out.println("timeUntilCollision = "+Math.min(minMovingTime, timeToPivot));
     	return Math.min(minMovingTime, timeToPivot);
     }
     
