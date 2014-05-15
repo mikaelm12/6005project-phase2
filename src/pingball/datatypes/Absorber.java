@@ -97,12 +97,9 @@ public class Absorber implements Gadget{
      */
     @Override
     public void action() {
-//    	System.out.println("in action()");
         //remove the first ball
         if(balls.size() >= 1){ //changed from >1 
         	Ball ball = balls.get(0);
-//        	System.out.println("ball.inAbsorber() == " + ball.inAbsorber());
-        	
             
             ball.setNormalVelocity(new Vect(0,-50));//set to ball velocity to 50L/sec straight upwards
             double ballX = ball.getNormalPosition()[0];
@@ -112,7 +109,6 @@ public class Absorber implements Gadget{
             ball.setInAbsorber(false);
             balls.remove(0);
         }
-        
         checkRep();
     }
     
@@ -160,7 +156,6 @@ public class Absorber implements Gadget{
      */
     @Override
     public void  reflectOff(Ball ball){ //here, we absorb the ball
-//    	System.out.println("Reflect off "+this.name);
     	ball.setInAbsorber(true);
         ball.setNormalVelocity(new Vect(0,0)); //stop ball
         //set ball center position .25L away from bottom and right wall

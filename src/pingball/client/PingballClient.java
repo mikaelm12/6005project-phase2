@@ -29,7 +29,6 @@ import pingball.datatypes.OuterWall;
 import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 
-
 /**
  * Client of a Pingball Game
  * May connect to PingballServer or play in single mode
@@ -37,8 +36,6 @@ import pingball.datatypes.RightFlipper;
  *
  */
 public class PingballClient {
-    
-    
 
     /**
      * Start a PingballClient using the given arguments.
@@ -64,8 +61,6 @@ public class PingballClient {
         File file = new File("src/../boards/boardG.txt"); //note that this file isn't used (just a placeholder)
                                                            //file selected with GUI menu file chooser
         boolean fileProvided = false;
-
-
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
             while ( ! arguments.isEmpty()) {
@@ -87,7 +82,6 @@ public class PingballClient {
                         }
                         else{
                             fileProvided = true;
-                            System.out.println("Its a file");
                         }
                     } 
                 
@@ -135,7 +129,6 @@ public class PingballClient {
      * @throws Exception 
      */
     public static void runPingBallServerClient(String host, int port, File file) throws Exception{
-        System.out.println("HEllo");
         String kill = "END OF FILE!!";
         String hostName = host;
         int portNumber = port;
@@ -161,7 +154,6 @@ public class PingballClient {
         }
         
         
-        
         Thread serverGame = new Thread() {
             public void run() {
              
@@ -169,7 +161,6 @@ public class PingballClient {
                 try {
                     fromServe = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
                 String fromServer;
@@ -177,7 +168,6 @@ public class PingballClient {
                 try {
                     while ((fromServer = fromServe.readLine()) != null) {
                         if(!board.isPaused()){
-//                           System.out.println(fromServer);
                            currentChanges = fromServer.toString();
                            
                            board.updateBalls(currentChanges);
@@ -202,7 +192,6 @@ public class PingballClient {
             
             @Override
             public void run() { 
-                System.out.println("Bring up the fucking board");
                 SwingTimer gui = new SwingTimer(board);
                 
                 gui.setMinimumSize(new Dimension(430, 475));
@@ -233,7 +222,6 @@ public class PingballClient {
         for(Ball ball: board.getBalls()){
            initial.add( ball.cloneBall());
         }
-        System.out.println("GOT HERE");
         
         EventQueue.invokeLater(new Runnable() {
             
@@ -296,16 +284,11 @@ public class PingballClient {
 			synchronized(ball){
 				ball.updateBallVelocityBeforeTimestep(board.getGravity(), board.getMu(), board.getMu2(), timestep);
 			}
-
-//			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
-//			System.out.println("Velocity: "+ball.getNormalVelocity());
 			
 		}
 		double timestepLeft = timestep+0;
 		while (timestepLeft > 0){
 			double timeUntilFirstCollision = getTimeUntilFirstCollision(board);
-//			System.out.println("timeUntilFirstCollision: "+timeUntilFirstCollision);
-//			System.out.println("timestepLeft: "+timestepLeft);
 			
 			if (timeUntilFirstCollision<=timestepLeft){ //we have a collision in the timestep
 				updateWithCollision(board, timeUntilFirstCollision);
@@ -324,18 +307,15 @@ public class PingballClient {
 	 */
 	private static void updateWithCollision(Board board, double timeUntilFirstCollision) { //will not work correctly if a ball collides with two things at the EXACT same time--which is extremely improbable
 		//updateWithoutCollision(board, timeUntilFirstCollision); //we will update flippers and balls as usual, and then collide the balls
-//		System.out.println("in updateWithCollision()");
 		
 		List<String> namesOfBallsCollided = new ArrayList<String>();
 		
 		for (Ball ball: board.getBalls()){
-//			System.out.println("ball.inAbsorber()==" +ball.inAbsorber());
 
 			if (!ball.inAbsorber()){
 				for (Ball ball2: board.getBalls()){
 					if (!namesOfBallsCollided.contains(ball.getName()) && !namesOfBallsCollided.contains(ball2.getName()) && !ball.getName().equals(ball2.getName())){ //make sure to only collide balls that have not been collided yet
 						if (ball.timeUntilPhysicsCollision(ball2)<=timeUntilFirstCollision){
-//							System.out.println("Two Balls are colliding");
 							VectPair newVels = Geometry.reflectBalls(ball.getPhysicsCircle().getCenter(), 1.0, ball.getPhysicsVelocity(), ball2.getPhysicsCircle().getCenter(), 1.0, ball2.getPhysicsVelocity());
 							ball.updateBallPosition(timeUntilFirstCollision); //update the positions to right before the collision
 							ball2.updateBallPosition(timeUntilFirstCollision);
@@ -351,7 +331,6 @@ public class PingballClient {
 					for (OuterWall wall: board.getOuterWalls()){ 
 						if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
 							if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
-//								System.out.println("we are colliding with the wall");
 								Vect oldV = ball.getPhysicsVelocity();
 								wall.reflectOff(ball);
 								ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);

@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -152,9 +151,7 @@ public class Board {
      * @param ball to be removed to the board
      */
     public void removeBall(Ball ball){
-    	System.out.println("in removeBall");
         balls.remove(ball);
-        System.out.println(balls.size()+"in this board.");
         checkRep();
     }
     
@@ -252,8 +249,6 @@ public class Board {
             }
         }
         
-        System.out.println("MY NEIGHBOR LEFT IS SET");
-        System.out.println(this.getNeighborLeft().getName());
     }
     
     /**
@@ -275,8 +270,6 @@ public class Board {
                 counter++;
             }
         }
-        System.out.println("MY NEIGHBOR RIGHT IS SET");
-        System.out.println(this.getNeighborRight().getName());
     }
 
     /**
@@ -494,7 +487,6 @@ public class Board {
     public void checkKeyListener(KeyEvent e, boolean pressed){
         String key = String.valueOf(e.getKeyChar());
         if(key.equals(" ")) key = "space";
-        System.out.println("pressed: " + key +", " + gadgetKeyUpListeners.containsKey(key) + ", " + gadgetKeyDownListeners.containsKey(key));
         if(gadgetKeyUpListeners.containsKey(key)){ //Keyup
             Gadget gadget = null;
 
@@ -525,7 +517,6 @@ public class Board {
                     }
                 }
                 for(BallSpawner curGadget: spawners){
-                	System.out.println(curGadget.getName());
                     if(curGadget.getName().equals(gadgetStr)){
                     	curGadget.action();
                     }
@@ -749,51 +740,34 @@ public class Board {
       //how many objects are located at each position
       //assertion will be thrown if there are more than 1 objects after the iteration is complete
       
-//      System.out.println("Gadget num: " + gadgets.size());
       for(Gadget gadget:gadgets){
           Vect pos = gadget.getPosition();
           int xPos = (int) pos.x();
           int yPos = (int) pos.y();
           gadgetsLoc[xPos][yPos] += 1;
-//          System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
       }
-//      System.out.println("Portal num: " + portals.size());
       for (Portal portal: portals){
           Vect pos = portal.getPosition();
           int xPos = (int) pos.x();
           int yPos = (int) pos.y();
           gadgetsLoc[xPos][yPos] += 1;
-//          System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
       }
-//      System.out.println("Spawner num: "+ spawners.size());
       for (BallSpawner spawner: spawners){
           Vect pos = spawner.getPosition();
           int xPos = (int) pos.x();
           int yPos = (int) pos.y();
           gadgetsLoc[xPos][yPos] +=1;
-          System.out.println(spawner.getName() + ": " + xPos + ", " + yPos);
       }
       
       for (int i = 0; i < 20; i++) {
           for (int j = 0; j < 20; j++) {
               if(gadgetsLoc[i][j] > 1){
-//                  System.out.println("gadgets: " + gadgets.size());
                   fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
               }
           }
       }
       
       //Check that balls have unique names
-//      HashSet<String> ballNames = new HashSet<String>();
-//      
-//      for(Ball ball:balls){
-//          String ballName = ball.getName();
-//          if(ballNames.contains(ballName)){
-//              fail("There are multiple balls with the same name: "+ ballName);
-//          }else{
-//              ballNames.add(ballName);
-//          }
-//      }
       List<String> ballNames = new ArrayList<String>();
       boolean containsReferentialName = false;
       for(Ball ball:balls){

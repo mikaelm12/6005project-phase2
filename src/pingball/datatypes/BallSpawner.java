@@ -24,7 +24,6 @@ public class BallSpawner implements Gadget {
 	 */
 	@Override
 	public void action() {
-		System.out.println("in spawner action bitch");
 		double xVel = (Math.random()-.5)*40; //a random double between -20 and 20
 		double yVel = (Math.random()-.5)*40; //a random double between -20 and 20
 		Vect velocity = new Vect(xVel,yVel);
