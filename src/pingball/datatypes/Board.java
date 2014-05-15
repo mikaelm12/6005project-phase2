@@ -500,12 +500,15 @@ public class Board {
                 //Find the associated gadget
                 String gadgetStr = gadgetKeyUpListeners.get(key);
                 for(Gadget curGadget: gadgets){
-                    if(curGadget.getName().equals(gadgetStr)){
-                        gadget = curGadget;
-                        System.out.println("gadget found");
-                        gadget.action();
-                    }
+                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
+                    
                 }
+                for(BallSpawner curGadget: spawners){
+                    if(curGadget.getName().equals(gadgetStr))gadget = curGadget;
+                    
+                }
+                
+                gadget.action();
             }
         }
         
@@ -515,11 +518,15 @@ public class Board {
                 //Find associated gadget
                 String gadgetStr = gadgetKeyDownListeners.get(key);
                 for(Gadget curGadget: gadgets){
-                    if(curGadget.getName().equals(gadgetStr)){
-                        gadget = curGadget;
-                        gadget.action();
-                    }
+                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
                 }
+                for(BallSpawner curGadget: spawners){
+                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
+                    
+                }
+                
+                gadget.action();
+
             }
         }
         
