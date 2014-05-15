@@ -160,6 +160,21 @@ public class LeftFlipper implements Gadget{
 				}
 			}
 		}
+		double pivotX = pivot.getCenter().x();
+		double pivotY = pivot.getCenter().y();
+		double initX = initialSpot.getCenter().x();
+		double initY = initialSpot.getCenter().y();
+		double endX = endPoint.getCenter().x();
+		double endY = endPoint.getCenter().y();
+		Vect initVect = new Vect(initX-pivotX, initY-pivotY);
+		Vect endVect = new Vect(endX-pivotX, endY-pivotY);
+		Angle initAngle = initVect.angle();
+		Angle endAngle = endVect.angle();
+		double currentAngle = Math.abs((endAngle.minus(initAngle)).radians());
+		if (currentAngle>Math.PI/2){
+			currentAngle = Math.PI*2-currentAngle;
+		}
+		this.currentAngle = currentAngle;
 	}
     
     /**
@@ -400,6 +415,7 @@ public class LeftFlipper implements Gadget{
             }
         }
     }
+  
     
     /**
      * check representation

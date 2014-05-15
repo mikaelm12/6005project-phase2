@@ -256,13 +256,8 @@ public class PingballClient {
                 gui.setCanvas(board);
                 gui.setMinimumSize(new Dimension(430, 475));
                 gui.setVisible(true);   
-                
-               
-    
             }
-          
         });
-        
         if(board.isRestart()){
             board.intialBallPositions(initial);
         }
@@ -282,12 +277,19 @@ public class PingballClient {
      * @param board - The board which will be played on
      */
     public static void simulateGame(final Board board){
-        
+    	for (Portal portal: board.getPortals()){
+        	if(getTargetPortal(board, portal)==null){//there is no valid destination portal
+        		portal.setHasDestinationPortal(false);
+        	} else {//there is a valid destination portal
+        		portal.setHasDestinationPortal(true);
+        	}
+        }
         long start = System.currentTimeMillis();
         while(true){
             long current = System.currentTimeMillis();
-            if ((current-start) % 30 == 0 && !board.isPaused()){
-                double timestep = 0.01;
+
+            if ((current-start) % 20 == 0 && !board.isPaused()){
+                double timestep = 90.0/1080.0/30.0; //it will take exactly 30 timesteps for the flipper to rotate
                 update(board, timestep);
 //                System.out.println(board.toString());
 
@@ -373,6 +375,18 @@ public class PingballClient {
 						}
 					}
 				}
+				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
+					for (Portal portal: board.getPortals()){
+						if (portal.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the portal
+							Vect oldV = ball.getPhysicsVelocity();
+							portal.reflectOff(ball);
+							ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+							namesOfBallsCollided.add(ball.getName());
+							
+						}
+					}
+				}
+				
 				for (Gadget gadget: board.getGadgets()){
 					if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
 						if (gadget.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the gadget
@@ -391,22 +405,18 @@ public class PingballClient {
 		}
 		
 		//send all the balls in the portals
-				for (Portal portal: board.getPortals()){
-					if(getTargetPortal(board, portal)!=null){
-						for(Ball sentBall: portal.getSentBallQueue()){
-							Portal targetPortal = getTargetPortal(board, portal);
-							targetPortal.receiveBall(sentBall);
-							board.removeBall(sentBall);
-						}
+		for (Portal portal: board.getPortals()){
+			if(getTargetPortal(board, portal)!=null){
+				synchronized (portal.getOutQueue()) {
+					for(Ball sentBall: portal.getOutQueue()){
+						Portal targetPortal = getTargetPortal(board, portal);
+						targetPortal.receiveBall(sentBall);
 					}
+					portal.getOutQueue().clear();
 				}
-				//recieve all the balls in the portals
-				for (Portal portal: board.getPortals()){
-					for(Ball receivedBall: portal.getReceivedBallQueue()){
-						board.addBall(receivedBall);
-					}
-				}
-		
+			}
+		}
+		//update the flippers
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timeUntilFirstCollision);
 		}
@@ -426,25 +436,7 @@ public class PingballClient {
 				ball.updateBallPosition(timestep);
 			}
 		}
-		//send all the balls in the portals
-		for (Portal portal: board.getPortals()){
-			if(getTargetPortal(board, portal)!=null){
-				for(Ball sentBall: portal.getSentBallQueue()){
-					Portal targetPortal = getTargetPortal(board, portal);
-					targetPortal.receiveBall(sentBall);
-					board.removeBall(sentBall);
-				}
-			}
-		}
-		//recieve all the balls in the portals
-		for (Portal portal: board.getPortals()){
-			
-			for(Ball receivedBall: portal.getReceivedBallQueue()){
-				System.out.println("receivedBall == null: " + receivedBall == null);
-				board.addBall(receivedBall);
-			}
-		}
-		
+		//update the flippers
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timestep);
 		}
@@ -466,6 +458,9 @@ public class PingballClient {
 			}
 			for (Gadget gadget: board.getGadgets()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, gadget.timeUntilPhysicsCollision(ball));
+			}
+			for (Portal portal: board.getPortals()){
+				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, portal.timeUntilPhysicsCollision(ball));
 			}
 			for (Ball ball2: board.getBalls()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, ball.timeUntilPhysicsCollision(ball2));

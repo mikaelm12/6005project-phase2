@@ -64,7 +64,11 @@ public class Main {
        
         long start = System.currentTimeMillis();
         for (Portal portal: board.getPortals()){
-        	portal.setDestinationPortal(getTargetPortal(board, portal));
+        	if(getTargetPortal(board, portal)==null){//there is no valid destination portal
+        		portal.setHasDestinationPortal(false);
+        	} else {//there is a valid destination portal
+        		portal.setHasDestinationPortal(true);
+        	}
         }
         
 
@@ -72,10 +76,10 @@ public class Main {
             long current = System.currentTimeMillis();
 
             if ((current-start) % 20 == 0){
-                double timestep = 90.0/1080.0/80.0; //it will take exactly 80 timesteps for the flipper to rotate
+                double timestep = 90.0/1080.0/30.0; //it will take exactly 30 timesteps for the flipper to rotate
 
                 update(board, timestep);
-//                System.out.println(board.toString());
+                System.out.println(board.toString());
             }
         }
     }
@@ -144,12 +148,11 @@ public class Main {
 				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
 					for (Portal portal: board.getPortals()){
 						if (portal.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the portal
-							if (!portal.ballComingFromPortal(ball)){ //we are not coming outof the portal: we are going in
-								Vect oldV = ball.getPhysicsVelocity();
-								portal.reflectOff(ball);
-								ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
-								namesOfBallsCollided.add(ball.getName());
-							}
+							Vect oldV = ball.getPhysicsVelocity();
+							portal.reflectOff(ball);
+							ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
+							namesOfBallsCollided.add(ball.getName());
+							
 						}
 					}
 				}
@@ -184,26 +187,19 @@ public class Main {
 			}
 		}
 		
-/**		//send all the balls in the portals
+		//send all the balls in the portals
 		for (Portal portal: board.getPortals()){
 			if(getTargetPortal(board, portal)!=null){
-//				System.out.println("getTargetPortal(board, portal)!=null");
-				for(Ball sentBall: portal.getSentBallQueue()){
-					Portal targetPortal = getTargetPortal(board, portal);
-					targetPortal.receiveBall(sentBall);
-					board.removeBall(sentBall);
+				synchronized (portal.getOutQueue()) {
+					for(Ball sentBall: portal.getOutQueue()){
+						Portal targetPortal = getTargetPortal(board, portal);
+						targetPortal.receiveBall(sentBall);
+					}
+					portal.getOutQueue().clear();
 				}
-				portal.getSentBallQueue().clear();
 			}
 		}
-		//recieve all the balls in the portals
-		for (Portal portal: board.getPortals()){
-			for(Ball receivedBall: portal.getReceivedBallQueue()){
-				board.addBall(receivedBall);
-			}
-			portal.getReceivedBallQueue().clear();
-		}
-	**/
+		
 		//update the flipper positions
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timeUntilFirstCollision);
