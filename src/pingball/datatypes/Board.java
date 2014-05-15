@@ -517,7 +517,7 @@ public class Board {
     /**
      * check representation
      */
-    private void checkRep(){
+    public void checkRep(){
         //Check if all balls are within the bounds of the baord
         double[] position;
         double xLoc;
@@ -570,16 +570,15 @@ public class Board {
         
         //Set up for checking overlapping objects
         int[][] gadgetsLoc = new int[20][20]; //just for checking overlapping gadgets
-        int[][] gadgetsBallsLoc = new int[20][20]; //checks overlapping gadgets and balls (not including spawners/portals)
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {
                 gadgetsLoc[i][j] = 0;
-                gadgetsBallsLoc[i][j] = 0;
             }
         }
         
         //check for overlapping GADGETS only
         //note: not including balls here because balls can overlap with portals and spawners
+        //      balls can also APPEAR to overlap with other balls and flippers due to rounding
         
         //this will iterate through all the gadgets in the board and keep track of
         //how many objects are located at each position
@@ -590,37 +589,26 @@ public class Board {
             int xPos = (int) pos.x();
             int yPos = (int) pos.y();
             gadgetsLoc[xPos][yPos] += 1;
-            gadgetsBallsLoc[yPos][xPos] += 1;
+//            System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
         }
         for (Portal portal: portals){
-            int xPos = (int) portal.getPosition().x();
-            int yPos = (int) portal.getPosition().y();
-            gadgetsLoc[yPos][xPos] += 1;
+            Vect pos = portal.getPosition();
+            int xPos = (int) pos.x();
+            int yPos = (int) pos.y();
+            gadgetsLoc[xPos][yPos] += 1;
+//            System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
         }
         for (BallSpawner spawner: spawners){
-            int xPos = (int) spawner.getPosition().x();
-            int yPos = (int) spawner.getPosition().y();
-            gadgetsLoc[yPos][xPos] +=1;
-        }
-        
-        //check for overlapping gadgets and balls (but not including spawners and portals)
-        
-        //this will iterate through all the gadgets in the board (not including spawners and portals) 
-        // and the balls and will keep track of
-        //how many objects are located at each position
-        //assertion will be thrown if there are more than 1 objects after the iteration is complete
-        
-        for (Ball ball: balls){
-            int xPos = (int) ball.getNormalPosition()[0];
-            int yPos = (int) ball.getNormalPosition()[1];
-            gadgetsBallsLoc[yPos][xPos] += 1;
+            Vect pos = spawner.getPosition();
+            int xPos = (int) pos.x();
+            int yPos = (int) pos.y();
+            gadgetsLoc[xPos][yPos] +=1;
+//            System.out.println(spawner.getName() + ": " + xPos + ", " + yPos);
         }
         
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {
-                if(gadgetsLoc[i][j] > 1) fail("At least two gadgets are overlapping");
-                if(gadgetsBallsLoc[i][j] > 1) fail("A gadget and a ball are overlapping");
-                
+                if(gadgetsLoc[i][j] > 1) fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
             }
         }
     }
