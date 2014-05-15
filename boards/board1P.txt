@@ -67,5 +67,6 @@ board name=sampleBoard1 gravity=20.0 friction1=0.020 friction2=0.020
   fire trigger=FlipL2 action=FlipL2
   fire trigger=FlipR2 action=FlipR2
   
-  keydown key=space action=FlipL1
+  #keydown key=space action=FlipL1
+  keydown key=space action=spawner1
    

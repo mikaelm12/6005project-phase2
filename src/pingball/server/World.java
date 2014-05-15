@@ -130,8 +130,13 @@ public class World implements WorldInterface {
     private synchronized Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
 		List<Portal> portalList = targetBoard.getPortals();
 		for (Portal portal: portalList){
+			System.out.println("sourcePortal.getTargetPortalBoardName() = "+sourcePortal.getTargetPortalBoardName());
+			System.out.println("targetBoard.getName() = "+targetBoard.getName());
+			
 			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
+				System.out.println("sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())");
 				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
+					System.out.println("we should return a portal");
 					return portal;
 				}
 			}
@@ -139,18 +144,27 @@ public class World implements WorldInterface {
 		return null;
 	}
     private synchronized void reevaluatePortalValidity(){  
+    	System.out.println("in reevaluatePortalValidity()");
     	for (Board board: boards.values()){
 			for (Portal portal: board.getPortals()){
-				if(getTargetPortal(board, portal)==null){//there is no valid destination portal
+				if (boards.containsKey(portal.getTargetPortalBoardName())){ //we found the targetBoard
+					Board otherBoard = boards.get(portal.getTargetPortalBoardName());
+					if(getTargetPortal(otherBoard, portal)==null){//there is no valid destination portal
+						System.out.println("getTargetPortal(board, portal)==null");
+						portal.setHasDestinationPortal(false);
+					} else {//there is a valid destination portal
+						System.out.println("We've got a portal!");
+						portal.setHasDestinationPortal(true);
+					}
+				} else {
 					portal.setHasDestinationPortal(false);
-				} else {//there is a valid destination portal
-					portal.setHasDestinationPortal(true);
 				}
 			}
     	}
     }
 
 	public synchronized void sendBall(Ball sentBall, Portal sourcePortal, Board sourceBoard) {
+		System.out.println("in World.sendBall();");
 		sourceBoard.removeBall(sentBall);
 		synchronized(boards){
 			if(boards.containsKey(sourcePortal.getTargetPortalBoardName())){//we found the targetBoard

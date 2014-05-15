@@ -31,7 +31,7 @@ public class Main {
 
     	//File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
 
-    	File file = new File("src/../boards/board1P.txt");
+    	File file = new File("src/../boards/portalWorldLeft.txt");
 
 
 
@@ -76,10 +76,10 @@ public class Main {
             long current = System.currentTimeMillis();
 
             if ((current-start) % 20 == 0){
-                double timestep = 90.0/1080.0/30.0; //it will take exactly 30 timesteps for the flipper to rotate
+                double timestep = 90.0/1080.0/100.0; //it will take exactly 1000 timesteps for the flipper to rotate
 
                 update(board, timestep);
-                System.out.println(board.toString());
+//                System.out.println(board.toString());
             }
         }
     }
@@ -207,6 +207,14 @@ public class Main {
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timeUntilFirstCollision);
 		}
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
+		}
 	}
 
 	/**
@@ -225,6 +233,14 @@ public class Main {
 		}
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timestep);
+		}
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
 		}
 	}
 

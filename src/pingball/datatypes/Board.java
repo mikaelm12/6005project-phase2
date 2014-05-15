@@ -500,7 +500,7 @@ public class Board {
     public void checkKeyListener(KeyEvent e, boolean pressed){
         String key = String.valueOf(e.getKeyChar());
         if(key.equals(" ")) key = "space";
-//        System.out.println("pressed: " + key +", " + gadgetKeyUpListeners.containsKey(key) + ", " + gadgetKeyDownListeners.containsKey(key));
+        System.out.println("pressed: " + key +", " + gadgetKeyUpListeners.containsKey(key) + ", " + gadgetKeyDownListeners.containsKey(key));
         if(gadgetKeyUpListeners.containsKey(key)){ //Keyup
             Gadget gadget = null;
 
@@ -512,28 +512,32 @@ public class Board {
                     
                 }
                 for(BallSpawner curGadget: spawners){
+
                     if(curGadget.getName().equals(gadgetStr))gadget = curGadget;
                     
                 }
-                
+              
                 gadget.action();
             }
         }
         
         if(gadgetKeyDownListeners.containsKey(key)){ //Keydown
-            Gadget gadget = null;
             if(!pressed){//Key is released
                 //Find associated gadget
                 String gadgetStr = gadgetKeyDownListeners.get(key);
                 for(Gadget curGadget: gadgets){
-                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
+                    if(curGadget.getName().equals(gadgetStr)){
+                    	curGadget.action();
+                    }
                 }
                 for(BallSpawner curGadget: spawners){
-                    if(curGadget.getName().equals(gadgetStr)) gadget = curGadget;
+                	System.out.println(curGadget.getName());
+                    if(curGadget.getName().equals(gadgetStr)){
+                    	curGadget.action();
+                    }
                     
                 }
                 
-                gadget.action();
 
             }
         }

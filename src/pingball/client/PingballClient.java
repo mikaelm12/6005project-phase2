@@ -21,6 +21,7 @@ import physics.Geometry;
 import physics.Vect;
 import physics.Geometry.VectPair;
 import pingball.datatypes.Ball;
+import pingball.datatypes.BallSpawner;
 import pingball.datatypes.Board;
 import pingball.datatypes.Gadget;
 import pingball.datatypes.LeftFlipper;
@@ -264,9 +265,7 @@ public class PingballClient {
      */
     public static void simulateGame(final Board board){
     	for (Portal portal: board.getPortals()){
-        	if(getTargetPortal(board, portal)==null){//there is no valid destination portal
-        		portal.setHasDestinationPortal(false);
-        	} else {//there is a valid destination portal
+        	if(getTargetPortal(board, portal)!=null){//there is no valid destination portal
         		portal.setHasDestinationPortal(true);
         	}
         }
@@ -409,6 +408,15 @@ public class PingballClient {
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timeUntilFirstCollision);
 		}
+		//create all the balls in the spawner queue
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
+		}
 	}
 
 	/**
@@ -428,6 +436,15 @@ public class PingballClient {
 		}
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timestep);
+		}
+		//create all the balls in the spawner queue
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
 		}
 	}
 
