@@ -3,18 +3,12 @@ package pingball.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-
-import physics.Vect;
-import pingball.datatypes.Board;
-import warmup.Ball;
-
 
 /**
  * Creates and manages a world of Pingball boards for multiple users
@@ -94,9 +88,10 @@ public class PingballServer {
      * specifying the port where the server should listen for incoming connections. 
      * The default port is 10987. E.g. "PingballServer --port 1234"
      * starts the server listening on port 1234.
+     * @throws Exception 
      * 
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         int port = 10987; //default port
         // Read the input argument port
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));

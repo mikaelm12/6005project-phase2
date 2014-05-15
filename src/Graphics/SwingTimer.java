@@ -23,9 +23,13 @@ import javax.swing.JOptionPane;
 
 import org.omg.CORBA.PUBLIC_MEMBER;
 
-import BoardExpr2.BoardCreatorListener;
-import BoardExpr2.GrammarFactory;
+
+
 import pingball.client.PingballClient;
+
+import BoardExpr.BoardCreatorListener;
+import BoardExpr.GrammarFactory;
+
 import pingball.datatypes.Board;
 import sun.text.normalizer.UBiDiProps;
 

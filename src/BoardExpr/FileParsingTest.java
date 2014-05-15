@@ -1,4 +1,4 @@
-package BoardExpr2;
+package BoardExpr;
 
 import static org.junit.Assert.*;
 
@@ -33,8 +33,8 @@ import pingball.datatypes.Board;
  *      (C4) sampleBoard3.pb  
  *      (C5) sampleBoard4.pb 
  * (D) Additional tests added for phase 2 //**indicates not implemented yet
- *      **(D1) Board contains spawner and portal
- *      **(D2) File does not require gravity
+ *      (D1) Board contains spawner and portal
+ *      (D2) File does not require gravity
  */
 
 public class FileParsingTest {
@@ -268,6 +268,35 @@ public class FileParsingTest {
                 + ".          ==========.\n"
                 + ".                    .\n"
                 + ".                    .\n"
+                + "......................";
+        assertEquals(ExpectedAnswer, myBoard.toString());
+    }
+    
+    //Tests D1 and D2
+    @Test
+    public void testSpawnerPortal_D1_D2() throws Exception{
+        Board myBoard = GrammarFactory.parse(new File("src/../boards/boardG.txt"));
+        String ExpectedAnswer = "......................\n"
+                + ".S                   .\n"
+                + ".                    .\n"
+                + ".    |###############.\n"
+                + ".    |    O          .\n"
+                + ". *      O           .\n"
+                + ".       O            .\n"
+                + ".      O             .\n"
+                + ".     O         P    .\n"
+                + ".    O               .\n"
+                + ".    |               .\n"
+                + ".    |               .\n"
+                + ".  /                 .\n"
+                + ". /                  .\n"
+                + ".          *         .\n"
+                + ".                    .\n"
+                + ".                    .\n"
+                + ".                    .\n"
+                + ".                    .\n"
+                + ".                    .\n"
+                + ".====================.\n"
                 + "......................";
         assertEquals(ExpectedAnswer, myBoard.toString());
     }

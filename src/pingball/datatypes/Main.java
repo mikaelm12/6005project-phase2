@@ -5,15 +5,12 @@ import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFrame;
 
-import BoardExpr.BoardFactory;
-import BoardExpr2.GrammarFactory;
+import BoardExpr.GrammarFactory;
 import Graphics.SwingTimer;
 import physics.Geometry;
 import physics.Geometry.VectPair;

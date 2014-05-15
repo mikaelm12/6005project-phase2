@@ -6,15 +6,11 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
@@ -26,7 +22,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -41,7 +36,6 @@ import pingball.datatypes.Portal;
 import pingball.datatypes.RightFlipper;
 import pingball.datatypes.SquareBumper;
 import pingball.datatypes.TriangularBumper;
-import sun.java2d.loops.DrawPolygons;
 
 public class Canvas extends JPanel 
     implements ActionListener {
@@ -184,6 +178,11 @@ public Shape makeBall(Ball ball){
     return newCirc;
 }
 
+/**
+ * This method creates the default walls using the Graphics 2D object    
+ * @param graph2
+ * @return
+ */
 public void makeWalls(Graphics2D graph2){
     Shape vertWall1 = new Rectangle2D.Float(BOARD_OFFSET_X,BOARD_OFFSET_Y, WALL_WIDTH, WALL_LENGTH);
     Shape vertWall2 = new Rectangle2D.Float(BOARD_OFFSET_X + WALL_WIDTH + BOARD_WIDTH,
@@ -334,9 +333,29 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         graph2.setColor(Color.CYAN);
         graph2.fill(portalInner);
     }
+    else if(gadget.getGadgetType().equals("Ball Spawner")){
+        BallSpawner s = (BallSpawner)gadget;
+        Shape spawner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
+                                                (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
+                                                SCALE_FACTOR/*width*/,
+                                                SCALE_FACTOR/*height*/);
+        Shape portalInner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE+2,
+                (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE+2, 
+                SCALE_FACTOR-4/*width*/,
+                SCALE_FACTOR-4/*height*/);
+        
+        graph2.setColor(Color.BLACK);
+        graph2.fill(spawner);
+        graph2.setColor(Color.ORANGE);
+        graph2.fill(portalInner);
+    }
 }
 
-    
+    /**
+     * This method calls other helper methods to add the names of any connected-neighboring
+     * boards, if any exist.
+     * @param graph2
+     */
     public void addNeighborBoardNames(Graphics2D graph2){
         addLeftNeighbor(graph2);
         addTopNeighbor(graph2);
@@ -344,7 +363,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         addBottomNeighbor(graph2);
     }
     
-    
+    /**
+     * This methods adds the correctly centered and oriented name of the left-neighboring wall
+     * @param graph2
+     */
     public void addLeftNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
@@ -371,6 +393,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         
     }
     
+    /**
+     * This methods adds the correctly centered and oriented name of the top-neighboring wall
+     * @param graph2
+     */
     public void addTopNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
@@ -395,6 +421,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         
     }
     
+    /**
+     * This methods adds the correctly centered and oriented name of the right-neighboring wall
+     * @param graph2
+     */
     public void addRightNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);
@@ -419,6 +449,10 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
         }
     }
     
+    /**
+     * This methods adds the correctly centered and oriented name of the bottom-neighboring wall
+     * @param graph2
+     */
     public void addBottomNeighbor(Graphics2D graph2){
         //Settings for the actual text printed
         graph2.setColor(Color.BLACK);

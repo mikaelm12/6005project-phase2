@@ -420,6 +420,7 @@ public class Board {
                     if(gadgetString.length() < 20){
                         for (int i = 0; i < gadgetString.length()/abs.getHeight(); i++) {
                             for (int j = 0; j < gadgetString.length()/abs.getWidth(); j++) {
+                                //TODO: FOUND BUG: Doesn't work with all widths and heights
                                 boardString[yPos+i][xPos+j] = Character.toString(gadgetString.charAt((abs.getWidth()*i)+j));
                             }
                             
