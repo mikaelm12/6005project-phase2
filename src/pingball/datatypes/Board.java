@@ -678,14 +678,14 @@ public class Board {
           position = ball.getNormalPosition();
           xLoc = position[0];
           yLoc = position[1];
-          if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
-          if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+          if(xLoc >= 20 || xLoc < 0) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc >= 20 || yLoc < 0) fail("ball out of bounds (y): " + yLoc);
 
           position = ball.getPhysicsPosition();
           xLoc = position[0];
           yLoc = position[1];
-          if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
-          if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+          if(xLoc > 19.75 || xLoc < 0) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc > 19.75 || yLoc < 0) fail("ball out of bounds (y): " + yLoc);
       }
       
       //Check if all gadgets (not including portals/spawners) are within the bounds of the baord
@@ -736,23 +736,23 @@ public class Board {
       //how many objects are located at each position
       //assertion will be thrown if there are more than 1 objects after the iteration is complete
       
-      System.out.println("Gadget num: " + gadgets.size());
+//      System.out.println("Gadget num: " + gadgets.size());
       for(Gadget gadget:gadgets){
           Vect pos = gadget.getPosition();
           int xPos = (int) pos.x();
           int yPos = (int) pos.y();
           gadgetsLoc[xPos][yPos] += 1;
-          System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
+//          System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
       }
-      System.out.println("Portal num: " + portals.size());
+//      System.out.println("Portal num: " + portals.size());
       for (Portal portal: portals){
           Vect pos = portal.getPosition();
           int xPos = (int) pos.x();
           int yPos = (int) pos.y();
           gadgetsLoc[xPos][yPos] += 1;
-          System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
+//          System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
       }
-      System.out.println("Spawner num: "+ spawners.size());
+//      System.out.println("Spawner num: "+ spawners.size());
       for (BallSpawner spawner: spawners){
           Vect pos = spawner.getPosition();
           int xPos = (int) pos.x();
@@ -764,7 +764,7 @@ public class Board {
       for (int i = 0; i < 20; i++) {
           for (int j = 0; j < 20; j++) {
               if(gadgetsLoc[i][j] > 1){
-                  System.out.println("gadgets: " + gadgets.size());
+//                  System.out.println("gadgets: " + gadgets.size());
                   fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
               }
           }
