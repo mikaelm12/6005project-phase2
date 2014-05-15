@@ -170,7 +170,11 @@ public class LeftFlipper implements Gadget{
 		Vect endVect = new Vect(endX-pivotX, endY-pivotY);
 		Angle initAngle = initVect.angle();
 		Angle endAngle = endVect.angle();
-		this.currentAngle = -1*Math.abs((endAngle.minus(initAngle)).radians());
+		double currentAngle = Math.abs((endAngle.minus(initAngle)).radians());
+		if (currentAngle>Math.PI/2){
+			currentAngle = Math.PI*2-currentAngle;
+		}
+		this.currentAngle = currentAngle;
 	}
     
     /**
