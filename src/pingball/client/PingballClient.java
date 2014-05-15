@@ -190,13 +190,13 @@ public class PingballClient {
                 try {
                     while ((fromServer = fromServe.readLine()) != null) {
                         if(!board.isPaused()){
-                        System.out.println(fromServer);
-                       currentChanges = fromServer.toString();
-                       
-                       board.updateBalls(currentChanges);
-                       board.updateFlippers(currentChanges);
-                       
-                      
+//                           System.out.println(fromServer);
+                           currentChanges = fromServer.toString();
+                           
+                           board.updateBalls(currentChanges);
+                           board.updateFlippers(currentChanges);
+                           
+                          
                       
                         }
                     }
@@ -220,9 +220,6 @@ public class PingballClient {
                 
                 gui.setMinimumSize(new Dimension(430, 475));
                 gui.setVisible(true);   
-                
-               
-    
             }
         });
        
@@ -294,7 +291,7 @@ public class PingballClient {
             if ((current-start) % 30 == 0 && !board.isPaused()){
                 double timestep = 0.01;
                 update(board, timestep);
-                System.out.println(board.toString());
+//                System.out.println(board.toString());
 
             }
             
