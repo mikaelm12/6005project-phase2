@@ -11,8 +11,8 @@ import org.junit.Test;
  * (not implemented due to time)
  * 
  * (A) General testing for EACH gadget
- *      (A1) Get expected Height
- *      (A2) Get expected Width
+ *      (A1) Get expected Height/Width (if applicable)
+ *      (A2) Get expected position
  *      (A3) Get expected GadgetType
  *      (A4) Get expected toString output
  * (B) Absorbers
