@@ -435,20 +435,13 @@ public class Board {
                 }
                 else{
                     Absorber abs = (Absorber) gadget;
-                    if(gadgetString.length() < 20){
-                        for (int i = 0; i < abs.getHeight(); i++) {
-                            for (int j = 0; j < abs.getWidth(); j++) {
+                    for (int i = 0; i < abs.getHeight(); i++) {
+                        for (int j = 0; j < abs.getWidth(); j++) {
+                            if(yPos+i <20 && xPos+j <20){
                                 boardString[yPos+i][xPos+j] = Character.toString(gadgetString.charAt(0)); //since all characters are the same
                             }
-                            
                         }
-                    }else{
                         
-                        for (int i = 0; i < (gadgetString.length()/20); i++) {
-                            for (int j = 0; j <abs.getWidth() ; j++) {
-                                boardString[yPos+i][xPos+j] = Character.toString(gadgetString.charAt((20*i)+j));
-                            }
-                        }
                     }
                 }     
         }
