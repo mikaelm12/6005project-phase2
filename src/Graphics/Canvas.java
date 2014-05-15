@@ -328,6 +328,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     }
     else if(gadget.getGadgetType().equals("Ball Spawner")){
         BallSpawner s = (BallSpawner)gadget;
+        System.out.println("spawner position: "+s.getPosition().x()+", "+s.getPosition().y());
         Shape spawner = new Ellipse2D.Float((float)s.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE,
                                                 (float)s.getPosition().y()*SCALE_FACTOR +GADGET_OFFSET_Y_EDGE, 
                                                 SCALE_FACTOR/*width*/,

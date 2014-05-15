@@ -492,7 +492,7 @@ public class Board {
     public void checkKeyListener(KeyEvent e, boolean pressed){
         String key = String.valueOf(e.getKeyChar());
         if(key.equals(" ")) key = "space";
-//        System.out.println("pressed: " + key +", " + gadgetKeyUpListeners.containsKey(key) + ", " + gadgetKeyDownListeners.containsKey(key));
+        System.out.println("pressed: " + key +", " + gadgetKeyUpListeners.containsKey(key) + ", " + gadgetKeyDownListeners.containsKey(key));
         if(gadgetKeyUpListeners.containsKey(key)){ //Keyup
             Gadget gadget = null;
 
@@ -506,6 +506,7 @@ public class Board {
                         gadget.action();
                     }
                 }
+                
             }
         }
         

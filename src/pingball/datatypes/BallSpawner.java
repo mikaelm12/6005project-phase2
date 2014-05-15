@@ -1,5 +1,6 @@
 package pingball.datatypes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -9,11 +10,13 @@ public class BallSpawner implements Gadget {
 	private final String name;
 	private final int x;
 	private final int y;
+	private List<Ball> createdBallQueue = new ArrayList<Ball>();
 	
 	public BallSpawner(String name, int x, int y){
 		this.name = name;
 		this.x = x;
 		this.y = y;
+		
 	}
 
 	/**
@@ -21,11 +24,19 @@ public class BallSpawner implements Gadget {
 	 */
 	@Override
 	public void action() {
+		System.out.println("in spawner action bitch");
 		double xVel = (Math.random()-.5)*40; //a random double between -20 and 20
 		double yVel = (Math.random()-.5)*40; //a random double between -20 and 20
+		Vect velocity = new Vect(xVel,yVel);
+		double speed = Math.sqrt(velocity.dot(velocity));
 		String randomString = randomString(15); 
 		String ballName = "SpawnedBall"+randomString;
-		//TODO construct the ball
+		Ball createdBall = new Ball(ballName, this.x+.5, this.y+.5, xVel, yVel);
+		double timeTilEdgeOfSpawner = .75/speed; //to place the ball safely outside the spawner (spawner has .5 radius and ball has .25 radius so must go at least .75 L away)
+		createdBall.updateBallPosition(timeTilEdgeOfSpawner);
+		synchronized(this.createdBallQueue ){
+			this.createdBallQueue.add(createdBall);
+		}
 	}
 
 	/**
@@ -101,5 +112,9 @@ public class BallSpawner implements Gadget {
     public String toString(){
     	return "S";
     }
+	
+	public List<Ball> getCreatedBallQueue(){
+		return this.createdBallQueue;
+	}
 
 }

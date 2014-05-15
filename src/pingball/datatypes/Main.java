@@ -207,6 +207,14 @@ public class Main {
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timeUntilFirstCollision);
 		}
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
+		}
 	}
 
 	/**
@@ -225,6 +233,14 @@ public class Main {
 		}
 		for (RightFlipper rightFlipper: board.getRightFlippers()){
 			rightFlipper.update(timestep);
+		}
+		for (BallSpawner spawner: board.getSpawners()){
+			synchronized(spawner.getCreatedBallQueue()){
+				for(Ball createdBall: spawner.getCreatedBallQueue()){
+					board.addBall(createdBall);
+				}
+				spawner.getCreatedBallQueue().clear();
+			}
 		}
 	}
 
