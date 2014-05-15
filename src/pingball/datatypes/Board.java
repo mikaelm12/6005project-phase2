@@ -479,7 +479,7 @@ public class Board {
 
             if(pressed){//Key is pressed
                 //Find the associated gadget
-                String gadgetStr = gadgetKeyDownListeners.get(key);
+                String gadgetStr = gadgetKeyUpListeners.get(key);
                 for(Gadget curGadget: gadgets){
                     if(curGadget.getName().equals(gadgetStr)){
                         gadget = curGadget;

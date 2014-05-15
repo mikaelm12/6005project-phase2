@@ -95,7 +95,7 @@ public class SwingTimer extends JFrame {
                     board.checkKeyListener(e, true);
                 }
 
-                public void keyReleased(KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
                     board.checkKeyListener(e, false);
                 }
         };
