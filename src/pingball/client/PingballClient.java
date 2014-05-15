@@ -250,7 +250,7 @@ public class PingballClient {
         for(Ball ball: board.getBalls()){
            initial.add( ball.cloneBall());
         }
-        System.out.println("GOT HERE");
+       
         
         EventQueue.invokeLater(new Runnable() {
             
