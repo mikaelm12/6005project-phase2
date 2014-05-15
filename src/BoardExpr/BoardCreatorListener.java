@@ -23,6 +23,7 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
     * from the file.  After all the objects are read from antlr, they are used to create the a new board.
     */
    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
+   private ArrayList<Gadget> flippers = new ArrayList<Gadget>();
    private ArrayList<Ball> balls = new ArrayList<Ball>();
    private ArrayList<Portal> portals = new ArrayList<Portal>();
    private ArrayList<BallSpawner> spawners = new ArrayList<BallSpawner>();
@@ -39,6 +40,7 @@ public class BoardCreatorListener extends BoardExpr.GrammarBaseListener{
     */
    public Board getBoard() throws Exception{
        for(Gadget gadget: gadgets) board.addGadget(gadget);
+       for(Gadget flipper: flippers) board.addGadget(flipper);
        for(Ball ball: balls) board.addBall(ball);
        for(BallSpawner spawner: spawners) board.addSpawner(spawner);
        for(Portal portal:portals) board.addPortal(portal);

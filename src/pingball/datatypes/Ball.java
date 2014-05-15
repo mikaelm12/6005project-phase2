@@ -26,6 +26,10 @@ public class Ball {
         checkRep();
     }
     
+    public Ball cloneBall(){
+        return new Ball(name, circle.getCenter().x(), circle.getCenter().y(), velocityVector.x(), velocityVector.y());
+    }
+    
     
     /**
      * 
@@ -61,7 +65,7 @@ public class Ball {
      * @return a vector adjusted if the input vector was too fast
      */
     private Vect adjustSpeed(Vect vect) {
-    	double maxSpeed = 80.0;
+    	double maxSpeed = 50.0; //50 L/sec is the speed at which an absorber shoots a ball out
     	double vectSpeed = Math.sqrt(Math.pow(vect.x(),2)+Math.pow(vect.y(),2));
     	double scalingFactor = vectSpeed/maxSpeed;
     	if (scalingFactor>1){
@@ -141,8 +145,6 @@ public class Ball {
         return new Circle(circleX, circleY,radius);
     }
     
-    
-    
     /**
      * 
      * @return name of ball
@@ -221,6 +223,15 @@ public class Ball {
 		return Geometry.timeUntilBallBallCollision(this.getPhysicsCircle(), this.getPhysicsVelocity(), ball2.getPhysicsCircle(), ball2.getPhysicsVelocity());
 	}
     
+	public String getBallGraphicsInfo(){
+	    String x = String.valueOf(this.circle.getCenter().x());
+	    String y = String.valueOf(this.circle.getCenter().y());
+	    String xVel = String.valueOf(this.velocityVector.x());
+	    String yVel = String.valueOf(this.velocityVector.y());
+	    
+	    return "Ball"+" " +this.name +" "+ x + " " + y + " " + xVel + " " + yVel;  
+	    
+	}
 
 
 }

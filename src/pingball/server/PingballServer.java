@@ -44,7 +44,6 @@ public class PingballServer {
         serverSocket = new ServerSocket(port);
         this.world = world;
     }
-    
     /**
      * Run the server, listening for client connections and handling them.
      * Never returns unless an exception is thrown.
@@ -59,7 +58,7 @@ public class PingballServer {
                 try {
                     for (String line = fromUser.readLine(); line != null; line = fromUser.readLine()) {
                         String output = handleRequest(line);
-                            System.out.println(output);
+                           // System.out.println(output);
                     }
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -74,7 +73,7 @@ public class PingballServer {
             // block until a client connects
             Socket ClientSocket = serverSocket.accept();
             new PingballClientThread(ClientSocket, world).start();
-            System.out.println(world);
+            //System.out.println(world);
         } 
     }
     
@@ -118,7 +117,8 @@ public class PingballServer {
         
         try {
             runPingballServer(port);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
@@ -161,10 +161,10 @@ public class PingballServer {
         }
         if (tokens[0].equals("h")) {
             world.joinHorizontal(tokens[1], tokens[2]); 
-            return "";
+            return joined;
         } else if (tokens[0].equals("v")) {
             world.joinVertical(tokens[1], tokens[2]);
-            return "";
+            return joined;
         // Should never get here
         }
         throw new UnsupportedOperationException();

@@ -39,12 +39,21 @@ public class Board {
     private boolean paused = false;
     private HashMap<String, String> gadgetKeyUpListeners;
     private HashMap<String, String> gadgetKeyDownListeners;
+    private boolean restart = false;
 
 
     
     //Rep invariant:
     
     //Abstraction Function:
+
+    public boolean isRestart() {
+        return restart;
+    }
+
+    public void setRestart(boolean restart) {
+        this.restart = restart;
+    }
 
     /**
      * 
@@ -366,6 +375,9 @@ public class Board {
     public void pauseUnpauseGame(){
         this.paused = !this.paused;
     }
+    public void setGamePauseStatus(boolean paused){
+        this.paused = paused;
+    }
     
     public boolean isPaused(){
         return this.paused;
@@ -513,105 +525,244 @@ public class Board {
     public List<BallSpawner> getSpawners(){
     	return new ArrayList<BallSpawner>(spawners);
     }
-    
+
     /**
-     * check representation
+     * Remove the current flippers from the board and replaces them with the current flippers
+     * sent from the server
+     * @param flippers - new flipper obejcts that represent the current state of the flipper
      */
-    public void checkRep(){
-        //Check if all balls are within the bounds of the baord
-        double[] position;
-        double xLoc;
-        double yLoc;
-        for(Ball ball: balls){
-            position = ball.getNormalPosition();
-            xLoc = position[0];
-            yLoc = position[1];
-            if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
-            if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
-
-            position = ball.getPhysicsPosition();
-            xLoc = position[0];
-            yLoc = position[1];
-            if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
-            if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
-        }
-        
-        //Check if all gadgets (not including portals/spawners) are within the bounds of the baord
-        Vect gadgetPosition;
-        for(Gadget gadget: gadgets){
-            gadgetPosition = gadget.getPosition();
-            xLoc = gadgetPosition.x();
-            yLoc = gadgetPosition.y();
-
-            if(xLoc > 19 || xLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (x): " + xLoc);
-            if(yLoc > 19 || yLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (y): " + yLoc);
-        }
-        
-        //Check if all portals are within the bounds of the baord
-        for(Portal portal: portals){
-            gadgetPosition = portal.getPosition();
-            xLoc = gadgetPosition.x();
-            yLoc = gadgetPosition.y();
+    public synchronized void refreshFlippers(List<Gadget> flippers){
+         List<Gadget> deleteIndices = new ArrayList<Gadget>();
+         for(int index = 0; index < this.gadgets.size()-1; index++){
+             if(gadgets.get(index).getGadgetType().equals("Left Flipper")||gadgets.get(index).getGadgetType().equals("Right Flipper")){
+                 deleteIndices.add(gadgets.get(index));
+             }
+             
+         }
+         for (Gadget g: deleteIndices){
+             gadgets.remove(g);
             
-            if(xLoc > 19 || xLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (x): " + xLoc);
-            if(yLoc > 19 || yLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (y): " + yLoc);
+         }
+         for (Gadget gadget: flippers){
+             this.gadgets.add(gadget);
+         }
+         
+     }
+    
+    
+   /**
+    * This is for use in the runPingballServerClient, it is a string representation of the updates occuring for the balls
+    * on the board.
+    * @return -A string to be split 
+    */
+    public String ballGraphicsInfo(){
+        StringBuilder sb = new StringBuilder();
+        List<LeftFlipper> leftFlippers = this.getLeftFlippers();
+        List<RightFlipper> rightFlippers = this.getRightFlippers();
+        
+        
+        for (Ball ball: balls){
+            //Ball info comes in the form 
+            // name x y xVel yVel
+            sb.append(ball.getBallGraphicsInfo() + "_##_");
         }
-        //Check if all spawners are within the bounds of the baord
 
-        for(BallSpawner spawner: spawners){
-            gadgetPosition = spawner.getPosition();
-            xLoc = gadgetPosition.x();
-            yLoc = gadgetPosition.y();
-            
-            if(xLoc > 19 || xLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (x): " + xLoc);
-            if(yLoc > 19 || yLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (y): " + yLoc);
-        }
-        
-        
-        //Set up for checking overlapping objects
-        int[][] gadgetsLoc = new int[20][20]; //just for checking overlapping gadgets
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 20; j++) {
-                gadgetsLoc[i][j] = 0;
-            }
-        }
-        
-        //check for overlapping GADGETS only
-        //note: not including balls here because balls can overlap with portals and spawners
-        //      balls can also APPEAR to overlap with other balls and flippers due to rounding
-        
-        //this will iterate through all the gadgets in the board and keep track of
-        //how many objects are located at each position
-        //assertion will be thrown if there are more than 1 objects after the iteration is complete
-        
-        for(Gadget gadget:gadgets){
-            Vect pos = gadget.getPosition();
-            int xPos = (int) pos.x();
-            int yPos = (int) pos.y();
-            gadgetsLoc[xPos][yPos] += 1;
-//            System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
-        }
-        for (Portal portal: portals){
-            Vect pos = portal.getPosition();
-            int xPos = (int) pos.x();
-            int yPos = (int) pos.y();
-            gadgetsLoc[xPos][yPos] += 1;
-//            System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
-        }
-        for (BallSpawner spawner: spawners){
-            Vect pos = spawner.getPosition();
-            int xPos = (int) pos.x();
-            int yPos = (int) pos.y();
-            gadgetsLoc[xPos][yPos] +=1;
-//            System.out.println(spawner.getName() + ": " + xPos + ", " + yPos);
-        }
-        
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 20; j++) {
-                if(gadgetsLoc[i][j] > 1) fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
-            }
-        }
+        return sb.toString();
+
     }
+    
+  
+   
+    /**
+     * This is for use in the runPingballServerClient, it is a string representation of the updates occuring for the flippers
+     * on the board.
+     * @return -A string to be split 
+     */
+  public String flipperGraphicsInfo(){
+        
+    StringBuilder sb = new StringBuilder();
+    List<LeftFlipper> leftFlippers = this.getLeftFlippers();
+    List<RightFlipper> rightFlippers = this.getRightFlippers();
+    
+    for(LeftFlipper lf : leftFlippers){
+        //Flipper info comes in the form   name x y orientation current angl
+        
+        sb.append(lf.getLeftFlipperGraphicsInfo() + "_##_");
+    }
+    for(RightFlipper rf: rightFlippers){
+        sb.append(rf.getRightFlipperGraphicsInfo() + "_##_");
+    }
+        return sb.toString();
+  }
+    
+  /**
+   * Takes the String for the updated balls from the 
+   * @param info
+   * @return
+   */
+  public void updateBalls(String info){
+      List<Ball> updatedBalls = new ArrayList<Ball>();
+      String[] ballList = info.split("_##_");
+      
+      for(String ball: ballList){
+          
+          if(ball.length() > 1){
+              String[] ballInfo = ball.split(" ");
+          
+              
+              
+              if(ballInfo[0].equals("Ball")){
+                  String name = ballInfo[1];
+                  double x = Double.parseDouble(ballInfo[2]);
+                  double y = Double.parseDouble(ballInfo[3]);
+                  double xVel = Double.parseDouble(ballInfo[4]);
+                  double yVel = Double.parseDouble(ballInfo[5]);
+                  Ball newBall  = new  Ball(name, x, y, xVel, yVel);
+                  updatedBalls.add(newBall);
+              }
+          
+          }
+          
+      }
+      this.balls =  updatedBalls;
+      
+  }
+  public void updateFlippers(String info){
+      List<Gadget> updatedFlippers = new ArrayList<Gadget>();
+      String[] flipperList = info.split("_##_");
+      
+      for(String flipper: flipperList){
+          if(flipper.length() > 1){
+              
+              String[] flipperInfo = flipper.split(" ");
+              if(flipperInfo[0].equals("Left")||flipperInfo[0].equals("Right")){
+                  String type = flipperInfo[0];
+                  String name = flipperInfo[1];
+                  int x = (int)Math.round(Double.parseDouble(flipperInfo[2]));
+                  int y = (int)Math.round(Double.parseDouble(flipperInfo[3]));
+                  int orientation = Integer.parseInt(flipperInfo[4]);
+                  double currentAngle = Double.parseDouble(flipperInfo[5]);
+                  
+                  if(type.equals("Left")){
+                      LeftFlipper flip = new LeftFlipper(name, x, y, orientation);
+                      updatedFlippers.add(flip);
+                  }
+                  else{
+                      RightFlipper flip = new RightFlipper(name, x, y, orientation);
+                      updatedFlippers.add(flip);
+                  }
+              }
+          
+          }
+          
+      }
+      
+     refreshFlippers(updatedFlippers); 
+  }
+  public void intialBallPositions(List<Ball> balls){
+      this.balls = balls;
+  }
+
+  
+  /**
+   * check representation
+   */
+  public void checkRep(){
+      //Check if all balls are within the bounds of the baord
+      double[] position;
+      double xLoc;
+      double yLoc;
+      for(Ball ball: balls){
+          position = ball.getNormalPosition();
+          xLoc = position[0];
+          yLoc = position[1];
+          if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+
+          position = ball.getPhysicsPosition();
+          xLoc = position[0];
+          yLoc = position[1];
+          if(xLoc > 19.75 || xLoc < 0.25) fail("ball out of bounds (x): " + xLoc);
+          if(yLoc > 19.75 || yLoc < 0.25) fail("ball out of bounds (y): " + yLoc);
+      }
+      
+      //Check if all gadgets (not including portals/spawners) are within the bounds of the baord
+      Vect gadgetPosition;
+      for(Gadget gadget: gadgets){
+          gadgetPosition = gadget.getPosition();
+          xLoc = gadgetPosition.x();
+          yLoc = gadgetPosition.y();
+
+          if(xLoc > 19 || xLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (x): " + xLoc);
+          if(yLoc > 19 || yLoc < 0) fail(gadget.getGadgetType() + ": " + gadget.getName() + " out of bounds (y): " + yLoc);
+      }
+      
+      //Check if all portals are within the bounds of the baord
+      for(Portal portal: portals){
+          gadgetPosition = portal.getPosition();
+          xLoc = gadgetPosition.x();
+          yLoc = gadgetPosition.y();
+          
+          if(xLoc > 19 || xLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (x): " + xLoc);
+          if(yLoc > 19 || yLoc < 0) fail(portal.getGadgetType() + ": " + portal.getName() + " out of bounds (y): " + yLoc);
+      }
+      //Check if all spawners are within the bounds of the baord
+
+      for(BallSpawner spawner: spawners){
+          gadgetPosition = spawner.getPosition();
+          xLoc = gadgetPosition.x();
+          yLoc = gadgetPosition.y();
+          
+          if(xLoc > 19 || xLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (x): " + xLoc);
+          if(yLoc > 19 || yLoc < 0) fail(spawner.getGadgetType() + ": " + spawner.getName() + " out of bounds (y): " + yLoc);
+      }
+      
+      
+      //Set up for checking overlapping objects
+      int[][] gadgetsLoc = new int[20][20]; //just for checking overlapping gadgets
+      for (int i = 0; i < 20; i++) {
+          for (int j = 0; j < 20; j++) {
+              gadgetsLoc[i][j] = 0;
+          }
+      }
+      
+      //check for overlapping GADGETS only
+      //note: not including balls here because balls can overlap with portals and spawners
+      //      balls can also APPEAR to overlap with other balls and flippers due to rounding
+      
+      //this will iterate through all the gadgets in the board and keep track of
+      //how many objects are located at each position
+      //assertion will be thrown if there are more than 1 objects after the iteration is complete
+      
+      for(Gadget gadget:gadgets){
+          Vect pos = gadget.getPosition();
+          int xPos = (int) pos.x();
+          int yPos = (int) pos.y();
+          gadgetsLoc[xPos][yPos] += 1;
+//          System.out.println(gadget.getName() + ": " + xPos + ", " + yPos);
+      }
+      for (Portal portal: portals){
+          Vect pos = portal.getPosition();
+          int xPos = (int) pos.x();
+          int yPos = (int) pos.y();
+          gadgetsLoc[xPos][yPos] += 1;
+//          System.out.println(portal.getName() + ": " + xPos + ", " + yPos);
+      }
+      for (BallSpawner spawner: spawners){
+          Vect pos = spawner.getPosition();
+          int xPos = (int) pos.x();
+          int yPos = (int) pos.y();
+          gadgetsLoc[xPos][yPos] +=1;
+//          System.out.println(spawner.getName() + ": " + xPos + ", " + yPos);
+      }
+      
+      for (int i = 0; i < 20; i++) {
+          for (int j = 0; j < 20; j++) {
+              if(gadgetsLoc[i][j] > 1) fail(gadgetsLoc[i][j]+ " gadgets are overlapping at (" +i+", " +j+")");
+          }
+      }
+  }
+  
 }
 
 

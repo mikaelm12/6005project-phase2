@@ -28,7 +28,11 @@ public class Main {
     public static void main(String[] args) throws Exception{
         //File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board5.txt");
 
+
+    	//File file = new File("/Users/ahochstadt/pingball-phase2/boards/board2.txt");
+
     	File file = new File("src/../boards/board1P.txt");
+
 
 
         String fileString = "";
@@ -51,24 +55,27 @@ public class Main {
        EventQueue.invokeLater(new Runnable() {
             
             @Override
-            public void run() {                
+            public void run() { 
                 JFrame ex = new SwingTimer(board);
                 ex.setMinimumSize(new Dimension(430, 475));
                 ex.setVisible(true);                
             }
         });
        
-       
-        
         long start = System.currentTimeMillis();
+        for (Portal portal: board.getPortals()){
+        	portal.setDestinationPortal(getTargetPortal(board, portal));
+        }
+        
 
         while(true){
             long current = System.currentTimeMillis();
 
-            if ((current-start) % 30 == 0){
-                double timestep = 0.01;
+            if ((current-start) % 20 == 0){
+                double timestep = 90.0/1080.0/80.0; //it will take exactly 80 timesteps for the flipper to rotate
+
                 update(board, timestep);
-                System.out.println(board.toString());
+//                System.out.println(board.toString());
             }
         }
     }
@@ -84,8 +91,8 @@ public class Main {
 				ball.updateBallVelocityBeforeTimestep(board.getGravity(), board.getMu(), board.getMu2(), timestep);
 			}
 
-//			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
-//			System.out.println("Velocity: "+ball.getNormalVelocity());
+			System.out.println("Position: "+ball.getNormalCircle().getCenter().x()+", "+ball.getNormalCircle().getCenter().y());
+			System.out.println("Speed: "+Math.sqrt(ball.getNormalVelocity().dot(ball.getNormalVelocity())));
 			
 		}
 		double timestepLeft = timestep+0;
@@ -177,15 +184,16 @@ public class Main {
 			}
 		}
 		
-		//send all the balls in the portals
+/**		//send all the balls in the portals
 		for (Portal portal: board.getPortals()){
 			if(getTargetPortal(board, portal)!=null){
-				System.out.println("getTargetPortal(board, portal)!=null");
+//				System.out.println("getTargetPortal(board, portal)!=null");
 				for(Ball sentBall: portal.getSentBallQueue()){
 					Portal targetPortal = getTargetPortal(board, portal);
 					targetPortal.receiveBall(sentBall);
 					board.removeBall(sentBall);
 				}
+				portal.getSentBallQueue().clear();
 			}
 		}
 		//recieve all the balls in the portals
@@ -193,7 +201,9 @@ public class Main {
 			for(Ball receivedBall: portal.getReceivedBallQueue()){
 				board.addBall(receivedBall);
 			}
+			portal.getReceivedBallQueue().clear();
 		}
+	**/
 		//update the flipper positions
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timeUntilFirstCollision);
@@ -214,7 +224,7 @@ public class Main {
 				ball.updateBallPosition(timestep);
 			}
 		}
-		//send all the balls in the portals
+	/**	//send all the balls in the portals
 		for (Portal portal: board.getPortals()){
 			if(getTargetPortal(board, portal)!=null){
 				for(Ball sentBall: portal.getSentBallQueue()){
@@ -222,17 +232,20 @@ public class Main {
 					targetPortal.receiveBall(sentBall);
 					board.removeBall(sentBall);
 				}
+				portal.getSentBallQueue().clear();
 			}
 		}
 		//recieve all the balls in the portals
 		for (Portal portal: board.getPortals()){
 			
 			for(Ball receivedBall: portal.getReceivedBallQueue()){
-				System.out.println("receivedBall == null: " + receivedBall == null);
+				System.out.println("receivedBall == null: ");
+				System.out.println(receivedBall == null);
 				board.addBall(receivedBall);
 			}
-		}
-		
+			portal.getReceivedBallQueue().clear();
+			}
+	**/
 		for (LeftFlipper leftFlipper: board.getLeftFlippers()){
 			leftFlipper.update(timestep);
 		}
@@ -255,9 +268,11 @@ public class Main {
 			for (Gadget gadget: board.getGadgets()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, gadget.timeUntilPhysicsCollision(ball));
 			}
+		
 			for (Portal portal: board.getPortals()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, portal.timeUntilPhysicsCollision(ball));
 			}
+		
 			for (Ball ball2: board.getBalls()){
 				timeUntilFirstCollision = Math.min(timeUntilFirstCollision, ball.timeUntilPhysicsCollision(ball2));
 			}
@@ -272,16 +287,10 @@ public class Main {
 	 * @return target portal of a source portal if it can be found, else null.
 	 */
 	private static Portal getTargetPortal(Board targetBoard, Portal sourcePortal){
-		System.out.println("in getTargetPortal()");
 		List<Portal> portalList = targetBoard.getPortals();
 		for (Portal portal: portalList){
 			if (sourcePortal.getTargetPortalBoardName().equals(targetBoard.getName())){//makes sure that the target board is correct. Since this is in main, this should be true unless the sourcePortal points to a different board.
-				System.out.println("2");
-				System.out.println(portal.getName());
-				System.out.println(sourcePortal.getTargetPortalName());
-				
 				if (portal.getName().equals(sourcePortal.getTargetPortalName())){
-					System.out.println("got it!!");
 					return portal;
 				}
 			}

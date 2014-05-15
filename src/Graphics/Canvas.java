@@ -13,6 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+
+import java.awt.geom.Line2D;
+
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -169,8 +172,8 @@ public Shape makeBall(Ball ball){
     
     Shape newCirc = new Ellipse2D.Float((float)ball.getNormalPosition()[0]*SCALE_FACTOR + GADGET_OFFSET_X_EDGE, 
                                         (float) ball.getNormalPosition()[1]*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE,
-                                        5,
-                                        5);
+                                        10,
+                                        10);
     return newCirc;
 }
 
@@ -231,12 +234,15 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     else if(gadget.getGadgetType().equals("Absorber")){
         
         Absorber abs = (Absorber)gadget;
+
         Shape absorber = new Rectangle2D.Float((float)abs.getPosition().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE , (float)abs.getPosition().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE , abs.getWidth()*SCALE_FACTOR, abs.getHeight()*SCALE_FACTOR);
+
 
         graph2.setColor(Color.magenta);
         
         graph2.fill(absorber);  
     }
+
     else if(gadget.getGadgetType().equals("Triangluar Bumper")){
     	TriangularBumper tb = (TriangularBumper) gadget;
     	GeneralPath tbLineDrawer = new GeneralPath();
@@ -268,6 +274,7 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	graph2.fill(tbLineDrawer);
     }
     else if(gadget.getGadgetType().equals("Left Flipper")){
+        
     	GeneralPath flipperLineDrawer = new GeneralPath();
         LeftFlipper lf = (LeftFlipper)gadget;
         
@@ -278,15 +285,14 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	double endX = lf.getNormalEndpt().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double endY = lf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
    
-    	flipperLineDrawer.moveTo(pivotX, pivotY);
-    	flipperLineDrawer.lineTo(endX, endY);
-    	flipperLineDrawer.closePath();
+    	Line2D line = new Line2D.Double(pivotX, pivotY, endX, endY);
+
         graph2.setColor(Color.RED);
- 
-        graph2.fill(flipperLineDrawer);  
+        graph2.draw(line);  
 
     }
     else if(gadget.getGadgetType().equals("Right Flipper")){
+        
     	GeneralPath flipperLineDrawer = new GeneralPath();
         RightFlipper rf = (RightFlipper)gadget;
         
@@ -297,12 +303,11 @@ public void makeGadget(Gadget gadget, Graphics2D graph2){
     	double endX = rf.getNormalEndpt().getCenter().x()*SCALE_FACTOR + GADGET_OFFSET_X_EDGE;
     	double endY = rf.getNormalEndpt().getCenter().y()*SCALE_FACTOR + GADGET_OFFSET_Y_EDGE;
    
-    	flipperLineDrawer.moveTo(pivotX, pivotY);
-    	flipperLineDrawer.lineTo(endX, endY);
+    	Line2D line = new Line2D.Double(pivotX, pivotY, endX, endY);
         
         graph2.setColor(Color.RED);
  
-        graph2.fill(flipperLineDrawer);  
+        graph2.draw(line);  
     
     }
     else if(gadget.getGadgetType().equals("Portal")){
