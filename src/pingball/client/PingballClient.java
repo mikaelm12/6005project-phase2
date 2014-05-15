@@ -77,7 +77,7 @@ public class PingballClient {
    //     File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard3");
 //        File file = new File ("/Users/AlexR/Desktop/6.005/pingball-phase1/alex-peter-mikael-testBoard2");
        // File file = new File ("/Users/mikaelm/Desktop/6.005/pingball-phase1/sampleBoard1");
-       // File file = new File("/Users/mikemikael3/Dropbox/School/Semester 4/6.005/pingball-phase2/boards/board1.txt ");
+       // File file = new File("/Users/mikemikael3/Desktop/board1.txt");
 
 
       // File file = new File("src/../boards/board1.txt");
@@ -97,8 +97,8 @@ public class PingballClient {
                         }
                     } else if (flag.equals("--host")) {
                        hostName = arguments.remove();
-                    } else   {  //File is not an argument but a must
-                       file = new File(arguments.remove());
+                    } else    {  //File is not an argument but a must
+                       file = new File(flag);
                        
                         if ( ! file.isFile()) {
                             
@@ -106,10 +106,10 @@ public class PingballClient {
                         }
                         else{
                             fileProvided = true;
+                            System.out.println("Its a file");
                         }
                     } 
-                } catch (NoSuchElementException nsee) {
-                    throw new IllegalArgumentException("missing argument for " + flag);
+                
                 } catch (NumberFormatException nfe) {
                     throw new IllegalArgumentException("unable to parse number for " + flag);
                 }
@@ -195,13 +195,16 @@ public class PingballClient {
                 String currentChanges;
                 try {
                     while ((fromServer = fromServe.readLine()) != null) {
+                        if(!board.isPaused()){
                         System.out.println(fromServer);
                        currentChanges = fromServer.toString();
                        
                        board.updateBalls(currentChanges);
                        board.updateFlippers(currentChanges);
-                       //System.out.println("Client \n"+ board);
                        
+                      
+                      
+                        }
                     }
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -247,6 +250,11 @@ public class PingballClient {
        
         // Create the board
         final Board board  =  GrammarFactory.parse(file);
+        
+        List<Ball> initial = new ArrayList<Ball>();
+        for(Ball ball: board.getBalls()){
+           initial.add( ball.cloneBall());
+        }
         System.out.println("GOT HERE");
         
         EventQueue.invokeLater(new Runnable() {
@@ -261,7 +269,12 @@ public class PingballClient {
                
     
             }
+          
         });
+        
+        if(board.isRestart()){
+            board.intialBallPositions(initial);
+        }
        
         Thread game = new Thread() {
             public void run() {
@@ -284,13 +297,10 @@ public class PingballClient {
             long current = System.currentTimeMillis();
 
 
-            if ((current-start) % 100 == 0 && !board.isPaused()){
-
-                double timestep = 0.001;
+            if ((current-start) % 30 == 0 && !board.isPaused()){
+                double timestep = 0.01;
                 update(board, timestep);
-                
-
-              // System.out.println(board.toString());
+                System.out.println(board.toString());
 
             }
             

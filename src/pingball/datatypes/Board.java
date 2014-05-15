@@ -38,12 +38,21 @@ public class Board {
     private boolean paused = false;
     private HashMap<String, String> gadgetKeyUpListeners;
     private HashMap<String, String> gadgetKeyDownListeners;
+    private boolean restart = false;
 
 
     
     //Rep invariant:
     
     //Abstraction Function:
+
+    public boolean isRestart() {
+        return restart;
+    }
+
+    public void setRestart(boolean restart) {
+        this.restart = restart;
+    }
 
     /**
      * 
@@ -360,6 +369,9 @@ public class Board {
     public void pauseUnpauseGame(){
         this.paused = !this.paused;
     }
+    public void setGamePauseStatus(boolean paused){
+        this.paused = paused;
+    }
     
     public boolean isPaused(){
         return this.paused;
@@ -479,7 +491,7 @@ public class Board {
 
             if(pressed){//Key is pressed
                 //Find the associated gadget
-                String gadgetStr = gadgetKeyDownListeners.get(key);
+                String gadgetStr = gadgetKeyUpListeners.get(key);
                 for(Gadget curGadget: gadgets){
                     if(curGadget.getName().equals(gadgetStr)){
                         gadget = curGadget;
@@ -645,6 +657,9 @@ public class Board {
       }
       
      refreshFlippers(updatedFlippers); 
+  }
+  public void intialBallPositions(List<Ball> balls){
+      this.balls = balls;
   }
 
 }

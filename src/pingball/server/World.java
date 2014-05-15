@@ -85,13 +85,13 @@ public class World implements WorldInterface {
         if (wall.getName().equals("left")){
             Board neighbor = from.getNeighborLeft();
             if(!neighbor.isPaused()){
-                Ball newBall = new Ball(ball.getName(),19.8, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                Ball newBall = new Ball(ball.getName(),19.0, ball.getNormalPosition()[1], ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
                 neighbor.addIncomingBall(newBall);
             }
         } else if (wall.getName().equals("top")){
             Board neighbor = from.getNeighborTop();
             if(!neighbor.isPaused()){
-                Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 19.8, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
+                Ball newBall = new Ball(ball.getName(), ball.getNormalPosition()[0], 19.0, ball.getNormalVelocity().x(),ball.getNormalVelocity().y());
                 neighbor.addIncomingBall(newBall);
             }
         } else if (wall.getName().equals("right")){

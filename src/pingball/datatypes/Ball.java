@@ -27,6 +27,10 @@ public class Ball {
         checkRep();
     }
     
+    public Ball cloneBall(){
+        return new Ball(name, circle.getCenter().x(), circle.getCenter().y(), velocityVector.x(), velocityVector.y());
+    }
+    
     
     /**
      * 

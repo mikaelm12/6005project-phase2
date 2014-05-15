@@ -16,14 +16,14 @@ public class Portal implements Gadget {
 	private final int y;
 	private String otherBoard; 
 	private final String otherPortal;
-	private List<Gadget> gadgetsToFire;
+	private List<Gadget> gadgetsToFire = new ArrayList<Gadget>();
 	private List<Ball> sentBallQueue = new ArrayList<Ball>();
 	private List<Ball> receivedBallQueue = new ArrayList<Ball>();
 	
 
 	public Portal(String name, int x, int y, String otherBoard, String otherPortal){
 		this.circle = new Circle(x+.5, y+.5, .5);
-		this.name = name;
+		this.name = name; //for some reason, "name=[name]" is being passed in to the constructor
 		this.x = x;
 		this.y = y;
 		this.otherBoard = otherBoard;
@@ -48,7 +48,7 @@ public class Portal implements Gadget {
 		return Geometry.timeUntilCircleCollision(this.circle, ball.getPhysicsCircle(), ball.getPhysicsVelocity());
 	}
 
-	private boolean ballComingFromPortal(Ball ball) {
+	public boolean ballComingFromPortal(Ball ball) {
 		double ballX = ball.getNormalCircle().getCenter().x();
 		double ballY = ball.getNormalCircle().getCenter().y();
 		double ballVelX = ball.getNormalVelocity().x();
@@ -73,6 +73,7 @@ public class Portal implements Gadget {
 	 * @param ball ball to be sent "into" the portal
 	 */
 	public void sendBall(Ball ball) {
+		System.out.println("in sendBall()");
 		synchronized(sentBallQueue){
 			sentBallQueue.add(ball);
 		}
@@ -84,6 +85,7 @@ public class Portal implements Gadget {
 	 * @param ball ball to "come out of" the portal
 	 */
 	public synchronized void receiveBall(Ball ball){
+		System.out.println("in receiveBall()");
 		double ballX = this.x+.25;
 		double ballY = this.y+.25;
 		ball.setNormalPosition(ballX, ballY);
@@ -136,7 +138,7 @@ public class Portal implements Gadget {
 	}
 	
 	public String getTargetPortalBoardName(){
-		return this.otherPortal;
+		return this.otherBoard;
 	}
 	
 	public List<Ball> getSentBallQueue(){

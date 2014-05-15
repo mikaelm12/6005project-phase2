@@ -106,12 +106,19 @@ public class PingballClientThread extends Thread {
 //        });
         System.out.println("Client Thread Loop Before");
         long start = System.currentTimeMillis();
+        String pause;
         while(true){
             long current = System.currentTimeMillis();
-            if ((current-start) % 300 == 0 && !board.isPaused()){
+            if ((current-start) % 30 == 0 && !board.isPaused()){
                 double timestep = 0.01;
                 update(board, world, timestep);
-                String output = board.ballGraphicsInfo() + board.flipperGraphicsInfo();
+                if(board.isPaused()){
+                    pause = "T";
+                }
+                else{
+                   pause = "F";
+                }
+                String output = board.ballGraphicsInfo() + board.flipperGraphicsInfo() +  pause;
                 out.println(output);
                 }
         
@@ -146,11 +153,11 @@ public class PingballClientThread extends Thread {
     private static void updateWithCollision(Board board, World world, double timeUntilFirstCollision) { //will not work correctly if a ball collides with two things at the EXACT same time--which is extremely improbable
 		//updateWithoutCollision(board, timeUntilFirstCollision); //we will update flippers and balls as usual, and then collide the balls
 		List<Ball> ballsToTransfer = new ArrayList<Ball>();
-		List<String> namesOfBallsCollided = new ArrayList<String>();
+		List<Ball> namesOfBallsCollided = new ArrayList<Ball>();
 		
 		for (Ball ball: board.getBalls()){
 			for (Ball ball2: board.getBalls()){
-				if (!namesOfBallsCollided.contains(ball.getName()) && !namesOfBallsCollided.contains(ball2.getName()) && !ball.getName().equals(ball2.getName())){ //make sure to only collide balls that have not been collided yet
+				if (!namesOfBallsCollided.contains(ball) && !namesOfBallsCollided.contains(ball2) && !ball.getName().equals(ball2)){ //make sure to only collide balls that have not been collided yet
 					if (ball.timeUntilPhysicsCollision(ball2)<=timeUntilFirstCollision){
 						//System.out.println("Two Balls are colliding");
 						VectPair newVels = Geometry.reflectBalls(ball.getPhysicsCircle().getCenter(), 1.0, ball.getPhysicsVelocity(), ball2.getPhysicsCircle().getCenter(), 1.0, ball2.getPhysicsVelocity());
@@ -158,44 +165,44 @@ public class PingballClientThread extends Thread {
 						ball2.updateBallPosition(timeUntilFirstCollision);
 						ball.setPhysicsVelocity(newVels.v1); //set the velocities to their post-collision values
 						ball2.setPhysicsVelocity(newVels.v2);
-						namesOfBallsCollided.add(ball.getName());
-						namesOfBallsCollided.add(ball2.getName());
+						namesOfBallsCollided.add(ball);
+						namesOfBallsCollided.add(ball2);
 					}
 				}
 				
 			}
 			for (OuterWall wall: board.getOuterWalls()){ 
-				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
+				if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
 					if(wall.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the wall
 						if(wall.isSolid()){ //we are colliding with the wall
 							//System.out.println("we are colliding with the wall");
 							Vect oldV = ball.getPhysicsVelocity();
 							wall.reflectOff(ball);
 							ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
-							namesOfBallsCollided.add(ball.getName());
+							namesOfBallsCollided.add(ball);
 						} else { //we are going to transfer the ball
 							ball.updateBallPosition(timeUntilFirstCollision);
 							world.transferBall(board, ball, wall);
 							ballsToTransfer.add(ball);
-							namesOfBallsCollided.add(ball.getName());
+							namesOfBallsCollided.add(ball);
 						}
 					}
 				}
 				
 			}
 			for (Gadget gadget: board.getGadgets()){
-				if (!namesOfBallsCollided.contains(ball.getName())){ //make sure to only collide balls that have not been collided yet
+				if (!namesOfBallsCollided.contains(ball)){ //make sure to only collide balls that have not been collided yet
 					if (gadget.timeUntilPhysicsCollision(ball)<=timeUntilFirstCollision){ //we are colliding with the gadget
 						Vect oldV = ball.getPhysicsVelocity();
 						gadget.reflectOff(ball);
 						ball.updateBallPositionUsingOldPhysicsVelocity(timeUntilFirstCollision, oldV);
-						namesOfBallsCollided.add(ball.getName());
+						namesOfBallsCollided.add(ball);
 					}
 				}
 			}
-			if (!namesOfBallsCollided.contains(ball.getName())){
+			if (!namesOfBallsCollided.contains(ball)){
 				ball.updateBallPosition(timeUntilFirstCollision);
-				namesOfBallsCollided.add(ball.getName());
+				namesOfBallsCollided.add(ball);
 			}
 		}
 		// To avoid modifying the list of balls in the middle of an iteration

@@ -61,6 +61,16 @@ public class SwingTimer extends JFrame {
         JMenuItem pause = new JMenuItem("Pause/Unpause");
         options.add(pause);
         
+        
+        pause.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.pauseUnpauseGame();
+                
+            }
+        });
+        
         JMenuItem connect = new JMenuItem("Connect to");
         options.add(connect);
         
@@ -70,6 +80,19 @@ public class SwingTimer extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String hostValue = JOptionPane.showInputDialog("Please specify a host");
                 String portValue = JOptionPane.showInputDialog("Please specify a port");
+            }
+        });
+        
+        
+        JMenuItem restart = new JMenuItem("Restart");
+        options.add(restart);
+        
+        restart.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.setRestart(true);
+                
             }
         });
         
@@ -84,14 +107,7 @@ public class SwingTimer extends JFrame {
             }
         });
         
-        pause.addActionListener(new ActionListener() {
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                board.pauseUnpauseGame();
-                
-            }
-        });
+
         
         file.addActionListener(new ActionListener() {
             
@@ -124,7 +140,7 @@ public class SwingTimer extends JFrame {
                     board.checkKeyListener(e, true);
                 }
 
-                public void keyReleased(KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
                     board.checkKeyListener(e, false);
                 }
         };

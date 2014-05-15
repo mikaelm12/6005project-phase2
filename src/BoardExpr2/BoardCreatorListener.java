@@ -212,17 +212,16 @@ public class BoardCreatorListener extends BoardExpr2.GrammarBaseListener{
      */
     @Override
     public void exitPortal(GrammarParser.PortalContext ctx){
-        String name = ctx.objectName().getText();
+        String name = ctx.objectName().getChild(2).getText();
         String xLoc = ctx.xLoc().getChild(2).getText();
         String yLoc = ctx.yLoc().getChild(2).getText();
         String otherPortal = ctx.otherPortal().getChild(2).getText();
         String otherBoard = "";
         if(ctx.getChildCount() == 6){
-            otherBoard = ctx.getChild(4).getText();
+            otherBoard = ctx.getChild(4).getChild(2).getText();
         }
 //        System.out.println(ctx.getChildCount());
 //        System.out.println(name + ", " + xLoc + ", " + yLoc + ", " + otherPortal + ", " + otherBoard);
-        
         portals.add(new Portal(name, Integer.parseInt(xLoc), Integer.parseInt(yLoc), otherBoard, otherPortal));
     }
     
