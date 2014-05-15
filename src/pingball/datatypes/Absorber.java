@@ -41,27 +41,27 @@ public class Absorber implements Gadget{
     //Abstraction Function:
     //represents an absorber with width, width, and height, height
     
-    public Absorber(String name,int x,int y, int width, int height){
+    public Absorber(String name,int x,int y, int height, int width){
         this.name = name;
-        this.width = width;
-        this.height = height;
+        this.width = height;
+        this.height = width;
         this.y = (double) y;
         this.x = (double) x;
         this.coR = 0;    
         this.gadgetsToFire = new ArrayList<Gadget>();
         this.balls = new ArrayList<Ball>();
         //create edges
-        this.physicsTop = new LineSegment(x,20-y,x+width,20-y);
-        this.physicsRight = new LineSegment(x+width,20-y,x+width,20-(y+height));
-        this.physicsBottom = new LineSegment(x,20-(y+height),x+width,20-(y+height));
-        this.physicsLeft = new LineSegment(x,20-y,x,20-(y+height));
+        this.physicsTop = new LineSegment(x,20-y,x+height,20-y);
+        this.physicsRight = new LineSegment(x+height,20-y,x+height,20-(y+width));
+        this.physicsBottom = new LineSegment(x,20-(y+width),x+height,20-(y+width));
+        this.physicsLeft = new LineSegment(x,20-y,x,20-(y+width));
         this.edges = new ArrayList<LineSegment>(Arrays.asList(physicsLeft,physicsTop,physicsRight,physicsBottom));
         
         //create corners (though for an absorber it probably doesn't matter)
         this.physicsTopLeft = new Circle(x, 20-y, 0);
-        this.physicsTopRight = new Circle(x+width, 20-y, 0);
-        this.physicsBottomLeft = new Circle(x+width, 20-(y+height), 0);
-        this.physicsBottomRight = new Circle(x, 20-(y+height), 0);
+        this.physicsTopRight = new Circle(x+height, 20-y, 0);
+        this.physicsBottomLeft = new Circle(x+height, 20-(y+width), 0);
+        this.physicsBottomRight = new Circle(x, 20-(y+width), 0);
         this.corners = new ArrayList<Circle>(Arrays.asList(physicsTopLeft,physicsTopRight,physicsBottomLeft,physicsBottomRight));
 
         checkRep();
