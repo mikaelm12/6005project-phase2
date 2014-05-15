@@ -64,7 +64,7 @@ public class PingballClient {
     public static void main(String[] args) throws Exception{
         int port = 10987; //default port
         String hostName = null;
-        File file = new File("src/../boards/board1.txt");
+        File file = new File("src/../boards/boardG.txt"); //note that this file isn't used
         boolean fileProvided = false;
 //        File file = null;
 //        File file = new File ("/Users/PeterGithaiga/Documents/6.005/projectPhase1/pingball-phase1/sampleBoard1"); 
@@ -76,7 +76,7 @@ public class PingballClient {
 
       // File file = new File("src/../boards/board1.txt");
 
-       file = new File("src/../boards/board1P.txt");
+//       file = new File("src/../boards/board1P.txt");
 
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
@@ -190,13 +190,13 @@ public class PingballClient {
                 try {
                     while ((fromServer = fromServe.readLine()) != null) {
                         if(!board.isPaused()){
-                        System.out.println(fromServer);
-                       currentChanges = fromServer.toString();
-                       
-                       board.updateBalls(currentChanges);
-                       board.updateFlippers(currentChanges);
-                       
-                      
+//                           System.out.println(fromServer);
+                           currentChanges = fromServer.toString();
+                           
+                           board.updateBalls(currentChanges);
+                           board.updateFlippers(currentChanges);
+                           
+                          
                       
                         }
                     }
@@ -220,9 +220,6 @@ public class PingballClient {
                 
                 gui.setMinimumSize(new Dimension(430, 475));
                 gui.setVisible(true);   
-                
-               
-    
             }
         });
        
@@ -291,11 +288,10 @@ public class PingballClient {
         while(true){
             long current = System.currentTimeMillis();
 
-
             if ((current-start) % 20 == 0 && !board.isPaused()){
                 double timestep = 90.0/1080.0/30.0; //it will take exactly 30 timesteps for the flipper to rotate
                 update(board, timestep);
-                System.out.println(board.toString());
+//                System.out.println(board.toString());
 
             }
             
